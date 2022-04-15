@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class CategoryController {
+public class CategoryManageController {
 
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> getAllCategories() {

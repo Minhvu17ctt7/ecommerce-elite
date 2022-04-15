@@ -34,7 +34,7 @@ public class User {
     private String lastName;
 
     @Column(length = 64)
-    private String photos;
+    private String photo;
 
     private boolean enabled = true;
 
@@ -46,4 +46,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
 }

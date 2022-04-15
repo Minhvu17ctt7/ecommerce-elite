@@ -12,6 +12,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name="Roles")
 public class Role {
 
