@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -39,6 +40,7 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
                 HttpStatus.LOCKED.value());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.LOCKED);
     }
+
 
     //Handle validation errors
     @Override

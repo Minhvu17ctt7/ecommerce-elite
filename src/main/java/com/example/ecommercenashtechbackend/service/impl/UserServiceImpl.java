@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     public User save(User user) {
         Optional<User> userOld = userRepository.findByEmail(user.getEmail());
         if (userOld.isPresent()) {
-            throw new ConflictException("User already exists");
+            throw new ConflictException("Email already exists");
         }
         encodePassword(user);
         return userRepository.save(user);
