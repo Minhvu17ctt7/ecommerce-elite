@@ -6,6 +6,7 @@ import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
 import com.example.ecommercenashtechbackend.repository.UserRepository;
 import com.example.ecommercenashtechbackend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,14 +21,18 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+//    @Autowired
+//    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+//        this.userRepository = userRepository;
+//        this.passwordEncoder = passwordEncoder;
+//    }
 
     @Override
     public List<User> getAllUsers() {
         List<User> listUser = userRepository.findAll();
         return listUser;
     }
-
 
     @Override
     public User save(User user) {

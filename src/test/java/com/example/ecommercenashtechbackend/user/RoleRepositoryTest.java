@@ -20,11 +20,11 @@ public class RoleRepositoryTest {
         this.roleRepository = roleRepository;
     }
 
-    @Test
-    void when_CreateRole_Expect_roleIsSaved() {
-        Role role = Role.builder().name("ADMIN").description("Manage everything").build();
-        Role savedRole = roleRepository.save(role);
-        assertThat(savedRole.getId()).isGreaterThan(0);
-    }
+//    @Test
+//    void when_CreateRole_Expect_roleIsSaved() {
+//        Role role = Role.builder().name("ADMIN").description("Manage everything").build();
+//        Role savedRole = roleRepository.save(role);
+//        assertThat(savedRole.getId()).isGreaterThan(0);
+//    }
 
 }
