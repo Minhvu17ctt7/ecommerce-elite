@@ -1,17 +1,18 @@
 package com.example.ecommercenashtechbackend.security.jwt;
 
+import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
 import com.example.ecommercenashtechbackend.security.UserDetail;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Component
 @Slf4j
-public class JwtUtil {
+public class JwtUtil implements Serializable {
     @Value("${JWT_SECRET}")
     private String JWT_SECRET;
 
@@ -26,7 +27,7 @@ public class JwtUtil {
         Date expiryDate = new Date(now.getTime() + ACCESS_JWT_EXPIRATION);
 
         return Jwts.builder()
-                .setSubject(Long.toString(userDetails.getUser().getId()))
+                .setSubject(userDetails.getUser().getEmail())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
@@ -38,7 +39,7 @@ public class JwtUtil {
         Date expiryDate = new Date(now.getTime() + min * 60 * 1000);
 
         return Jwts.builder()
-                .setSubject(Long.toString(userDetails.getUser().getId()))
+                .setSubject(userDetails.getUser().getEmail())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
@@ -66,20 +67,18 @@ public class JwtUtil {
         return claims.getSubject();
     }
 
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) throws Exception{
         try{
             Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
             return true;
         } catch (MalformedJwtException ex) {
-            log.error("Invalid JWT token");
+            throw new MalformedJwtException("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
+            throw new ForbiddenException("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
+            throw new UnsupportedJwtException("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty.");
+            throw new IllegalArgumentException("JWT claims string is empty.");
         }
-
-        return false;
     }
 }

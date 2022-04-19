@@ -1,6 +1,7 @@
 package com.example.ecommercenashtechbackend.contronller.customer;
 
 import com.example.ecommercenashtechbackend.common.RoleName;
+import com.example.ecommercenashtechbackend.dto.request.RefreshTokenRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserLoginRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserRequestDto;
 import com.example.ecommercenashtechbackend.dto.response.JwtResponse;
@@ -8,6 +9,7 @@ import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
 import com.example.ecommercenashtechbackend.entity.Role;
 import com.example.ecommercenashtechbackend.entity.User;
 import com.example.ecommercenashtechbackend.exception.ExceptionResponse;
+import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
 import com.example.ecommercenashtechbackend.security.UserDetail;
 import com.example.ecommercenashtechbackend.security.jwt.JwtUtil;
 import com.example.ecommercenashtechbackend.service.RoleService;
@@ -84,6 +86,32 @@ public class UserController {
         UserDetail userDetail = new UserDetail(user);
         String accessToken = jwtUtil.generateAccessToken(userDetail);
         String refreshToken = jwtUtil.generateRefreshToken(userDetail);
+        return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
+    }
+
+    @Operation(summary = "Refresh token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success, token refreshed",
+                    content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponse.class))
+                    }),
+            @ApiResponse(responseCode = "403", description = "Invalid refresh token",
+                    content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    })
+    })
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@Validated @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
+        try {
+            jwtUtil.validateToken(refreshTokenRequestDto.getRefreshToken());
+        } catch(Exception e){
+            throw new ForbiddenException(e.getMessage());
+        }
+        String refreshToken = refreshTokenRequestDto.getRefreshToken();
+        String email = jwtUtil.getUserNameFromJwtToken(refreshToken);
+        User user = userService.getUserByEmail(email);
+        UserDetail userDetail = new UserDetail(user);
+        String accessToken = jwtUtil.generateAccessToken(userDetail);
         return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
     }
 }

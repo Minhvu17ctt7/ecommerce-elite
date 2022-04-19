@@ -32,7 +32,6 @@ public class UserServiceTest {
         userInitial = User.builder().email("Minhvu@gmail.com").password("12345").firstName("Hoang").lastName("Vu").build();
     }
 
-    //Login
     @Test
     public void login_ShouldThrownForbiddenException_WhenEmailNotExist() {
         when(userRepository.findByEmail(any())).thenThrow(new ForbiddenException("Username or password is incorrect"));
@@ -41,7 +40,7 @@ public class UserServiceTest {
 
     @Test
     public void login_ShouldThrownForbiddenException_WhenPasswordNotMatch() {
-        when(userRepository.findByEmail(any())).thenReturn(java.util.Optional.ofNullable(userInitial));
+        when(userRepository.findByEmail("Minhvu@gmail.com")).thenReturn(java.util.Optional.ofNullable(userInitial));
         when(passwordEncoder.matches("1234", "12345")).thenReturn(false);
         assertThrows(ForbiddenException.class, () -> userService.login("Minhvu@gmail.com","1234"));
     }
@@ -62,7 +61,6 @@ public class UserServiceTest {
         assertThat(userService.login("Minhvu@gmail.com", "12345")).isEqualTo(userInitial);
     }
 
-    //save
     @Test
     public void save_ShouldReturnUser_WhenRegisterSuccess() {
         User userInitial = User.builder().email("Minhvu@gmail.com").password("12345").firstName("Hoang").lastName("Vu").build();

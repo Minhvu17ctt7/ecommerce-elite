@@ -29,22 +29,26 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException,
             IOException {
-            String path = request.getContextPath();
-            List<String> acceptURL = List.of("/api-docs", "/login", "/api-docs-ui");
-            boolean flag = isAcceptURL(acceptURL, path);
-            if (!flag) {
-                String jwt = parseJwt(request);
-                if (jwt != null && jwtUtil.validateToken(jwt)) {
-                    String username = jwtUtil.getUserNameFromJwtToken(jwt);
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-                            userDetails.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+//        String path = request.getContextPath();
+//        List<String> acceptURL = List.of("/api-docs", "/login", "/api-docs-ui");
+//        boolean flag = isAcceptURL(acceptURL, path);
+//        if (!flag) {
+            String jwt = parseJwt(request);
+            if (jwt != null) {
+                try {
+                    jwtUtil.validateToken(jwt);
+                } catch (Exception e) {
+                    throw new ForbiddenException(e.getMessage());
                 }
-//                response.set
-                throw new ForbiddenException("Missing access token");
+                String username = jwtUtil.getUserNameFromJwtToken(jwt);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                        userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+//            throw new ForbiddenException("Missing access token");
+//        }
         filterChain.doFilter(request, response);
     }
 
