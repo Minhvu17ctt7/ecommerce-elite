@@ -27,20 +27,19 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({ForbiddenException.class})
-    public final ResponseEntity<ExceptionResponse> handleForbiddenException(Exception ex, WebRequest request) {
+    public final ResponseEntity<ExceptionResponse> handleForbiddenException(ForbiddenException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false),
                 HttpStatus.FORBIDDEN.value());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(LockedException.class)
-    public final ResponseEntity<ExceptionResponse> handleLockedException(Exception ex, WebRequest request) {
+    public final ResponseEntity<ExceptionResponse> handleLockedException(LockedException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false),
                 HttpStatus.LOCKED.value());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.LOCKED);
     }
-
 
     //Handle validation errors
     @Override
@@ -53,6 +52,4 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
-
-
 }

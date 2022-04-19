@@ -21,7 +21,6 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 //    @Autowired
 //    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 //        this.userRepository = userRepository;
@@ -52,7 +51,7 @@ public class UserServiceImpl implements UserService {
         if (opt.isPresent()) {
             User user = opt.get();
 
-            if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
+            if (!passwordEncoder.matches(password, user.getPassword())) {
                 throw new ForbiddenException("Username or password is incorrect");
             }
 

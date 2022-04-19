@@ -1,7 +1,9 @@
 package com.example.ecommercenashtechbackend.security.filter;
 
+import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
 import com.example.ecommercenashtechbackend.security.UserDetailService;
 import com.example.ecommercenashtechbackend.security.jwt.JwtUtil;
+import jdk.jshell.execution.FailOverExecutionControlProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
 
@@ -25,20 +28,23 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException,
-             IOException {
-        try {
-            String jwt = parseJwt(request);
-            if (jwt != null && jwtUtil.validateToken(jwt)) {
-                String username = jwtUtil.getUserNameFromJwtToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-                        userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            IOException {
+            String path = request.getContextPath();
+            List<String> acceptURL = List.of("/api-docs", "/login", "/api-docs-ui");
+            boolean flag = isAcceptURL(acceptURL, path);
+            if (!flag) {
+                String jwt = parseJwt(request);
+                if (jwt != null && jwtUtil.validateToken(jwt)) {
+                    String username = jwtUtil.getUserNameFromJwtToken(jwt);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                            userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+//                response.set
+                throw new ForbiddenException("Missing access token");
             }
-        } catch (Exception e) {
-            logger.error("Request to parse JWT with invalid signature . JWT string: {} ", e);
-        }
         filterChain.doFilter(request, response);
     }
 
@@ -48,6 +54,17 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             return headerAuth.substring(7, headerAuth.length());
         }
         return null;
+    }
+
+    public boolean isAcceptURL(List<String> acceptURL, String path) {
+        boolean flag = false;
+        for (String url : acceptURL) {
+            if (path.contains(url)) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
     }
 }
 
