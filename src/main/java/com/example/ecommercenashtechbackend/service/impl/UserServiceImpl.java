@@ -12,6 +12,10 @@ import com.example.ecommercenashtechbackend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    public static final int USER_SIZE_PER_PAGE = 4;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -105,6 +110,17 @@ public class UserServiceImpl implements UserService {
             return userRepository.save(userOld);
         }
         throw new NotFoundException("User not found");
+    }
+
+    @Override
+    public Page<User> getListUser(int pageNumber, String sortField, String sortName, String keywork) {
+        Sort sort = Sort.by(sortField);
+        sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
+        Pageable pageable = PageRequest.of(pageNumber - 1, USER_SIZE_PER_PAGE, sort);
+        if(keywork != null) {
+            return userRepository.findAll(keywork, pageable);
+        }
+        return userRepository.findAll(pageable);
     }
 
     public void encodePassword(User user){

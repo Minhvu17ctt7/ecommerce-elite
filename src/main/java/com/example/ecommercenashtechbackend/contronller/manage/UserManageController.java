@@ -10,6 +10,7 @@ import com.example.ecommercenashtechbackend.entity.User;
 import com.example.ecommercenashtechbackend.exception.ExceptionResponse;
 import com.example.ecommercenashtechbackend.service.RoleService;
 import com.example.ecommercenashtechbackend.service.UserService;
+import com.example.ecommercenashtechbackend.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,7 +18,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,10 +38,17 @@ public class UserManageController {
     private final RoleService roleService;
     private ModelMapper modelMapper = new ModelMapper();
 
-    @GetMapping("/all")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        users = userService.getAllUsers();
+    @GetMapping
+    public ResponseEntity<List<User>> getListUser() {
+        List<User> users = getListUserPagination(1, "email", "asc", null).getBody();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{pageNumber}")
+    public ResponseEntity<List<User>> getListUserPagination(@PathVariable("pageNumber") int pageNumber, @RequestParam("sortField") String sortField,
+                                          @RequestParam("sortName") String sortName, @RequestParam("keyword") String keywork) {
+        Page<User> page = userService.getListUser(pageNumber, sortField, sortName, keywork);
+        List<User> users = page.getContent();
         return ResponseEntity.ok(users);
     }
 
