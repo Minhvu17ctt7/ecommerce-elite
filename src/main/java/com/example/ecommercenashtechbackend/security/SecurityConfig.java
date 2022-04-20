@@ -50,10 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
         // Set session management to stateless
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        // Set unauthorized requests exception handler
         http.authorizeRequests()
-                .antMatchers("/login", "/logout", "/register").permitAll()
-                .antMatchers("/admin/**").hasAuthority("Admin")
+                .antMatchers("/login", "/logout", "/register", "/refresh-token").permitAll()
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated();
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

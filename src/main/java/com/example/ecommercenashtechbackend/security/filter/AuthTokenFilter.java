@@ -1,10 +1,12 @@
 package com.example.ecommercenashtechbackend.security.filter;
 
-import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
+import com.example.ecommercenashtechbackend.exception.ExceptionResponse;
 import com.example.ecommercenashtechbackend.security.UserDetailService;
 import com.example.ecommercenashtechbackend.security.jwt.JwtUtil;
-import jdk.jshell.execution.FailOverExecutionControlProvider;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
@@ -29,26 +32,38 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException,
             IOException {
-//        String path = request.getContextPath();
-//        List<String> acceptURL = List.of("/api-docs", "/login", "/api-docs-ui");
-//        boolean flag = isAcceptURL(acceptURL, path);
-//        if (!flag) {
+        String path = request.getRequestURI();
+        List<String> acceptURL = List.of("/api/api-docs", "/api/login", "/api/api-docs-ui", "/api/register", "/api/swagger-ui", "/api/refresh-token");
+        boolean isAcceptURL = checkAcceptURL(acceptURL, path);
+        ExceptionResponse exceptionResponse = ExceptionResponse.builder().timestamp(new Date())
+                .detail(request.getRequestURI()).status(HttpStatus.FORBIDDEN.value()).build();
+        boolean hasError = false;
+        if (!isAcceptURL) {
             String jwt = parseJwt(request);
             if (jwt != null) {
                 try {
                     jwtUtil.validateToken(jwt);
+                    String username = jwtUtil.getUserNameFromJwtToken(jwt);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                            userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 } catch (Exception e) {
-                    throw new ForbiddenException(e.getMessage());
+                    exceptionResponse.setMessage(e.getMessage());
+                    hasError = true;
                 }
-                String username = jwtUtil.getUserNameFromJwtToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-                        userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                exceptionResponse.setMessage("Missing token");
+                hasError = true;
             }
-//            throw new ForbiddenException("Missing access token");
-//        }
+        }
+
+        if(hasError) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.getWriter().write(convertObjectToJson(exceptionResponse));
+            return;
+        }
         filterChain.doFilter(request, response);
     }
 
@@ -60,7 +75,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         return null;
     }
 
-    public boolean isAcceptURL(List<String> acceptURL, String path) {
+    public boolean checkAcceptURL(List<String> acceptURL, String path) {
         boolean flag = false;
         for (String url : acceptURL) {
             if (path.contains(url)) {
@@ -69,6 +84,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             }
         }
         return flag;
+    }
+
+    public String convertObjectToJson(Object object) throws JsonProcessingException {
+        if (object == null) {
+            return null;
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(object);
     }
 }
 

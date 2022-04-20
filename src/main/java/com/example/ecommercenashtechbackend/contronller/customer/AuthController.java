@@ -5,6 +5,7 @@ import com.example.ecommercenashtechbackend.dto.request.RefreshTokenRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserLoginRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserRequestDto;
 import com.example.ecommercenashtechbackend.dto.response.JwtResponse;
+import com.example.ecommercenashtechbackend.dto.response.UserLoginResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
 import com.example.ecommercenashtechbackend.entity.Role;
 import com.example.ecommercenashtechbackend.entity.User;
@@ -32,7 +33,7 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @RestController
-public class UserController {
+public class AuthController {
 
     private final UserService userService;
     private final RoleService roleService;
@@ -80,13 +81,18 @@ public class UserController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
     })
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@Validated @RequestBody UserLoginRequestDto userLoginDto) {
         User user = userService.login(userLoginDto.getEmail(), userLoginDto.getPassword());
         UserDetail userDetail = new UserDetail(user);
         String accessToken = jwtUtil.generateAccessToken(userDetail);
         String refreshToken = jwtUtil.generateRefreshToken(userDetail);
-        return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
+        ModelMapper modelMapper = new ModelMapper();
+        UserLoginResponseDto userLoginResponseDto = modelMapper.map(user, UserLoginResponseDto.class);
+        userLoginResponseDto.setAccessToken(accessToken);
+        userLoginResponseDto.setRefreshToken(refreshToken);
+        return ResponseEntity.ok(userLoginResponseDto);
     }
 
     @Operation(summary = "Refresh token")
@@ -100,6 +106,7 @@ public class UserController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
     })
+
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@Validated @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
         try {

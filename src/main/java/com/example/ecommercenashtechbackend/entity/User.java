@@ -21,19 +21,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 128, nullable = false, unique = true)
     private String email;
 
-    @Column(length = 64, nullable = false)
     private String password;
 
-    @Column(name = "first_name", length = 45, nullable = false)
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name", length = 45, nullable = false)
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(length = 64)
     private String photo;
 
     private boolean enabled = true;

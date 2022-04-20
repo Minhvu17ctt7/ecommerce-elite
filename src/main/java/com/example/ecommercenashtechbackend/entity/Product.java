@@ -25,13 +25,13 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, length = 256, nullable = false)
+
     private String name;
-    @Column(unique = true, length = 256, nullable = false)
+
     private String alias;
-    @Column(length = 512, nullable = false, name = "short_description")
+    @Column(name = "short_description")
     private String shortDescription;
-    @Column(length = 4096, nullable = false, name = "full_description")
+    @Column(name = "full_description")
     private String fullDescription;
 
     @CreatedDate

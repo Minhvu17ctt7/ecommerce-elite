@@ -1,15 +1,15 @@
 package com.example.ecommercenashtechbackend.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 import java.util.Map;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ExceptionResponse {
 
     private Date timestamp;

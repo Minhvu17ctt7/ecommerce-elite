@@ -1,15 +1,17 @@
 package com.example.ecommercenashtechbackend.dto.request;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
-@Getter
 @Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class RefreshTokenRequestDto {
     @NotBlank(message = "Refresh token is required")
+    @JsonProperty("refresh_token")
     String refreshToken;
 }
