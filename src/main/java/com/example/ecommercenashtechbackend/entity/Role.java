@@ -25,7 +25,7 @@ public class Role {
     @Column(nullable = false, length = 150)
     private String description;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     @ToString.Exclude
     @JsonIgnore
     private Set<User> users = new HashSet<>();

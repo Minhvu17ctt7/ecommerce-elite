@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.webjars.NotFoundException;
 
 import java.util.Date;
 
@@ -38,6 +39,14 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
                 request.getDescription(false),
                 HttpStatus.LOCKED.value());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.LOCKED);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public final ResponseEntity<ExceptionResponse> handleNotFoundException(NotFoundException ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                request.getDescription(false),
+                HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
     //Handle validation errors

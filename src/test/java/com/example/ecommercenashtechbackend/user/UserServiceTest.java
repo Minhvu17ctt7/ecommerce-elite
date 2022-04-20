@@ -3,6 +3,7 @@ package com.example.ecommercenashtechbackend.user;
 import com.example.ecommercenashtechbackend.entity.User;
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
+import com.example.ecommercenashtechbackend.repository.RoleRepository;
 import com.example.ecommercenashtechbackend.repository.UserRepository;
 import com.example.ecommercenashtechbackend.service.UserService;
 import com.example.ecommercenashtechbackend.service.impl.UserServiceImpl;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 public class UserServiceTest {
 
+    private RoleRepository roleRepository;
     private UserRepository userRepository;
     private UserService userService;
     private PasswordEncoder passwordEncoder;
@@ -27,8 +29,9 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         userRepository = Mockito.mock(UserRepository.class);
+        roleRepository = Mockito.mock(RoleRepository.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
-        userService = new UserServiceImpl(passwordEncoder, userRepository);
+        userService = new UserServiceImpl(passwordEncoder, userRepository, roleRepository);
         userInitial = User.builder().email("Minhvu@gmail.com").password("12345").firstName("Hoang").lastName("Vu").build();
     }
 
