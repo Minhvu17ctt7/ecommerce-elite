@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table
-public class ProductDetail {
+public class ProductDetail extends Auditable<String>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

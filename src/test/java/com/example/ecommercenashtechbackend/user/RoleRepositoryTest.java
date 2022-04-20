@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class RoleRepositoryTest {
 
     private RoleRepository roleRepository;
@@ -20,11 +20,18 @@ public class RoleRepositoryTest {
         this.roleRepository = roleRepository;
     }
 
-//    @Test
-//    void when_CreateRole_Expect_roleIsSaved() {
-//        Role role = Role.builder().name("ADMIN").description("Manage everything").build();
-//        Role savedRole = roleRepository.save(role);
-//        assertThat(savedRole.getId()).isGreaterThan(0);
-//    }
+    @Test
+    void when_CreateRoleUser_Expect_roleIsSaved() {
+        Role role = Role.builder().name("USER").description("Customer").build();
+        Role savedRole = roleRepository.save(role);
+        assertThat(savedRole.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    void when_CreateRoleAdmin_Expect_roleIsSaved() {
+        Role role = Role.builder().name("ADMIN").description("Manage everything").build();
+        Role savedRole = roleRepository.save(role);
+        assertThat(savedRole.getId()).isGreaterThan(0);
+    }
 
 }

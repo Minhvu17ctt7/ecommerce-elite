@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Builder
 @Table(name = "users")
-public class User {
+public class User extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +34,8 @@ public class User {
     private String photo;
 
     private boolean enabled = true;
+
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore

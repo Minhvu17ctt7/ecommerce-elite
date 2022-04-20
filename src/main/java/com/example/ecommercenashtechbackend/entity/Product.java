@@ -20,7 +20,7 @@ import java.util.Set;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name="product")
-public class Product {
+public class Product extends Auditable<String>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

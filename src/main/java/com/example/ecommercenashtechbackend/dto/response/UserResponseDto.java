@@ -19,4 +19,6 @@ public class UserResponseDto {
     private String firstName;
     @JsonProperty("last_name")
     private String lastName;
+    private String photo;
+    private boolean enabled;
 }
