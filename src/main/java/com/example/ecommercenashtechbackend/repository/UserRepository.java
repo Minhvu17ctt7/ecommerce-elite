@@ -12,8 +12,19 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    @Query("SELECT u FROM User u WHERE u.id = ?1 and u.deleted = false")
+    Optional<User> findById(Long id);
+
+    @Query("SELECT u FROM User u WHERE u.email = ?1 and u.deleted = false")
     Optional<User> findByEmail(String email);
 
-    @Query("SELECT u FROM User u WHERE CONCAT(u.email,' ',u.id,' ',u.firstName,' ',u.lastName) LIKE %?1%")
-    public Page<User> findAll(String keyword, Pageable pageable);
+    @Query("UPDATE User u SET u.deleted = true WHERE u.id = ?1")
+    @Modifying
+    public void updateDeletedUserById(Long id);
+
+    @Query("SELECT u FROM User u WHERE CONCAT(u.email,' ',u.id,' ',u.firstName,' ',u.lastName) LIKE %?1% and u.deleted = ?2")
+    public Page<User> findAll(String keyword, boolean deleted, Pageable pageable);
+//
+//    @Query("SELECT u FROM User u WHERE CONCAT(u.email,' ',u.id,' ',u.firstName,' ',u.lastName) LIKE %?1% and u.deleted = true")
+//    public Page<User> findAllUserDeleted(String keyword, Pageable pageable);
 }

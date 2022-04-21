@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
     public static final int USER_SIZE_PER_PAGE = 4;
@@ -79,7 +81,7 @@ public class UserServiceImpl implements UserService {
         if (userOld.isPresent()) {
             User userSave = userOld.get();
             BeanUtils.copyProperties(userUpdateRequestDto, userSave);
-            if(userUpdateRequestDto.getRole() != null){
+            if (userUpdateRequestDto.getRole() != null) {
                 Role role = roleRepository.findByName(userUpdateRequestDto.getRole());
                 Set<Role> roles = new HashSet<>();
                 roles.add(role);
@@ -113,17 +115,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> getListUser(int pageNumber, String sortField, String sortName, String keywork) {
+    public Page<User> getListUser(int pageNumber, String sortField, String sortName, String keywork, boolean deleted) {
         Sort sort = Sort.by(sortField);
         sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(pageNumber - 1, USER_SIZE_PER_PAGE, sort);
-        if(keywork != null) {
-            return userRepository.findAll(keywork, pageable);
+        if (keywork != null) {
+            return userRepository.findAll(keywork, deleted, pageable);
         }
         return userRepository.findAll(pageable);
     }
 
-    public void encodePassword(User user){
-    	user.setPassword(passwordEncoder.encode(user.getPassword()));
+    @Override
+    public void deleteUser(Long id) {
+        Optional<User> userOpt = userRepository.findById(id);
+        if (!userOpt.isPresent() || userOpt.get().isDeleted()) {
+            throw new NotFoundException("User not found");
+        }
+        userRepository.updateDeletedUserById(id);
+    }
+
+    public void encodePassword(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 }

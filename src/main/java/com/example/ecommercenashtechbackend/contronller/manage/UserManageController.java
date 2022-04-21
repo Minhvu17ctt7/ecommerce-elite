@@ -3,14 +3,12 @@ package com.example.ecommercenashtechbackend.contronller.manage;
 import com.example.ecommercenashtechbackend.dto.request.UserRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserStatusRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserUpdateRequestDto;
-import com.example.ecommercenashtechbackend.dto.response.JwtResponse;
 import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
 import com.example.ecommercenashtechbackend.entity.Role;
 import com.example.ecommercenashtechbackend.entity.User;
 import com.example.ecommercenashtechbackend.exception.ExceptionResponse;
 import com.example.ecommercenashtechbackend.service.RoleService;
 import com.example.ecommercenashtechbackend.service.UserService;
-import com.example.ecommercenashtechbackend.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,11 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,14 +36,16 @@ public class UserManageController {
 
     @GetMapping
     public ResponseEntity<List<User>> getListUser() {
-        List<User> users = getListUserPagination(1, "email", "asc", null).getBody();
+        List<User> users = getListUserPagination(1, "email", "asc", null, false).getBody();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{pageNumber}")
     public ResponseEntity<List<User>> getListUserPagination(@PathVariable("pageNumber") int pageNumber, @RequestParam("sortField") String sortField,
-                                          @RequestParam("sortName") String sortName, @RequestParam("keyword") String keywork) {
-        Page<User> page = userService.getListUser(pageNumber, sortField, sortName, keywork);
+                                                            @RequestParam("sortName") String sortName, @RequestParam("keyword") String keywork,
+                                                            @RequestParam(value = "deleted", required = false) Boolean deleted) {
+        deleted = deleted == null ? false : deleted;
+        Page<User> page = userService.getListUser(pageNumber, sortField, sortName, keywork, deleted);
         List<User> users = page.getContent();
         return ResponseEntity.ok(users);
     }
@@ -118,6 +116,23 @@ public class UserManageController {
     public ResponseEntity<UserResponseDto> updateEnableUser(@Validated @RequestBody UserStatusRequestDto userStatusRequestDto) {
         User userUpdated = userService.enableUser(userStatusRequestDto);
         return ResponseEntity.ok(modelMapper.map(userUpdated, UserResponseDto.class));
+    }
+
+    @Operation(summary = "Delete user by adin")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Success, user registered",
+                    content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))
+                    }),
+            @ApiResponse(responseCode = "404", description = "Not found user with this id",
+                    content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    })
+    })
+    @DeleteMapping("/delete-user/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok().build();
     }
 }
 

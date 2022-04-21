@@ -23,5 +23,7 @@ public interface UserService {
 
     User enableUser(UserStatusRequestDto userStatusRequestDto);
 
-    Page<User> getListUser(int pageNumber, String sortField, String sortName, String keywork);
+    Page<User> getListUser(int pageNumber, String sortField, String sortName, String keywork, boolean deleted);
+
+    void deleteUser(Long id);
 }
