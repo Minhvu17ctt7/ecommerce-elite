@@ -1,10 +1,11 @@
 package com.example.ecommercenashtechbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "Categories")
-public class Category extends Auditable<String>{
+public class Category extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +24,14 @@ public class Category extends Auditable<String>{
     private String image;
     private String description;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "parent_id")
+    private Category parent;
+
+    @OneToMany(mappedBy = "parent")
+    private Set<Category> children = new HashSet<>();
+
+    @OneToMany(mappedBy = "category")
+    private Set<Product> products = new HashSet<>();
 }

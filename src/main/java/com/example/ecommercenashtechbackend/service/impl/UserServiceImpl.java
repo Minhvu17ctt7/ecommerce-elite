@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
                 throw new ForbiddenException("Username or password is incorrect");
             }
 
-            if (!user.isEnabled()) {
+            if (!user.isBlocked()) {
                 throw new LockedException("User is locked");
             }
 
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOpt = userRepository.findById(userStatusRequestDto.getId());
         if (userOpt.isPresent()) {
             User userOld = userOpt.get();
-            userOld.setEnabled(userStatusRequestDto.isStatus());
+            userOld.setBlocked(userStatusRequestDto.isStatus());
             return userRepository.save(userOld);
         }
         throw new NotFoundException("User not found");

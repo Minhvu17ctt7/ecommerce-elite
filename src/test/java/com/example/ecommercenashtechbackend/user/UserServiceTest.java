@@ -1,5 +1,6 @@
 package com.example.ecommercenashtechbackend.user;
 
+import com.example.ecommercenashtechbackend.dto.request.UserStatusRequestDto;
 import com.example.ecommercenashtechbackend.entity.User;
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
@@ -12,8 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.webjars.NotFoundException;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -50,7 +52,7 @@ public class UserServiceTest {
 
     @Test
     public void login_ShouldThrowLockedException_WhenUserDisable() {
-        userInitial.setEnabled(false);
+        userInitial.setBlocked(false);
         when(passwordEncoder.matches("12345", "12345")).thenReturn(true);
         when(userRepository.findByEmail("Minhvu@gmail.com")).thenReturn(java.util.Optional.of(userInitial));
         assertThrows(LockedException.class, () -> userService.login("Minhvu@gmail.com", "12345"));
@@ -58,7 +60,7 @@ public class UserServiceTest {
 
     @Test
     public void login_ShouldReturnUser_WhenLoginSuccess() {
-        userInitial.setEnabled(true);
+        userInitial.setBlocked(true);
         when(userRepository.findByEmail("Minhvu@gmail.com")).thenReturn(java.util.Optional.ofNullable(userInitial));
         when(passwordEncoder.matches("12345", "12345")).thenReturn(true);
         assertThat(userService.login("Minhvu@gmail.com", "12345")).isEqualTo(userInitial);
@@ -81,4 +83,21 @@ public class UserServiceTest {
         when(userRepository.findByEmail("Minhvu@gmail.com")).thenReturn(java.util.Optional.ofNullable(userInitial));
         assertThrows(ConflictException.class, () -> userService.save(userInitial));
     }
+
+    @Test
+    public void enableUser_shouldThrownNotFoundException_whenUserNotFound() {
+        UserStatusRequestDto userStatusRequestDto = UserStatusRequestDto.builder().id(Long.valueOf(1)).status(false).build();
+        when(userRepository.findById(Long.valueOf(1))).thenReturn(java.util.Optional.ofNullable(null));
+        assertThrows(NotFoundException.class, () -> userService.enableUser(userStatusRequestDto));
+    }
+
+//    @Test
+//    public void enableUser_shouldUserEnableIsTrue_whenUserFounded() {
+//        UserStatusRequestDto userStatusRequestDto = UserStatusRequestDto.builder().id(Long.valueOf(1)).status(false).build();
+//        when(userRepository.findById(Long.valueOf(1))).thenReturn(java.util.Optional.ofNullable(userInitial));
+//        userInitial.setEnabled(true);
+//        when(userRepository.save(any())).thenReturn(userInitial);
+//        User result = userService.enableUser(userStatusRequestDto);
+//        assertThat(result.isEnabled()).isEqualTo(true);
+//    }
 }

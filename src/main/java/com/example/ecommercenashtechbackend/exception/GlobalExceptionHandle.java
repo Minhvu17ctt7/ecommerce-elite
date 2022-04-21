@@ -1,12 +1,12 @@
 package com.example.ecommercenashtechbackend.exception;
 
+import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -48,6 +48,14 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
                 request.getDescription(false),
                 HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public final ResponseEntity<ExceptionResponse> handleConflictException(NotFoundException ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                request.getDescription(false),
+                HttpStatus.CONFLICT.value());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
     }
 
     //Handle validation errors
