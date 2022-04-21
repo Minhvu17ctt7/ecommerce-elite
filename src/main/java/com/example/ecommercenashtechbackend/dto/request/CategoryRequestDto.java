@@ -1,10 +1,7 @@
 package com.example.ecommercenashtechbackend.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
@@ -12,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CategoryRequestDto {
     @NotBlank(message = "Name is required")
     private String name;
