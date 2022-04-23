@@ -1,13 +1,11 @@
-package com.example.ecommercenashtechbackend.contronller.manage;
+package com.example.ecommercenashtechbackend.controller.manage;
 
 import com.example.ecommercenashtechbackend.dto.request.UserRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserStatusRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserUpdateRequestDto;
 import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
-import com.example.ecommercenashtechbackend.entity.Role;
 import com.example.ecommercenashtechbackend.entity.User;
 import com.example.ecommercenashtechbackend.exception.ExceptionResponse;
-import com.example.ecommercenashtechbackend.service.RoleService;
 import com.example.ecommercenashtechbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,15 +13,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,22 +25,19 @@ import java.util.Set;
 public class UserManageController {
 
     private final UserService userService;
-    private final RoleService roleService;
-    private ModelMapper modelMapper = new ModelMapper();
 
     @GetMapping
     public ResponseEntity<List<User>> getListUser() {
-        List<User> users = getListUserPagination(1, "email", "asc", null, false).getBody();
+        List<User> users = getListUserPagination(1, 4, "email", "asc", null, false).getBody();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{pageNumber}")
-    public ResponseEntity<List<User>> getListUserPagination(@PathVariable("pageNumber") int pageNumber, @RequestParam("sortField") String sortField,
+    public ResponseEntity<List<User>> getListUserPagination(@PathVariable("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize, @RequestParam("sortField") String sortField,
                                                             @RequestParam("sortName") String sortName, @RequestParam("keyword") String keywork,
                                                             @RequestParam(value = "deleted", required = false) Boolean deleted) {
         deleted = deleted == null ? false : deleted;
-        Page<User> page = userService.getListUser(pageNumber, sortField, sortName, keywork, deleted);
-        List<User> users = page.getContent();
+        List<User> users = userService.getListUser(pageNumber, pageSize, sortField, sortName, keywork, deleted);
         return ResponseEntity.ok(users);
     }
 
@@ -66,14 +57,9 @@ public class UserManageController {
                     })
     })
     @PostMapping("/create-user")
-    public ResponseEntity<UserRequestDto> saveUser(@Validated @RequestBody UserRequestDto userRequestCreateDto) {
-        Role role = roleService.getRoleByName(userRequestCreateDto.getRole());
-        User user = modelMapper.map(userRequestCreateDto, User.class);
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-        user.setRoles(roles);
-        User userSave = userService.save(user);
-        return ResponseEntity.ok(modelMapper.map(userSave, UserRequestDto.class));
+    public ResponseEntity<UserResponseDto> saveUser(@Validated @RequestBody UserRequestDto userRequestCreateDto) {
+        UserResponseDto userResponseDto = userService.createUser(userRequestCreateDto);
+        return ResponseEntity.ok(userResponseDto);
     }
 
     @Operation(summary = "Update user by admin")
@@ -93,8 +79,8 @@ public class UserManageController {
     })
     @PutMapping("/update-user/{id}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @Validated @RequestBody UserUpdateRequestDto userRequestUpdateDto) {
-        User userUpdated = userService.updateUser(id, userRequestUpdateDto);
-        return ResponseEntity.ok(modelMapper.map(userUpdated, UserResponseDto.class));
+        UserResponseDto userResponseDto = userService.updateUser(id, userRequestUpdateDto);
+        return ResponseEntity.ok(userResponseDto);
     }
 
     @Operation(summary = "Update status user by admin")
@@ -113,9 +99,9 @@ public class UserManageController {
                     })
     })
     @PutMapping("/update-user-status")
-    public ResponseEntity<UserResponseDto> updateEnableUser(@Validated @RequestBody UserStatusRequestDto userStatusRequestDto) {
-        User userUpdated = userService.enableUser(userStatusRequestDto);
-        return ResponseEntity.ok(modelMapper.map(userUpdated, UserResponseDto.class));
+    public ResponseEntity<UserResponseDto> updateBlockUser(@Validated @RequestBody UserStatusRequestDto userStatusRequestDto) {
+        UserResponseDto userUpdated = userService.updateBlockUser(userStatusRequestDto);
+        return ResponseEntity.ok(userUpdated);
     }
 
     @Operation(summary = "Delete user by adin")
