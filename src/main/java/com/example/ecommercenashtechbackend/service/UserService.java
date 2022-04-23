@@ -1,9 +1,10 @@
 package com.example.ecommercenashtechbackend.service;
 
-import com.example.ecommercenashtechbackend.dto.request.UserStatusRequestDto;
-import com.example.ecommercenashtechbackend.dto.request.UserUpdateRequestDto;
+import com.example.ecommercenashtechbackend.dto.request.*;
+import com.example.ecommercenashtechbackend.dto.response.JwtResponse;
+import com.example.ecommercenashtechbackend.dto.response.UserLoginResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
 import com.example.ecommercenashtechbackend.entity.User;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -11,19 +12,17 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    User save(User user);
+    UserResponseDto createUser(UserRequestDto userRequestDto);
 
-    User login(String email, String password);
+    UserLoginResponseDto login(UserLoginRequestDto userLoginRequestDto);
 
-    User updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto);
+    JwtResponse refreshToken(RefreshTokenRequestDto refreshTokenRequestDto);
 
-    User getUserById(Long id);
+    UserResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto);
 
-    User getUserByEmail(String email);
+    UserResponseDto updateBlockUser(UserStatusRequestDto userStatusRequestDto);
 
-    User enableUser(UserStatusRequestDto userStatusRequestDto);
-
-    Page<User> getListUser(int pageNumber, String sortField, String sortName, String keywork, boolean deleted);
+    List<User> getListUser(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted);
 
     void deleteUser(Long id);
 }

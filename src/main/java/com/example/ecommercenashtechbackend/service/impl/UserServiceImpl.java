@@ -1,18 +1,21 @@
 package com.example.ecommercenashtechbackend.service.impl;
 
-import com.example.ecommercenashtechbackend.dto.request.UserStatusRequestDto;
-import com.example.ecommercenashtechbackend.dto.request.UserUpdateRequestDto;
+import com.example.ecommercenashtechbackend.dto.request.*;
+import com.example.ecommercenashtechbackend.dto.response.JwtResponse;
+import com.example.ecommercenashtechbackend.dto.response.UserLoginResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
 import com.example.ecommercenashtechbackend.entity.Role;
 import com.example.ecommercenashtechbackend.entity.User;
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
 import com.example.ecommercenashtechbackend.repository.RoleRepository;
 import com.example.ecommercenashtechbackend.repository.UserRepository;
+import com.example.ecommercenashtechbackend.security.UserDetail;
+import com.example.ecommercenashtechbackend.security.jwt.JwtUtil;
 import com.example.ecommercenashtechbackend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,11 +35,11 @@ import java.util.Set;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    public static final int USER_SIZE_PER_PAGE = 4;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapper;
+    private final JwtUtil jwtUtil;
 
     @Override
     public List<User> getAllUsers() {
@@ -45,24 +48,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(User user) {
-        Optional<User> userOld = userRepository.findByEmail(user.getEmail());
+    public UserResponseDto createUser(UserRequestDto userRequestDto) {
+        Role roleUser = roleRepository.findByName(userRequestDto.getRole());
+        User userSave = modelMapper.map(userRequestDto, User.class);
+        userSave.setRoles(Set.of(roleUser));
+        Optional<User> userOld = userRepository.findByEmail(userSave.getEmail());
         if (userOld.isPresent()) {
             throw new ConflictException("Email already exists");
         }
-        encodePassword(user);
-        return userRepository.save(user);
+        userSave.setPassword(passwordEncoder.encode(userSave.getPassword()));
+        User userSaved = userRepository.save(userSave);
+        return modelMapper.map(userSaved, UserResponseDto.class);
     }
 
     @Override
-    public User login(String email, String password) {
+    public UserLoginResponseDto login(UserLoginRequestDto userLoginRequestDto) {
 
-        Optional<User> opt = userRepository.findByEmail(email);
+        Optional<User> opt = userRepository.findByEmail(userLoginRequestDto.getEmail());
 
         if (opt.isPresent()) {
             User user = opt.get();
 
-            if (!passwordEncoder.matches(password, user.getPassword())) {
+            if (!passwordEncoder.matches(userLoginRequestDto.getPassword(), user.getPassword())) {
                 throw new ForbiddenException("Username or password is incorrect");
             }
 
@@ -70,13 +77,35 @@ public class UserServiceImpl implements UserService {
                 throw new LockedException("User is locked");
             }
 
-            return user;
+            UserDetail userDetail = new UserDetail(user);
+            String accessToken = jwtUtil.generateAccessToken(userDetail);
+            String refreshToken = jwtUtil.generateRefreshToken(userDetail);
+            UserLoginResponseDto userLoginResponseDto = modelMapper.map(user, UserLoginResponseDto.class);
+            userLoginResponseDto.setAccessToken(accessToken);
+            userLoginResponseDto.setRefreshToken(refreshToken);
+            return userLoginResponseDto;
         }
         throw new ForbiddenException("Username or password is incorrect");
     }
 
     @Override
-    public User updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto) {
+    public JwtResponse refreshToken(RefreshTokenRequestDto refreshTokenRequestDto) {
+        try {
+            jwtUtil.validateToken(refreshTokenRequestDto.getRefreshToken());
+        } catch (Exception e) {
+            throw new ForbiddenException(e.getMessage());
+        }
+        String refreshToken = refreshTokenRequestDto.getRefreshToken();
+        String email = jwtUtil.getUserNameFromJwtToken(refreshToken);
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        userOpt.orElseThrow(() -> new NotFoundException("User not found"));
+        UserDetail userDetail = new UserDetail(userOpt.get());
+        String accessTokenNew = jwtUtil.generateAccessToken(userDetail);
+        return new JwtResponse(accessTokenNew, refreshToken);
+    }
+
+    @Override
+    public UserResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto) {
         Optional<User> userOld = userRepository.findById(id);
         if (userOld.isPresent()) {
             User userSave = userOld.get();
@@ -88,41 +117,33 @@ public class UserServiceImpl implements UserService {
                 userSave.setRoles(roles);
             }
             User userSaved = userRepository.save(userSave);
-            return userSaved;
+            UserResponseDto userResponseDto = modelMapper.map(userSaved, UserResponseDto.class);
+            return userResponseDto;
         }
         throw new NotFoundException("User not found");
     }
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id).get();
-    }
-
-    @Override
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).get();
-    }
-
-    @Override
-    public User enableUser(UserStatusRequestDto userStatusRequestDto) {
+    public UserResponseDto updateBlockUser(UserStatusRequestDto userStatusRequestDto) {
         Optional<User> userOpt = userRepository.findById(userStatusRequestDto.getId());
         if (userOpt.isPresent()) {
             User userOld = userOpt.get();
             userOld.setBlocked(userStatusRequestDto.isStatus());
-            return userRepository.save(userOld);
+            User userSaved = userRepository.save(userOld);
+            return modelMapper.map(userSaved, UserResponseDto.class);
         }
         throw new NotFoundException("User not found");
     }
 
     @Override
-    public Page<User> getListUser(int pageNumber, String sortField, String sortName, String keywork, boolean deleted) {
+    public List<User> getListUser(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted) {
         Sort sort = Sort.by(sortField);
         sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(pageNumber - 1, USER_SIZE_PER_PAGE, sort);
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
         if (keywork != null) {
-            return userRepository.findAll(keywork, deleted, pageable);
+            return userRepository.findAll(keywork, deleted, pageable).getContent();
         }
-        return userRepository.findAll(pageable);
+        return userRepository.findAll(pageable).getContent();
     }
 
     @Override
@@ -134,7 +155,4 @@ public class UserServiceImpl implements UserService {
         userRepository.updateDeletedUserById(id);
     }
 
-    public void encodePassword(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-    }
 }
