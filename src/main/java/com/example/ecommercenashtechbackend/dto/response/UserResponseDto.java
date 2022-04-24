@@ -3,9 +3,6 @@ package com.example.ecommercenashtechbackend.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-
 @Getter
 @Setter
 @ToString
@@ -20,5 +17,5 @@ public class UserResponseDto {
     @JsonProperty("last_name")
     private String lastName;
     private String photo;
-    private boolean enabled;
+    private boolean blocked;
 }

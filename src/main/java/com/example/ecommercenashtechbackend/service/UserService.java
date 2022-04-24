@@ -18,7 +18,7 @@ public interface UserService {
 
     JwtResponse refreshToken(RefreshTokenRequestDto refreshTokenRequestDto);
 
-    UserResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto);
+    UserResponseDto updateUser(UserUpdateRequestDto userUpdateRequestDto);
 
     UserResponseDto updateBlockUser(UserStatusRequestDto userStatusRequestDto);
 

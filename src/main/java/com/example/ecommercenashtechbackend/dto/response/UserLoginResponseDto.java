@@ -18,7 +18,7 @@ public class UserLoginResponseDto {
     @JsonProperty("last_name")
     private String lastName;
     private String photo;
-    private boolean enabled = true;
+    private boolean blocked;
     @JsonProperty("refresh_token")
     private String refreshToken;
     @JsonProperty("access_token")

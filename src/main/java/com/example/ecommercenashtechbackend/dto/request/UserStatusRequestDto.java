@@ -2,7 +2,6 @@ package com.example.ecommercenashtechbackend.dto.request;
 
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Setter
@@ -15,5 +14,5 @@ public class UserStatusRequestDto {
     @NotNull(message = "User status cannot be null")
     private Long id;
     @NotNull(message = "User status cannot be null")
-    private boolean status;
+    private boolean blocked;
 }

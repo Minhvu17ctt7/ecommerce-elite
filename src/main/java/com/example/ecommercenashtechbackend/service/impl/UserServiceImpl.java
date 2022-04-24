@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
                 throw new ForbiddenException("Username or password is incorrect");
             }
 
-            if (!user.isBlocked()) {
+            if (user.isBlocked()) {
                 throw new LockedException("User is locked");
             }
 
@@ -105,8 +105,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto) {
-        Optional<User> userOld = userRepository.findById(id);
+    public UserResponseDto updateUser(UserUpdateRequestDto userUpdateRequestDto) {
+        Optional<User> userOld = userRepository.findById(userUpdateRequestDto.getId());
         if (userOld.isPresent()) {
             User userSave = userOld.get();
             BeanUtils.copyProperties(userUpdateRequestDto, userSave);
@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOpt = userRepository.findById(userStatusRequestDto.getId());
         if (userOpt.isPresent()) {
             User userOld = userOpt.get();
-            userOld.setBlocked(userStatusRequestDto.isStatus());
+            userOld.setBlocked(userStatusRequestDto.isBlocked());
             User userSaved = userRepository.save(userOld);
             return modelMapper.map(userSaved, UserResponseDto.class);
         }
