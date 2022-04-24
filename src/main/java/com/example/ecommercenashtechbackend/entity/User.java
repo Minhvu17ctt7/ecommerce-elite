@@ -33,7 +33,7 @@ public class User extends Auditable<String> {
 
     private String photo;
 
-    private boolean blocked = true;
+    private boolean blocked = false;
     private boolean deleted = false;
 
     @ManyToMany(fetch = FetchType.EAGER)

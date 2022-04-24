@@ -56,8 +56,8 @@ public class UserManageController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
     })
-    @PostMapping("/create-user")
-    public ResponseEntity<UserResponseDto> saveUser(@Validated @RequestBody UserRequestDto userRequestCreateDto) {
+    @PostMapping("/create")
+    public ResponseEntity<UserResponseDto> createUser(@Validated @RequestBody UserRequestDto userRequestCreateDto) {
         UserResponseDto userResponseDto = userService.createUser(userRequestCreateDto);
         return ResponseEntity.ok(userResponseDto);
     }
@@ -77,9 +77,9 @@ public class UserManageController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
     })
-    @PutMapping("/update-user/{id}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @Validated @RequestBody UserUpdateRequestDto userRequestUpdateDto) {
-        UserResponseDto userResponseDto = userService.updateUser(id, userRequestUpdateDto);
+    @PutMapping("/update")
+    public ResponseEntity<UserResponseDto> updateUser(@Validated @RequestBody UserUpdateRequestDto userRequestUpdateDto) {
+        UserResponseDto userResponseDto = userService.updateUser(userRequestUpdateDto);
         return ResponseEntity.ok(userResponseDto);
     }
 
@@ -98,7 +98,7 @@ public class UserManageController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
     })
-    @PutMapping("/update-user-status")
+    @PutMapping("/update-status")
     public ResponseEntity<UserResponseDto> updateBlockUser(@Validated @RequestBody UserStatusRequestDto userStatusRequestDto) {
         UserResponseDto userUpdated = userService.updateBlockUser(userStatusRequestDto);
         return ResponseEntity.ok(userUpdated);
@@ -115,10 +115,10 @@ public class UserManageController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
     })
-    @DeleteMapping("/delete-user/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("User with id " + id + " deleted");
     }
 }
 
