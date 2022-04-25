@@ -32,6 +32,6 @@ public class Category extends Auditable<String> {
     @OneToMany(mappedBy = "parent")
     private Set<Category> children = new HashSet<>();
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
 }

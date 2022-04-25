@@ -8,7 +8,6 @@ import com.example.ecommercenashtechbackend.repository.CategoryRepository;
 import com.example.ecommercenashtechbackend.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -62,7 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     Category save(Category category, CategoryUpdateRequestDto categoryRequestDto) {
-        BeanUtils.copyProperties(categoryRequestDto, category);
+        category = modelMapper.map(categoryRequestDto, Category.class);
         if (categoryRequestDto.getParentId() != null) {
             Optional<Category> categoryParentOpt = categoryRepository.findById(categoryRequestDto.getParentId());
             if (categoryParentOpt.isPresent()) {
