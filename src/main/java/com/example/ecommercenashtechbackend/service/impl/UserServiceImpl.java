@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
             User user = opt.get();
 
             if (!passwordEncoder.matches(userLoginRequestDto.getPassword(), user.getPassword())) {
-                throw new ForbiddenException("Username or password is incorrect");
+                throw new ForbiddenException("Email or password is incorrect");
             }
 
             if (user.isBlocked()) {
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
             userLoginResponseDto.setRefreshToken(refreshToken);
             return userLoginResponseDto;
         }
-        throw new ForbiddenException("Username or password is incorrect");
+        throw new ForbiddenException("Email or password is incorrect");
     }
 
     @Override
