@@ -14,11 +14,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -31,14 +33,6 @@ public class ProductServiceImpl implements ProductService {
         if (!productOpt.isPresent()) {
             Product productSave = modelMapper.map(productCreateRequestDto, Product.class);
             return save(productSave, productCreateRequestDto.getCategoryId());
-//            Optional<Category> categoryOpt = categoryRepository.findById(productCreateRequestDto.getCategoryId());
-//            if (categoryOpt.isPresent()) {
-//                Product productSave = modelMapper.map(productCreateRequestDto, Product.class);
-//                productSave.setCategory(categoryOpt.get());
-//                Product productSaved = productRepository.save(productSave);
-//                return modelMapper.map(productSaved, ProductResponseDto.class);
-//            }
-//            throw new NotFoundException("Category not found");
         }
         throw new ConflictException("Product name already exits");
     }
@@ -57,18 +51,20 @@ public class ProductServiceImpl implements ProductService {
             if (!productExist.isPresent() || productExist.get().getId() != productOld.getId()) {
                 Product productSave = modelMapper.map(productUpdateRequestDto, Product.class);
                 return save(productSave, productUpdateRequestDto.getCategoryId());
-//                Optional<Category> categoryOpt = categoryRepository.findById(productUpdateRequestDto.getCategoryId());
-//                if (categoryOpt.isPresent()) {
-//                    Product productSave = modelMapper.map(productUpdateRequestDto, Product.class);
-//                    productSave.setCategory(categoryOpt.get());
-//                    Product productSaved = productRepository.save(productSave);
-//                    return modelMapper.map(productSaved, ProductResponseDto.class);
-//                }
-//                throw new NotFoundException("Category not found");
             }
             throw new ConflictException("Product name already exits");
         }
         throw new NotFoundException("Product not found");
+    }
+
+    @Override
+    public void deleteProduct(Long id) {
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            productRepository.updateDeletedProductById(productOpt.get().getId());
+        } else {
+            throw new NotFoundException("Product not found");
+        }
     }
 
     ProductResponseDto save(Product productSave, Long categoryId) {

@@ -12,4 +12,6 @@ public interface ProductService {
     List<ProductResponseDto> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keyword);
 
     ProductResponseDto updateProduct(ProductUpdateRequestDto productUpdateRequestDto);
+
+    void deleteProduct(Long id);
 }
