@@ -101,6 +101,7 @@ public class UserServiceImpl implements UserService {
         userOpt.orElseThrow(() -> new NotFoundException("User not found"));
         UserDetail userDetail = new UserDetail(userOpt.get());
         String accessTokenNew = jwtUtil.generateAccessToken(userDetail);
+        refreshToken = jwtUtil.generateRefreshToken(userDetail);
         return new JwtResponse(accessTokenNew, refreshToken);
     }
 
