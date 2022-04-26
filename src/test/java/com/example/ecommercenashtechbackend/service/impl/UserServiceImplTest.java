@@ -14,6 +14,7 @@ import com.example.ecommercenashtechbackend.security.jwt.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -102,6 +103,7 @@ public class UserServiceImplTest {
 
     @Test
     public void createUser_ShouldReturnUserResponseDto_WhenCreateUserSuccess() {
+        Pageable pageable = mock(Pageable.class);
         when(roleRepository.findByName(userRequestDto.getRole())).thenReturn(role);
         when(modelMapper.map(userRequestDto, User.class)).thenReturn(userInitial);
         when(userRepository.findByEmail(userInitial.getEmail())).thenReturn(Optional.ofNullable(null));

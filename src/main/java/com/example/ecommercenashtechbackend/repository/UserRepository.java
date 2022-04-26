@@ -24,7 +24,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE CONCAT(u.email,' ',u.id,' ',u.firstName,' ',u.lastName) LIKE %?1% and u.deleted = ?2")
     public Page<User> findAll(String keyword, boolean deleted, Pageable pageable);
-//
-//    @Query("SELECT u FROM User u WHERE CONCAT(u.email,' ',u.id,' ',u.firstName,' ',u.lastName) LIKE %?1% and u.deleted = true")
-//    public Page<User> findAllUserDeleted(String keyword, Pageable pageable);
 }
