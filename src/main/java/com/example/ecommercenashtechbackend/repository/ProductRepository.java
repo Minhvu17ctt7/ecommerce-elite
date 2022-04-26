@@ -11,4 +11,7 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.name = ?1 and p.deleted = false")
     Optional<Product> findByName(String name);
+
+    @Query("SELECT p FROM Product p WHERE p.id = ?1 and p.deleted = false")
+    Optional<Product> findById(Long id);
 }
