@@ -3,6 +3,7 @@ package com.example.ecommercenashtechbackend.controller.manage;
 import com.example.ecommercenashtechbackend.dto.request.UserRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserStatusRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserUpdateRequestDto;
+import com.example.ecommercenashtechbackend.dto.response.ResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
 import com.example.ecommercenashtechbackend.entity.User;
 import com.example.ecommercenashtechbackend.exception.ExceptionResponse;
@@ -27,18 +28,19 @@ public class UserManageController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> getListUserFirstPage() {
-        List<User> users = getListUserPagination(1, 4, "email", "asc", null, false).getBody();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<ResponseDto> getListUserFirstPage() {
+        ResponseDto<List<User>> responseDto = getListUserPagination(1, 4, "email", "asc", null, false).getBody();
+        return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/{pageNumber}")
-    public ResponseEntity<List<User>> getListUserPagination(@PathVariable("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize, @RequestParam("sortField") String sortField,
-                                                            @RequestParam("sortName") String sortName, @RequestParam("keyword") String keywork,
-                                                            @RequestParam(value = "deleted", required = false) Boolean deleted) {
+    public ResponseEntity<ResponseDto> getListUserPagination(@PathVariable("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize, @RequestParam("sortField") String sortField,
+                                                             @RequestParam("sortName") String sortName, @RequestParam("keyword") String keywork,
+                                                             @RequestParam(value = "deleted", required = false) Boolean deleted) {
         deleted = deleted == null ? false : deleted;
         List<User> users = userService.getListUser(pageNumber, pageSize, sortField, sortName, keywork, deleted);
-        return ResponseEntity.ok(users);
+        ResponseDto<List<User>> responseDto = new ResponseDto<>(200, users, "Get list users successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "Create new user by admin")
@@ -57,9 +59,10 @@ public class UserManageController {
                     })
     })
     @PostMapping("/create")
-    public ResponseEntity<UserResponseDto> createUser(@Validated @RequestBody UserRequestDto userRequestCreateDto) {
+    public ResponseEntity<ResponseDto> createUser(@Validated @RequestBody UserRequestDto userRequestCreateDto) {
         UserResponseDto userResponseDto = userService.createUser(userRequestCreateDto);
-        return ResponseEntity.ok(userResponseDto);
+        ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(201, userResponseDto, "Create user successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "Update user by admin")
@@ -78,9 +81,10 @@ public class UserManageController {
                     })
     })
     @PutMapping("/update")
-    public ResponseEntity<UserResponseDto> updateUser(@Validated @RequestBody UserUpdateRequestDto userRequestUpdateDto) {
+    public ResponseEntity<ResponseDto> updateUser(@Validated @RequestBody UserUpdateRequestDto userRequestUpdateDto) {
         UserResponseDto userResponseDto = userService.updateUser(userRequestUpdateDto);
-        return ResponseEntity.ok(userResponseDto);
+        ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, userResponseDto, "Update user successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "Update status user by admin")
@@ -99,9 +103,10 @@ public class UserManageController {
                     })
     })
     @PutMapping("/update-status")
-    public ResponseEntity<UserResponseDto> updateBlockUser(@Validated @RequestBody UserStatusRequestDto userStatusRequestDto) {
+    public ResponseEntity<ResponseDto> updateBlockUser(@Validated @RequestBody UserStatusRequestDto userStatusRequestDto) {
         UserResponseDto userUpdated = userService.updateBlockUser(userStatusRequestDto);
-        return ResponseEntity.ok(userUpdated);
+        ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, userUpdated, "Update user successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "Delete user by adin")
@@ -116,9 +121,10 @@ public class UserManageController {
                     })
     })
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<ResponseDto> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return ResponseEntity.ok("User with id " + id + " deleted");
+        ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, null, "Deleted user");
+        return ResponseEntity.ok(responseDto);
     }
 }
 
