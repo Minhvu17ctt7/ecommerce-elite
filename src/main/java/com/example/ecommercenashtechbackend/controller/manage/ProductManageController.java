@@ -18,18 +18,26 @@ public class ProductManageController {
 
     private final ProductService productService;
 
+    @GetMapping
+    public ResponseEntity<List<ProductResponseDto>> getListUserFirstPage() {
+        List<ProductResponseDto> listProducts = getListProductPagination(1, 4, "email", "asc", null, false).getBody();
+        return ResponseEntity.ok(listProducts);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductResponseDto>> getListProductPagination(@PathVariable int pageNumber, @RequestParam int pageSize,
+                                                                             @RequestParam String sortField,
+                                                                             @RequestParam String sortName, @RequestParam String keyword,
+                                                                             @RequestParam(value = "deleted", required = false) Boolean deleted) {
+        deleted = deleted == null ? false : deleted;
+        List<ProductResponseDto> listProducts = productService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword, deleted);
+        return ResponseEntity.ok(listProducts);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@Validated @RequestBody ProductCreateRequestDto productCreateRequestDto) {
         ProductResponseDto productReponseDto = productService.createProduct(productCreateRequestDto);
         return ResponseEntity.ok(productReponseDto);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getProductPagination(@PathVariable int pageNumber, @RequestParam int pageSize,
-                                                                         @RequestParam String sortField,
-                                                                         @RequestParam String sortName, @RequestParam String keyword) {
-        List<ProductResponseDto> listCategories = productService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword);
-        return ResponseEntity.ok(listCategories);
     }
 
     @PutMapping("/update")

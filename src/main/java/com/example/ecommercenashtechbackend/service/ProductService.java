@@ -9,7 +9,7 @@ import java.util.List;
 public interface ProductService {
     ProductResponseDto createProduct(ProductCreateRequestDto productCreateRequestDto);
 
-    List<ProductResponseDto> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keyword);
+    List<ProductResponseDto> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted);
 
     ProductResponseDto updateProduct(ProductUpdateRequestDto productUpdateRequestDto);
 

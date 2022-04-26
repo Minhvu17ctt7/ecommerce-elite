@@ -27,7 +27,7 @@ public class UserManageController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> getListUser() {
+    public ResponseEntity<List<User>> getListUserFirstPage() {
         List<User> users = getListUserPagination(1, 4, "email", "asc", null, false).getBody();
         return ResponseEntity.ok(users);
     }

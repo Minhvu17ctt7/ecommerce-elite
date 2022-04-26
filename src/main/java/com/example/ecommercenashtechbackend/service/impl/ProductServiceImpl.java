@@ -9,12 +9,17 @@ import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.repository.CategoryRepository;
 import com.example.ecommercenashtechbackend.repository.ProductRepository;
 import com.example.ecommercenashtechbackend.service.ProductService;
+import com.example.ecommercenashtechbackend.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+    private final Util util;
 
     @Override
     public ProductResponseDto createProduct(ProductCreateRequestDto productCreateRequestDto) {
@@ -37,9 +43,19 @@ public class ProductServiceImpl implements ProductService {
         throw new ConflictException("Product name already exits");
     }
 
+
     @Override
-    public List<ProductResponseDto> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keyword) {
-        return null;
+    public List<ProductResponseDto> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted) {
+        Sort sort = Sort.by(sortField);
+        sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
+        List<Product> productList = new ArrayList<>();
+        if (keywork != null) {
+            productList = productRepository.findAll(keywork, deleted, pageable).getContent();
+        } else {
+            productList = productRepository.findAll(pageable).getContent();
+        }
+        return util.mapList(productList, ProductResponseDto.class);
     }
 
     @Override
