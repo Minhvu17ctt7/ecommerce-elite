@@ -8,20 +8,31 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Shop from './pages/shop'
 import ProductDetail from './pages/ProductDetail'
 import Login from './pages/Login'
+import NotFound from './pages/NotFound'
 
 function App() {
+
+  const headerAndFooterExclusionArray = [
+    'login',
+    'register',
+    ''
+  ];
+
+  let splitPathName = location.pathname.split('/');
 
   return (
     <BrowserRouter>
       <div className="App">
-        <Topbar />
+        {headerAndFooterExclusionArray.indexOf(splitPathName[1]) < 0 && <Topbar />}
+
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path='/shop' element={<Shop />} />
           <Route path='/product' element={<ProductDetail />} />
           <Route path='/login' element={<Login />} />
+          <Route path='*' element={<NotFound />} />
         </Routes>
-        <Footer />
+        {headerAndFooterExclusionArray.indexOf(splitPathName[1]) < 0 && <Footer />}
       </div>
     </BrowserRouter>
   )
