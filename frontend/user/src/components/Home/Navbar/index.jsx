@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
 
@@ -55,8 +56,8 @@ const Navbar = () => {
                                 <a href="contact.html" className="nav-item nav-link">Contact</a>
                             </div>
                             <div className="navbar-nav ml-auto py-0">
-                                <a href className="nav-item nav-link">Login</a>
-                                <a href className="nav-item nav-link">Register</a>
+                                <Link to="/login" className="nav-item nav-link">Login</Link>
+                                <Link to="#" className="nav-item nav-link">Register</Link>
                             </div>
                         </div>
                     </nav>
