@@ -2,16 +2,15 @@ import React from 'react'
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { REG_EMAIL, REG_PASSWORD } from '../../constant/globalConstant';
 import { loginUserAction } from '../../redux/actions/authenticationActions';
 import "./style.css"
 
 const Login = () => {
     const dispatch = useDispatch();
-    const { register, formState: { errors }, handleSubmit } = useForm();
+    const { login, formState: { errors }, handleSubmit } = useForm();
 
     const userLogin = useSelector(state => state.login);
-
-    console.log("userLogin: ", userLogin);
 
     const onSubmit = (data) => {
         dispatch(loginUserAction(data));
@@ -29,27 +28,39 @@ const Login = () => {
                             <form method="post" onSubmit={handleSubmit(onSubmit)}>
                                 <div className="form-group first">
                                     <div className="form-label">
-                                        <label>Username</label>
+                                        <label>Email</label>
                                     </div>
-                                    <input type="text" className="form-control" placeholder="your-email@gmail.com" id="username" {...register("email", { required: true })} />
-                                    {errors.email?.type === 'required' && <div className="invalid text-left">
-                                        Please enter a message in the textarea.
+                                    <input type="text" className="form-control is-invalid" placeholder="your-email@gmail.com" id="email"
+                                        {...login('email', {
+                                            required: 'Please enter email',
+                                            pattern: {
+                                                value: REG_EMAIL,
+                                                message: 'Email is wrong format',
+                                            },
+                                        })}
+
+                                    />
+                                    {!!errors.email && <div className="invalid-feedback text-left">
+                                        {errors.email.message}
                                     </div>}
                                 </div>
                                 <div className="form-group last mb-3">
                                     <div className="form-label">
                                         <label>Password</label>
                                     </div>
-                                    <input type="password" className="form-control" placeholder="Your Password" id="password" {...register("password", { required: true })} />
-                                    {errors.password?.type === 'required' && <div className="invalid text-left">
-                                        Please enter a message in the textarea.
+                                    <input type="password" className="form-control is-invalid" placeholder="Your Password" id="password"
+                                        {...login("password", {
+                                            required: "Please enter password",
+                                        })} />
+                                    {!!errors.password && <div className="invalid-feedback text-left">
+                                        Password is required!
                                     </div>}
                                 </div>
                                 <div className="d-flex mb-5 align-items-center">
-                                    <span className="mr-auto"><Link to="#" className="forgot-pass">Register</Link></span>
-                                    <span className="ml-auto"><Link to="#" className="forgot-pass">Forgot Password</Link></span>
+                                    <span className="mr-auto"><Link to="/" className="forgot-pass">Back to home</Link></span>
+                                    <span className="ml-auto"><Link to="/register" className="forgot-pass">Register</Link></span>
                                 </div>
-                                <input type="submit" defaultValue="Log In" className="btn btn-block btn-primary" />
+                                <input type="submit" value="Log In" className="btn btn-block btn-primary" />
                             </form>
                         </div>
                     </div>

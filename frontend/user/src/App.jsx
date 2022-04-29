@@ -9,6 +9,7 @@ import Shop from './pages/shop'
 import ProductDetail from './pages/ProductDetail'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
+import Register from './pages/Register'
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
           <Route path='/shop' element={<Shop />} />
           <Route path='/product' element={<ProductDetail />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
         {headerAndFooterExclusionArray.indexOf(splitPathName[1]) < 0 && <Footer />}
