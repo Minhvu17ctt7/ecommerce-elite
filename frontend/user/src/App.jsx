@@ -15,7 +15,6 @@ function App() {
   const headerAndFooterExclusionArray = [
     'login',
     'register',
-    ''
   ];
 
   let splitPathName = location.pathname.split('/');

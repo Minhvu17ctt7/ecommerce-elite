@@ -1,13 +1,20 @@
 import React from 'react'
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { loginUserAction } from '../../redux/actions/authenticationActions';
 import "./style.css"
 
 const Login = () => {
+    const dispatch = useDispatch();
     const { register, formState: { errors }, handleSubmit } = useForm();
 
+    const userLogin = useSelector(state => state.login);
+
+    console.log("userLogin: ", userLogin);
+
     const onSubmit = (data) => {
-        
+        dispatch(loginUserAction(data));
     }
     return (
 
