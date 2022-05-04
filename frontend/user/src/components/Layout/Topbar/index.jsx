@@ -1,7 +1,10 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+
 
 const Header = () => {
+    const location = useLocation();
+    const listPathShowTab = ["/login", "/register"];
     return (
         <div className="container-fluid">
             <div className="row bg-secondary py-2 px-xl-5">
@@ -41,7 +44,7 @@ const Header = () => {
                     </Link>
                 </div>
                 <div className="col-lg-6 col-6 text-left">
-                    <form action>
+                    {listPathShowTab.indexOf(location.pathname) < 0 && (<form action>
                         <div className="input-group">
                             <input type="text" className="form-control" placeholder="Search for products" />
                             <div className="input-group-append">
@@ -50,17 +53,15 @@ const Header = () => {
                                 </span>
                             </div>
                         </div>
-                    </form>
+                    </form>)}
+
                 </div>
                 <div className="col-lg-3 col-6 text-right">
-                    <Link to="#" className="btn border">
-                        <i className="fas fa-heart text-primary" />
-                        <span className="badge">0</span>
-                    </Link>
-                    <Link to="#" className="btn border">
+                    {listPathShowTab.indexOf(location.pathname) < 0 && (<Link to="#" className="btn border">
                         <i className="fas fa-shopping-cart text-primary" />
                         <span className="badge">0</span>
-                    </Link>
+                    </Link>)}
+
                 </div>
             </div>
         </div>

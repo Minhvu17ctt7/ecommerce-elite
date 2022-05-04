@@ -20,10 +20,8 @@ public class UserRequestDto {
     private String email;
     @NotBlank(message = "Missing password")
     private String password;
-    @JsonProperty("first_name")
     @NotBlank(message = "Missing first name")
     private String firstName;
-    @JsonProperty("last_name")
     @NotBlank(message = "Missing last name")
     private String lastName;
     private String photo;

@@ -3,6 +3,8 @@ package com.example.ecommercenashtechbackend.controller.manage;
 import com.example.ecommercenashtechbackend.dto.request.ProductCreateRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.ProductUpdateRequestDto;
 import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.ResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
 import com.example.ecommercenashtechbackend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,36 +21,40 @@ public class ProductManageController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getListUserFirstPage() {
-        List<ProductResponseDto> listProducts = getListProductPagination(1, 4, "email", "asc", null, false).getBody();
-        return ResponseEntity.ok(listProducts);
+    public ResponseEntity<ResponseDto> getListUserFirstPage() {
+        ResponseDto<List<ProductResponseDto>> responseDto = getListProductPagination(1, 4, "email", "asc", null, false).getBody();
+        return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getListProductPagination(@PathVariable int pageNumber, @RequestParam int pageSize,
+    @GetMapping("/page")
+    public ResponseEntity<ResponseDto> getListProductPagination(@PathVariable("page") int pageNumber, @RequestParam int pageSize,
                                                                              @RequestParam String sortField,
                                                                              @RequestParam String sortName, @RequestParam String keyword,
                                                                              @RequestParam(value = "deleted", required = false) Boolean deleted) {
         deleted = deleted == null ? false : deleted;
         List<ProductResponseDto> listProducts = productService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword, deleted);
-        return ResponseEntity.ok(listProducts);
+        ResponseDto<List<ProductResponseDto>> responseDto = new ResponseDto<>(200, listProducts, "Get list user successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createProduct(@Validated @RequestBody ProductCreateRequestDto productCreateRequestDto) {
+    @PostMapping
+    public ResponseEntity<ResponseDto> createProduct(@Validated @RequestBody ProductCreateRequestDto productCreateRequestDto) {
         ProductResponseDto productReponseDto = productService.createProduct(productCreateRequestDto);
-        return ResponseEntity.ok(productReponseDto);
+        ResponseDto<ProductResponseDto> responseDto = new ResponseDto<>(200, productReponseDto, "Create user successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<ProductResponseDto> updateProduct(@Validated @RequestBody ProductUpdateRequestDto productUpdateRequestDto) {
+    @PutMapping
+    public ResponseEntity<ResponseDto> updateProduct(@Validated @RequestBody ProductUpdateRequestDto productUpdateRequestDto) {
         ProductResponseDto productResponseDto = productService.updateProduct(productUpdateRequestDto);
-        return ResponseEntity.ok(productResponseDto);
+        ResponseDto<ProductResponseDto> responseDto = new ResponseDto<>(200, productResponseDto, "Update user successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDto> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return ResponseEntity.ok("Product deleted successfully");
+        ResponseDto<Long> responseDto = new ResponseDto<>(200, id, "Delete user "+id+" successfully");
+        return ResponseEntity.ok(responseDto);
     }
 }

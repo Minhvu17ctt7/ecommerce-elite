@@ -2,6 +2,8 @@ package com.example.ecommercenashtechbackend.controller.manage;
 
 import com.example.ecommercenashtechbackend.dto.request.CategoryRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.CategoryUpdateRequestDto;
+import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.ResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
 import com.example.ecommercenashtechbackend.entity.Category;
 import com.example.ecommercenashtechbackend.exception.ExceptionResponse;
@@ -25,16 +27,17 @@ public class CategoryManageController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategories() {
+    public ResponseEntity<ResponseDto> getAllCategories() {
         return getAllCategoriesPagination(1, 4, "name", "asc", null);
     }
 
     @GetMapping("/{pageNumber}")
-    public ResponseEntity<List<Category>> getAllCategoriesPagination(@PathVariable int pageNumber, @RequestParam int pageSize,
+    public ResponseEntity<ResponseDto> getAllCategoriesPagination(@PathVariable int pageNumber, @RequestParam int pageSize,
                                                                      @RequestParam String sortField,
                                                                      @RequestParam String sortName, @RequestParam String keyword) {
         List<Category> listCategories = categoryService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword);
-        return ResponseEntity.ok(listCategories);
+        ResponseDto<List<Category>> responseDto = new ResponseDto<>(200, listCategories, "Get categories user successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "Create category by admin")
@@ -56,21 +59,24 @@ public class CategoryManageController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
     })
-    @PostMapping("/create")
-    public ResponseEntity<Category> createCategory(@RequestBody CategoryRequestDto categoryRequest) {
+    @PostMapping
+    public ResponseEntity<ResponseDto> createCategory(@RequestBody CategoryRequestDto categoryRequest) {
         Category categorySaved = categoryService.createCategory(categoryRequest);
-        return ResponseEntity.ok(categorySaved);
+        ResponseDto<Category> responseDto = new ResponseDto<>(200, categorySaved, "Create category successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Category> updateCategory(@RequestBody CategoryUpdateRequestDto categoryUpdateRequestDto) {
+    @PutMapping
+    public ResponseEntity<ResponseDto> updateCategory(@RequestBody CategoryUpdateRequestDto categoryUpdateRequestDto) {
         Category categorySaved = categoryService.updateCategory(categoryUpdateRequestDto);
-        return ResponseEntity.ok(categorySaved);
+        ResponseDto<Category> responseDto = new ResponseDto<>(200, categorySaved, "Update category successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteCategory(@PathVariable("id") Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDto> deleteCategory(@PathVariable("id") Long id) {
         categoryService.deleteCategory(id);
-        return ResponseEntity.ok("Category with id: " + id + " deleted");
+        ResponseDto<Long> responseDto = new ResponseDto<>(200, id, "Category with id: " + id + " deleted");
+        return ResponseEntity.ok(responseDto);
     }
 }
