@@ -1,22 +1,27 @@
 import React from 'react'
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { REG_EMAIL, REG_PASSWORD } from '../../constant/globalConstant';
 import { loginUserAction } from '../../redux/actions/authenticationActions';
+import 'react-toastify/dist/ReactToastify.css';
 import "./style.css"
+import toastr from 'toastr';
 
 const Login = () => {
     const dispatch = useDispatch();
-    const { login, formState: { errors }, handleSubmit } = useForm();
+    const navigation = useNavigate();
+    const { register, formState: { errors }, handleSubmit } = useForm();
 
-    const userLogin = useSelector(state => state.login);
+    const { isLoading, user, error, isLogin } = useSelector(state => state.login);
+    if (isLogin) {
+        navigation("/");
+    }
 
     const onSubmit = (data) => {
         dispatch(loginUserAction(data));
     }
     return (
-
         <div className="d-lg-flex half">
             <div className="bg order-1 order-md-2" style={{ backgroundImage: 'url("img/bg_1.jpg")' }} />
             <div className="contents order-2 order-md-1">
@@ -31,7 +36,7 @@ const Login = () => {
                                         <label>Email</label>
                                     </div>
                                     <input type="text" className="form-control is-invalid" placeholder="your-email@gmail.com" id="email"
-                                        {...login('email', {
+                                        {...register('email', {
                                             required: 'Please enter email',
                                             pattern: {
                                                 value: REG_EMAIL,
@@ -49,7 +54,7 @@ const Login = () => {
                                         <label>Password</label>
                                     </div>
                                     <input type="password" className="form-control is-invalid" placeholder="Your Password" id="password"
-                                        {...login("password", {
+                                        {...register("password", {
                                             required: "Please enter password",
                                         })} />
                                     {!!errors.password && <div className="invalid-feedback text-left">
@@ -61,6 +66,7 @@ const Login = () => {
                                     <span className="ml-auto"><Link to="/register" className="forgot-pass">Register</Link></span>
                                 </div>
                                 <input type="submit" value="Log In" className="btn btn-block btn-primary" />
+                                {error != null && (<p>{error.message}</p>)}
                             </form>
                         </div>
                     </div>

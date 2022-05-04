@@ -1,8 +1,14 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+    const navigation = useNavigate();
 
+    const isLogin = localStorage.getItem("isLogin") === 'true';
+    const logout = () => {
+        localStorage.setItem("isLogin", false);
+        navigation('/login', { replace: true });
+    }
     return (
         <div className="container-fluid mb-5">
             <div className="row border-top px-xl-5">
@@ -56,8 +62,11 @@ const Navbar = () => {
                                 <a href="contact.html" className="nav-item nav-link">Contact</a>
                             </div>
                             <div className="navbar-nav ml-auto py-0">
-                                <Link to="/login" className="nav-item nav-link">Login</Link>
-                                <Link to="#" className="nav-item nav-link">Register</Link>
+                                {isLogin && (<p onClick={() => logout()} className="nav-item nav-link">Logout</p>)}
+                                {!isLogin && (<><Link to="/login" className="nav-item nav-link">Login</Link>
+                                    <Link to="#" className="nav-item nav-link">Register</Link></>
+                                )}
+
                             </div>
                         </div>
                     </nav>

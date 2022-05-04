@@ -1,11 +1,11 @@
 import { put } from 'redux-saga/effects';
-import userApi from '../../api/userApi';
+import userApi from '../../api/authApi';
 
 import * as types from '../actions'
 
 export function* registerSaga(payload) {
   try {
-    const response = yield userApi.login(payload.user);
+    const response = yield userApi.register(payload.user);
     yield put({ type: types.REGISTER_USER_SUCCESS, response: response.data });
   } catch (error) {
     yield put({ type: types.REGISTER_USER_ERROR, error });
@@ -19,4 +19,4 @@ export function* loginSaga(payload) {
   } catch (error) {
     yield put({ type: types.LOGIN_USER_ERROR, error })
   }
-}
+}    

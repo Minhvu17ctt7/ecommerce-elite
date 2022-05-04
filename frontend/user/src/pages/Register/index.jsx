@@ -1,20 +1,26 @@
 import React from 'react'
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { REG_EMAIL, REG_PASSWORD } from '../../constant/globalConstant';
 import { registerUserAction } from '../../redux/actions/authenticationActions';
 import "./style.css"
 
 const Register = () => {
     const dispatch = useDispatch();
+    const navigation = useNavigate();
     const { register, formState: { errors }, handleSubmit, watch } = useForm();
 
-    const userRegister = useSelector(state => state.Register);
+    const { isLoading, error, user } = useSelector(state => state.register);
+
+    if (user) {
+        navigation("/login")
+    }
 
     const onSubmit = (data) => {
         dispatch(registerUserAction(data));
     }
+
     return (
 
         <div className="d-lg-flex half">
@@ -73,7 +79,7 @@ const Register = () => {
                                     </div>}
                                 </div>
                                 <div className="form-row">
-                                    <div class="col-md-6 mb-3">
+                                    <div className="col-md-6 mb-3">
                                         <div className="form-label">
                                             <label>First name</label>
                                         </div>
@@ -83,7 +89,7 @@ const Register = () => {
                                             {errors.firstName.message}
                                         </div>}
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div className="col-md-6 mb-3">
                                         <div className="form-label">
                                             <label>Last name</label>
                                         </div>
@@ -99,7 +105,7 @@ const Register = () => {
                                     <span className="mr-auto"><Link to="/" className="forgot-pass">Back home page</Link></span>
                                     <span className="ml-auto"><Link to="/login" className="forgot-pass">Login</Link></span>
                                 </div>
-
+                                {error && (<p>{error.message}</p>)}
                             </form>
                         </div>
                     </div>

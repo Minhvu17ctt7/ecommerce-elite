@@ -13,18 +13,10 @@ import Register from './pages/Register'
 
 function App() {
 
-  const headerAndFooterExclusionArray = [
-    'login',
-    'register',
-  ];
-
-  let splitPathName = location.pathname.split('/');
-
   return (
     <BrowserRouter>
       <div className="App">
-        {headerAndFooterExclusionArray.indexOf(splitPathName[1]) < 0 && <Topbar />}
-
+        <Topbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path='/shop' element={<Shop />} />
@@ -33,7 +25,7 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
-        {headerAndFooterExclusionArray.indexOf(splitPathName[1]) < 0 && <Footer />}
+        <Footer />
       </div>
     </BrowserRouter>
   )
