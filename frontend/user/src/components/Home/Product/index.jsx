@@ -1,7 +1,8 @@
 import React from 'react'
 import CardProduct from '../../CardProduct';
 
-const Product = ({ products }) => {
+const Product = ({ productPagination }) => {
+
     return (
 
         <div className="container-fluid pt-5">
@@ -10,7 +11,7 @@ const Product = ({ products }) => {
             </div>
             <div className="row px-xl-5 pb-3">
                 {
-                    products.map(product => <CardProduct product={product} />)
+                    productPagination && productPagination?.products.map(product => <CardProduct key={product.id} product={product} />)
                 }
             </div>
         </div>

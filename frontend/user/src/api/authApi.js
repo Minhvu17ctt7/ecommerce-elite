@@ -13,7 +13,6 @@ const authApi = {
     },
     register(data) {
         const url = '/register';
-        console.log("data: ", data);
         return axiosClient.post(url, data);
     }
 }

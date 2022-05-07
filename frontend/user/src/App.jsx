@@ -4,7 +4,7 @@ import './App.css'
 import Home from './pages/Home'
 import Footer from './components/Layout/Footer'
 import Topbar from './components/Layout/Topbar'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Shop from './pages/shop'
 import ProductDetail from './pages/ProductDetail'
 import Login from './pages/Login'
@@ -19,8 +19,8 @@ function App() {
         <Topbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path='/shop' element={<Shop />} />
-          <Route path='/product' element={<ProductDetail />} />
+          <Route path='/shop/:page' element={<Shop />} />
+          <Route path='/products/:id/:pageReview' element={<ProductDetail />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='*' element={<NotFound />} />

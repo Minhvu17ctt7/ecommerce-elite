@@ -1,6 +1,38 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form';
+import { Link, useParams } from 'react-router-dom';
+import { Rating } from 'react-simple-star-rating';
+import reviewApi from '../../../../api/reviewApi';
+import Pagination from '../../../Pagination';
 
-const Description = () => {
+const Description = ({ product, reviews }) => {
+    const [rating, setRating] = useState(0);
+    const [invalidRating, setInvalidRating] = useState(false);
+    const { pageReview } = useParams();
+
+
+    const { register, formState: { errors }, handleSubmit, watch } = useForm();
+
+    const handleRating = (rate) => {
+        setRating(rate)
+        setInvalidRating(false);
+    }
+
+    const onSubmit = async (data) => {
+        const dataReview = {
+            "productId": product.id,
+            "rating": rating / 20,
+            "comment": data.review
+        }
+        if (rating / 20 === 0) {
+            setInvalidRating(true);
+        } else {
+            await reviewApi.createReview(dataReview);
+            window.location.reload(false);
+        }
+    }
+
+    const isLogin = localStorage.getItem("isLogin") === 'true';
     return (
 
         <div className="row px-xl-5">
@@ -13,8 +45,7 @@ const Description = () => {
                 <div className="tab-content">
                     <div className="tab-pane fade show active" id="tab-pane-1">
                         <h4 className="mb-3">Product Description</h4>
-                        <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.</p>
-                        <p>Dolore magna est eirmod sanctus dolor, amet diam et eirmod et ipsum. Amet dolore tempor consetetur sed lorem dolor sit lorem tempor. Gubergren amet amet labore sadipscing clita clita diam clita. Sea amet et sed ipsum lorem elitr et, amet et labore voluptua sit rebum. Ea erat sed et diam takimata sed justo. Magna takimata justo et amet magna et.</p>
+                        <p>{product?.fullDescription}</p>
                     </div>
                     <div className="tab-pane fade" id="tab-pane-2">
                         <h4 className="mb-3">Additional Information</h4>
@@ -57,52 +88,41 @@ const Description = () => {
                     <div className="tab-pane fade" id="tab-pane-3">
                         <div className="row">
                             <div className="col-md-6">
-                                <h4 className="mb-4">1 review for "Colorful Stylish Shirt"</h4>
-                                <div className="media mb-4">
-                                    <img src="img/user.jpg" alt="Image" className="img-fluid mr-3 mt-1" style={{ width: '45px' }} />
-                                    <div className="media-body">
-                                        <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
-                                        <div className="text-primary mb-2">
-                                            <i className="fas fa-star" />
-                                            <i className="fas fa-star" />
-                                            <i className="fas fa-star" />
-                                            <i className="fas fa-star-half-alt" />
-                                            <i className="far fa-star" />
+                                <h4 className="mb-4">{product?.reviews.length} review for "Colorful Stylish Shirt"</h4>
+                                {reviews.map(review => (
+                                    <div className="media mb-4">
+                                        <img src="img/user.jpg" alt="Image" className="img-fluid mr-3 mt-1" style={{ width: '45px' }} />
+                                        <div className="media-body">
+                                            <h6>{review.user.firstName} {review.user.lastName}<small> - <i>01 Jan 2045</i></small></h6>
+                                            <div className="text-primary mb-2">
+                                                <Rating readonly ratingValue={review.rating * 20} />
+                                            </div>
+                                            <p>{review.comment}</p>
                                         </div>
-                                        <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
                                     </div>
-                                </div>
+                                ))}
+                                <Pagination url={"/products/"} totalPage={[1, 2, 3]} currentPage={2} />
                             </div>
                             <div className="col-md-6">
-                                <h4 className="mb-4">Leave a review</h4>
-                                <small>Your email address will not be published. Required fields are marked *</small>
-                                <div className="d-flex my-3">
-                                    <p className="mb-0 mr-2">Your Rating * :</p>
-                                    <div className="text-primary">
-                                        <i className="far fa-star" />
-                                        <i className="far fa-star" />
-                                        <i className="far fa-star" />
-                                        <i className="far fa-star" />
-                                        <i className="far fa-star" />
+                                {isLogin ? (<> <h4 className="mb-4">Leave a review</h4>
+                                    <div className="d-flex my-3">
+                                        <p className="mb-0 mr-2 d-flex align-items-center">Your Rating * :</p>
+                                        <Rating onClick={handleRating} ratingValue={rating} />
                                     </div>
-                                </div>
-                                <form>
-                                    <div className="form-group">
-                                        <label htmlFor="message">Your Review *</label>
-                                        <textarea id="message" cols={30} rows={5} className="form-control" defaultValue={""} />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="name">Your Name *</label>
-                                        <input type="text" className="form-control" id="name" />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="email">Your Email *</label>
-                                        <input type="email" className="form-control" id="email" />
-                                    </div>
-                                    <div className="form-group mb-0">
-                                        <input type="submit" defaultValue="Leave Your Review" className="btn btn-primary px-3" />
-                                    </div>
-                                </form>
+                                    {invalidRating && (<p>Please rating!</p>)}
+                                    <form onSubmit={handleSubmit(onSubmit)}>
+                                        <div className="form-group">
+                                            <label htmlFor="message">Your Review *</label>
+                                            <textarea id="message" cols={30} rows={5} className={errors.review ? "form-control is-invalid" : "form-control"} defaultValue={""}
+                                                {...register("review", { required: "Review is required!" })} />
+                                            {!!errors.review && <div className="invalid-feedback text-left">
+                                                {errors.review.message}</div>}
+                                        </div>
+                                        <div className="form-group mb-0">
+                                            <input type="submit" defaultValue="Leave Your Review" className="btn btn-primary px-3" />
+                                        </div>
+                                    </form></>
+                                ) : (<Link to="/login"><input type="button" value="Login to review" className="btn btn-primary px-3" /></Link>)}
                             </div>
                         </div>
                     </div>

@@ -1,22 +1,19 @@
 import React from 'react'
+import { Rating } from 'react-simple-star-rating';
 
-const Option = () => {
+const Option = ({ product }) => {
     return (
 
         <div className="col-lg-7 pb-5">
-            <h3 className="font-weight-semi-bold">Colorful Stylish Shirt</h3>
+            <h3 className="font-weight-semi-bold">{product?.name}</h3>
             <div className="d-flex mb-3">
                 <div className="text-primary mr-2">
-                    <small className="fas fa-star" />
-                    <small className="fas fa-star" />
-                    <small className="fas fa-star" />
-                    <small className="fas fa-star-half-alt" />
-                    <small className="far fa-star" />
+                    <Rating readonly ratingValue={product?.averageRating * 20} />
                 </div>
-                <small className="pt-1">(50 Reviews)</small>
+                <small className="pt-1">{product?.reviews.length} review</small>
             </div>
             <h3 className="font-weight-semi-bold mb-4">$150.00</h3>
-            <p className="mb-4">Volup erat ipsum diam elitr rebum et dolor. Est nonumy elitr erat diam stet sit clita ea. Sanc invidunt ipsum et, labore clita lorem magna lorem ut. Erat lorem duo dolor no sea nonumy. Accus labore stet, est lorem sit diam sea et justo, amet at lorem et eirmod ipsum diam et rebum kasd rebum.</p>
+            <p className="mb-4">{product?.shortDescription}</p>
             <div className="d-flex mb-3">
                 <p className="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
                 <form>
@@ -39,31 +36,6 @@ const Option = () => {
                     <div className="custom-control custom-radio custom-control-inline">
                         <input type="radio" className="custom-control-input" id="size-5" name="size" />
                         <label className="custom-control-label" htmlFor="size-5">XL</label>
-                    </div>
-                </form>
-            </div>
-            <div className="d-flex mb-4">
-                <p className="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
-                <form>
-                    <div className="custom-control custom-radio custom-control-inline">
-                        <input type="radio" className="custom-control-input" id="color-1" name="color" />
-                        <label className="custom-control-label" htmlFor="color-1">Black</label>
-                    </div>
-                    <div className="custom-control custom-radio custom-control-inline">
-                        <input type="radio" className="custom-control-input" id="color-2" name="color" />
-                        <label className="custom-control-label" htmlFor="color-2">White</label>
-                    </div>
-                    <div className="custom-control custom-radio custom-control-inline">
-                        <input type="radio" className="custom-control-input" id="color-3" name="color" />
-                        <label className="custom-control-label" htmlFor="color-3">Red</label>
-                    </div>
-                    <div className="custom-control custom-radio custom-control-inline">
-                        <input type="radio" className="custom-control-input" id="color-4" name="color" />
-                        <label className="custom-control-label" htmlFor="color-4">Blue</label>
-                    </div>
-                    <div className="custom-control custom-radio custom-control-inline">
-                        <input type="radio" className="custom-control-input" id="color-5" name="color" />
-                        <label className="custom-control-label" htmlFor="color-5">Green</label>
                     </div>
                 </form>
             </div>

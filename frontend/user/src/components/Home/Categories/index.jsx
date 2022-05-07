@@ -11,9 +11,9 @@ const Categories = ({ categories }) => {
                             <div className="cat-item d-flex flex-column border mb-4" style={{ padding: '30px' }}>
                                 <p className="text-right">{category.quantity} Products</p>
                                 <a href className="cat-img position-relative overflow-hidden mb-3">
-                                    <img className="img-fluid" src={category.photo} alt="" />
+                                    <img className="img-fluid" src={category.image} alt="" />
                                 </a>
-                                <h5 className="font-weight-semi-bold m-0">{categories.name}</h5>
+                                <h5 className="font-weight-semi-bold m-0">{category.name}</h5>
                             </div>
                         </div>
                     ))

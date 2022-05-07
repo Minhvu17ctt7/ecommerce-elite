@@ -1,18 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import categoryApi from '../../api/categoryApi'
+import productApi from '../../api/productApi'
 import Categories from '../../components/Home/Categories'
 import Featured from '../../components/Home/Featured'
 import Navbar from '../../components/Home/Navbar'
 import Product from '../../components/Home/Product'
-import Vendor from '../../components/Home/Vendor'
-import { fakeDataCategory, fakeDataProduct } from '../../constant/globalConstant'
 
 const Home = () => {
+    const [categories, setCategories] = useState([]);
+    const [products, setProducts] = useState();
+    useEffect(() => {
+        (async () => {
+            const categoriesResponse = await categoryApi.getAllcategory();
+            const productsResponse = await productApi.getAllProduct();
+            setProducts(productsResponse.data);
+            setCategories(categoriesResponse.data);
+        })()
+    }, []);
+
     return (
         <>
-            <Navbar />
+            <Navbar categories={categories} />
             <Featured />
-            <Categories categories={fakeDataCategory} />
-            <Product products={fakeDataProduct} />
+            <Categories categories={categories} />
+            <Product productPagination={products} />
         </>
     )
 }
