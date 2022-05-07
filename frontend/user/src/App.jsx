@@ -10,12 +10,13 @@ import ProductDetail from './pages/ProductDetail'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import Register from './pages/Register'
+import ToastComponent from './components/Toast'
 
 function App() {
-
   return (
     <BrowserRouter>
       <div className="App">
+        <ToastComponent />
         <Topbar />
         <Routes>
           <Route path="/" element={<Home />} />

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import queryString from 'query-string';
-import toastr from 'toastr';
 
 const BASE_URL = 'http://localhost:8080/api';
 

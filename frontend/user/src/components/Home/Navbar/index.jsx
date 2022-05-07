@@ -13,7 +13,7 @@ const Navbar = ({ categories }) => {
         <div className="container-fluid mb-5">
             <div className="row border-top px-xl-5">
                 <div className="col-lg-3 d-none d-lg-block">
-                    <a href="true" className="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100" data-toggle="collapse" href="#navbar-vertical" style={{ height: '65px', marginTop: '-1px', padding: '0 30px' }}>
+                    <a href="true" className="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100" data-toggle="collapse" style={{ height: '65px', marginTop: '-1px', padding: '0 30px' }}>
                         <h6 className="m-0">Categories</h6>
                         <i className="fa fa-angle-down text-dark" />
                     </a>

@@ -4,9 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { REG_EMAIL, REG_PASSWORD } from '../../constant/globalConstant';
 import { loginUserAction } from '../../redux/actions/authenticationActions';
-import 'react-toastify/dist/ReactToastify.css';
 import "./style.css"
-import toastr from 'toastr';
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -21,6 +19,7 @@ const Login = () => {
     const onSubmit = (data) => {
         dispatch(loginUserAction(data));
     }
+
     return (
         <div className="d-lg-flex half">
             <div className="bg order-1 order-md-2" style={{ backgroundImage: 'url("img/bg_1.jpg")' }} />
@@ -72,6 +71,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+           
         </div>
     );
 }
