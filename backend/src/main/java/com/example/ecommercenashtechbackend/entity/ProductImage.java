@@ -20,7 +20,7 @@ public class ProductImage extends Auditable<String>{
     private Long id;
     private String image;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @ToString.Exclude
     @JsonIgnore

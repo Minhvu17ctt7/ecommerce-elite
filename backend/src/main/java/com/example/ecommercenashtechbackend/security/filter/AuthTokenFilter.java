@@ -33,12 +33,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException,
             IOException {
         String path = request.getRequestURI();
-        List<String> acceptURL = List.of("/api/api-docs", "/api/login", "/api/api-docs-ui", "/api/register", "/api/swagger-ui", "/api/refresh-token");
+        List<String> acceptURL = List.of("/api/admin", "/reviews");
         boolean isAcceptURL = checkAcceptURL(acceptURL, path);
         ExceptionResponse exceptionResponse = ExceptionResponse.builder().timestamp(new Date())
                 .detail(request.getRequestURI()).status(HttpStatus.FORBIDDEN.value()).build();
         boolean hasError = false;
-        if (!isAcceptURL) {
+        if (isAcceptURL) {
             String jwt = parseJwt(request);
             if (jwt != null) {
                 try {

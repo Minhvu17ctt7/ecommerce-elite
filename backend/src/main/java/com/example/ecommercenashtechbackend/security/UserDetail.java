@@ -2,6 +2,7 @@ package com.example.ecommercenashtechbackend.security;
 
 import com.example.ecommercenashtechbackend.entity.Role;
 import com.example.ecommercenashtechbackend.entity.User;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,8 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 public class UserDetail implements UserDetails {
 
     private User user;

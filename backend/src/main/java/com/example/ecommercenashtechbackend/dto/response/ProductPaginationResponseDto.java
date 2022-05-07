@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductPaginationResponse {
-    private ProductResponseDto productResponseDto;
+public class ProductPaginationResponseDto {
+    private List<ProductResponseDto> products;
     private int totalPage;
-    private int currentPage;
     private int sizePage;
 }

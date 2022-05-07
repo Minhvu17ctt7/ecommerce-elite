@@ -2,6 +2,7 @@ package com.example.ecommercenashtechbackend.controller.manage;
 
 import com.example.ecommercenashtechbackend.dto.request.ProductCreateRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.ProductUpdateRequestDto;
+import com.example.ecommercenashtechbackend.dto.response.ProductPaginationResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.ResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
@@ -22,7 +23,7 @@ public class ProductManageController {
 
     @GetMapping
     public ResponseEntity<ResponseDto> getListUserFirstPage() {
-        ResponseDto<List<ProductResponseDto>> responseDto = getListProductPagination(1, 4, "email", "asc", null, false).getBody();
+        ResponseDto<ProductPaginationResponseDto> responseDto = getListProductPagination(1, 4, "name", "asc", null, false).getBody();
         return ResponseEntity.ok(responseDto);
     }
 
@@ -32,8 +33,8 @@ public class ProductManageController {
                                                                              @RequestParam String sortName, @RequestParam String keyword,
                                                                              @RequestParam(value = "deleted", required = false) Boolean deleted) {
         deleted = deleted == null ? false : deleted;
-        List<ProductResponseDto> listProducts = productService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword, deleted);
-        ResponseDto<List<ProductResponseDto>> responseDto = new ResponseDto<>(200, listProducts, "Get list user successfully");
+        ProductPaginationResponseDto listProducts = productService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword, deleted);
+        ResponseDto<ProductPaginationResponseDto> responseDto = new ResponseDto<>(200, listProducts, "Get list user successfully");
         return ResponseEntity.ok(responseDto);
     }
 

@@ -2,10 +2,12 @@ package com.example.ecommercenashtechbackend.service.impl;
 
 import com.example.ecommercenashtechbackend.dto.request.CategoryRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.CategoryUpdateRequestDto;
+import com.example.ecommercenashtechbackend.dto.response.CategoryResponseDto;
 import com.example.ecommercenashtechbackend.entity.Category;
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.repository.CategoryRepository;
 import com.example.ecommercenashtechbackend.service.CategoryService;
+import com.example.ecommercenashtechbackend.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
@@ -23,10 +25,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+    private final Util util;
 
     @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryResponseDto> getAllCategories() {
+        List<Category> listCategory =  categoryRepository.findAll();
+        return util.mapList(listCategory, CategoryResponseDto.class);
+    }
+
+    @Override
+    public CategoryResponseDto findCategoryById(Long id) {
+        Optional<Category> categoryOptional = categoryRepository.findById(id);
+        if(categoryOptional.isEmpty()) {
+            throw new NotFoundException("Not found category");
+        }
+        return modelMapper.map(categoryOptional.get(), CategoryResponseDto.class);
     }
 
     @Override

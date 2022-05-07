@@ -1,5 +1,6 @@
 package com.example.ecommercenashtechbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,13 +37,15 @@ public class Product extends Auditable<String> {
 
     private float price;
     @Column(name = "discount_percent")
-    private float discountPercent;
+    private Float discountPercent;
     @Column(name = "main_image")
     private String mainImage;
     private boolean deleted = false;
+    private float averageRating = 0;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<ProductImage> productImages = new HashSet<>();

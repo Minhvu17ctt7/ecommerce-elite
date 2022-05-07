@@ -2,6 +2,7 @@ package com.example.ecommercenashtechbackend.service.impl;
 
 import com.example.ecommercenashtechbackend.dto.request.ProductCreateRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.ProductUpdateRequestDto;
+import com.example.ecommercenashtechbackend.dto.response.ProductPaginationResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
 import com.example.ecommercenashtechbackend.entity.Category;
 import com.example.ecommercenashtechbackend.entity.Product;
@@ -12,6 +13,7 @@ import com.example.ecommercenashtechbackend.service.ProductService;
 import com.example.ecommercenashtechbackend.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,6 +36,15 @@ public class ProductServiceImpl implements ProductService {
     private final Util util;
 
     @Override
+    public ProductResponseDto getProductDetail(Long id) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if(!productOptional.isPresent()) {
+            throw new NotFoundException("Not found product witd id: "+ id);
+        }
+        return modelMapper.map(productOptional.get(), ProductResponseDto.class);
+    }
+
+    @Override
     public ProductResponseDto createProduct(ProductCreateRequestDto productCreateRequestDto) {
         Optional<Product> productOpt = productRepository.findByName(productCreateRequestDto.getName());
         if (!productOpt.isPresent()) {
@@ -44,18 +55,35 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
+//    @Override
+//    public List<ProductResponseDto> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted) {
+//        Sort sort = Sort.by(sortField);
+//        sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
+//        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
+//        List<Product> productList = new ArrayList<>();
+//        if (keywork != null) {
+//            productList = productRepository.findAll(keywork, deleted, pageable).getContent();
+//        } else {
+//            productList = productRepository.findAll(pageable).getContent();
+//        }
+//        List<ProductResponseDto> result =  util.mapList(productList, ProductResponseDto.class);
+//        return result;
+//    }
+
     @Override
-    public List<ProductResponseDto> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted) {
+    public ProductPaginationResponseDto getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted) {
         Sort sort = Sort.by(sortField);
         sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
-        List<Product> productList = new ArrayList<>();
+        Page<Product> pageProductList;
         if (keywork != null) {
-            productList = productRepository.findAll(keywork, deleted, pageable).getContent();
+            pageProductList = productRepository.findAll(keywork, deleted, pageable);
         } else {
-            productList = productRepository.findAll(pageable).getContent();
+            pageProductList = productRepository.findAll(pageable);
         }
-        return util.mapList(productList, ProductResponseDto.class);
+        List<ProductResponseDto> productResponseDtoList =  util.mapList(pageProductList.getContent(), ProductResponseDto.class);
+        ProductPaginationResponseDto result = new ProductPaginationResponseDto(productResponseDtoList, pageProductList.getTotalPages(), 8);
+        return result;
     }
 
     @Override

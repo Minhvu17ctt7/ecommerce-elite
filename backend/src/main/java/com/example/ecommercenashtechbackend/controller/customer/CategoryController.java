@@ -1,5 +1,7 @@
 package com.example.ecommercenashtechbackend.controller.customer;
 
+import com.example.ecommercenashtechbackend.dto.response.CategoryResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.ResponseDto;
 import com.example.ecommercenashtechbackend.entity.Category;
 import com.example.ecommercenashtechbackend.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -15,17 +17,18 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-//    @GetMapping
-//    public ResponseEntity<List<Category>> getAllCategories() {
-//        return categoryService.getAllCategories();
-//    }
+    @GetMapping
+    public ResponseEntity<ResponseDto> getAllCategories() {
+        List<CategoryResponseDto> listCategories = categoryService.getAllCategories();
+        ResponseDto<List<CategoryResponseDto>> responseDto = new ResponseDto<>(200, listCategories, "Get category user successfully");
+        return ResponseEntity.ok(responseDto);
+    }
 
-    @GetMapping("/{pageNumber}")
-    public ResponseEntity<List<Category>> getAllCategoriesPagination(@PathVariable int pageNumber, @RequestParam int pageSize,
-                                                                     @RequestParam String sortField,
-                                                                     @RequestParam String sortName, @RequestParam String keyword) {
-        List<Category> listCategories = categoryService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword);
-        return ResponseEntity.ok(listCategories);
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDto> getCategoryDetail(@PathVariable Long id) {
+        CategoryResponseDto category = categoryService.findCategoryById(id);
+        ResponseDto<CategoryResponseDto> responseDto = new ResponseDto<>(200, category, "Get category successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
 }

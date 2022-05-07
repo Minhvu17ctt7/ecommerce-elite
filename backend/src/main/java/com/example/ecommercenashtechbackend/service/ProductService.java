@@ -2,14 +2,17 @@ package com.example.ecommercenashtechbackend.service;
 
 import com.example.ecommercenashtechbackend.dto.request.ProductCreateRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.ProductUpdateRequestDto;
+import com.example.ecommercenashtechbackend.dto.response.ProductPaginationResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
 
 import java.util.List;
 
 public interface ProductService {
+    ProductResponseDto getProductDetail(Long id);
+
     ProductResponseDto createProduct(ProductCreateRequestDto productCreateRequestDto);
 
-    List<ProductResponseDto> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted);
+    ProductPaginationResponseDto getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted);
 
     ProductResponseDto updateProduct(ProductUpdateRequestDto productUpdateRequestDto);
 

@@ -6,6 +6,7 @@ import com.example.ecommercenashtechbackend.entity.Category;
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.repository.CategoryRepository;
 import com.example.ecommercenashtechbackend.service.CategoryService;
+import com.example.ecommercenashtechbackend.util.Util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,6 +25,7 @@ public class CategoryServiceImplTest {
     private Category categoryParent;
     private CategoryRepository categoryRepository;
     private ModelMapper modelMapper;
+    private Util util;
     private CategoryUpdateRequestDto categoryUpdateRequestDto;
     private CategoryRequestDto categoryRequestDto;
 
@@ -31,7 +33,8 @@ public class CategoryServiceImplTest {
     public void setUp() {
         categoryRepository = Mockito.mock(CategoryRepository.class);
         modelMapper = Mockito.mock(ModelMapper.class);
-        categoryService = new CategoryServiceImpl(categoryRepository, modelMapper);
+        util = Mockito.mock(Util.class);
+        categoryService = new CategoryServiceImpl(categoryRepository, modelMapper, util);
         categoryInital = Mockito.mock(Category.class);
         categoryParent = Mockito.mock(Category.class);
         categoryUpdateRequestDto = Mockito.mock(CategoryUpdateRequestDto.class);
