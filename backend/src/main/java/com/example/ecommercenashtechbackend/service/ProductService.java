@@ -14,6 +14,8 @@ public interface ProductService {
 
     ProductPaginationResponseDto getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted);
 
+    ProductPaginationResponseDto getAllCategoriesPaginationBySpecification(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted);
+
     ProductResponseDto updateProduct(ProductUpdateRequestDto productUpdateRequestDto);
 
     void deleteProduct(Long id);

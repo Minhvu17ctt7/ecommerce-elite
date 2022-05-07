@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -81,6 +82,18 @@ public class ProductServiceImpl implements ProductService {
         } else {
             pageProductList = productRepository.findAll(pageable);
         }
+        List<ProductResponseDto> productResponseDtoList =  util.mapList(pageProductList.getContent(), ProductResponseDto.class);
+        ProductPaginationResponseDto result = new ProductPaginationResponseDto(productResponseDtoList, pageProductList.getTotalPages(), 8);
+        return result;
+    }
+
+    @Override
+    public ProductPaginationResponseDto getAllCategoriesPaginationBySpecification(int pageNumber, int pageSize, String sortField, String sortName, String search, boolean deleted) {
+        Sort sort = Sort.by(sortField);
+        sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
+        Specification<Product> spec = util.buildProductSpecifications(search);
+        Page<Product> pageProductList = productRepository.findAll(spec, pageable);
         List<ProductResponseDto> productResponseDtoList =  util.mapList(pageProductList.getContent(), ProductResponseDto.class);
         ProductPaginationResponseDto result = new ProductPaginationResponseDto(productResponseDtoList, pageProductList.getTotalPages(), 8);
         return result;
