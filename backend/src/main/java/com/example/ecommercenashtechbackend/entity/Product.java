@@ -27,24 +27,19 @@ public class Product extends Auditable<String> {
     private String name;
 
     private String alias;
-    @Column(name = "short_description")
     private String shortDescription;
-    @Column(name = "full_description")
     private String fullDescription;
 
-    @Column(name = "in_stock")
     private Long quantity;
 
     private float price;
-    @Column(name = "discount_percent")
     private Float discountPercent;
-    @Column(name = "main_image")
     private String mainImage;
     private boolean deleted = false;
     private float averageRating = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "categoryId")
     @JsonIgnore
     private Category category;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

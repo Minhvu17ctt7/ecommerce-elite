@@ -23,11 +23,11 @@ public class Review extends Auditable<String>{
     private int rating;
 
     @ManyToOne
-    @JoinColumn(name ="product_id")
+    @JoinColumn(name ="productId")
     @JsonIgnore
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name ="user_id")
+    @JoinColumn(name ="userId")
     private User user;
 }

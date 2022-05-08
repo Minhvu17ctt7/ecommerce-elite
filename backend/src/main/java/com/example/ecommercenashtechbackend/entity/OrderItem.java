@@ -21,11 +21,11 @@ public class OrderItem extends Auditable<String>{
     private double name;
 
     @OneToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "productId")
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "orderId")
     private Order order;
 }
 

@@ -27,6 +27,6 @@ public class Cart extends Auditable<String>{
     private Set<CartItem> cartItems = new HashSet<>();
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 }

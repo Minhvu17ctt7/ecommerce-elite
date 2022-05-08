@@ -37,7 +37,7 @@ public class Order extends Auditable<String>{
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

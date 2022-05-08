@@ -18,6 +18,5 @@ public class CategoryRequestDto {
     private String image;
     @NotBlank(message = "Description is required")
     private String description;
-    @JsonProperty("parent_id")
     private Long parentId;
 }

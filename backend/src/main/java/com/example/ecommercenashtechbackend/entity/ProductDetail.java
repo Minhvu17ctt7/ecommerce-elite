@@ -21,7 +21,7 @@ public class ProductDetail extends Auditable<String>{
     private String value;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "productId")
     @JsonIgnore
     private Product product;
 

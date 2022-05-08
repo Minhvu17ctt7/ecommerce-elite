@@ -12,6 +12,5 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class RefreshTokenRequestDto {
     @NotBlank(message = "Refresh token is required")
-    @JsonProperty("refresh_token")
     String refreshToken;
 }

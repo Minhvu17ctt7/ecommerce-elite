@@ -21,11 +21,11 @@ public class CartItem extends Auditable<String>{
     private int quantity;
 
     @OneToOne
-    @JoinColumn(name ="category_id")
+    @JoinColumn(name ="categoryId")
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "cart_id")
+    @JoinColumn(name = "cartId")
     private Cart cart;
 
 }

@@ -17,31 +17,28 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping
-    public ResponseEntity<ResponseDto> getListUserFirstPage() {
-        ResponseDto<ProductPaginationResponseDto> responseDto = getListProductPagination(1, 4, "name", "asc", null).getBody();
-        return ResponseEntity.ok(responseDto);
-    }
+//    @GetMapping
+//    public ResponseEntity<ResponseDto> getListUserFirstPage() {
+//        ResponseDto<ProductPaginationResponseDto> responseDto = getListProductPagination(1, 4, "name", "asc", null).getBody();
+//        return ResponseEntity.ok(responseDto);
+//    }
+
+//    @GetMapping("/page/{page}")
+//    public ResponseEntity<ResponseDto> getListProductPagination(@PathVariable("page") int pageNumber, @RequestParam(required = false) int pageSize,
+//                                                                @RequestParam(required = false) String sortField,
+//                                                                @RequestParam(required = false) String sortName, @RequestParam(required = false) String keyword
+//                                                               ) {
+//        ProductPaginationResponseDto listProducts = productService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword, false);
+//        ResponseDto<ProductPaginationResponseDto> responseDto = new ResponseDto<>(200, listProducts, "Get list product successfully");
+//        return ResponseEntity.ok(responseDto);
+//    }
 
     @GetMapping("/page/{page}")
-    public ResponseEntity<ResponseDto> getListProductPagination(@PathVariable("page") int pageNumber, @RequestParam(required = false) int pageSize,
-                                                                @RequestParam(required = false) String sortField,
-                                                                @RequestParam(required = false) String sortName, @RequestParam(required = false) String keyword
-                                                               ) {
-
-        ProductPaginationResponseDto listProducts = productService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword, false);
-        ResponseDto<ProductPaginationResponseDto> responseDto = new ResponseDto<>(200, listProducts, "Get list product successfully");
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @GetMapping("/page/{page}/specification")
     public ResponseEntity<ResponseDto> getListProductPaginationBySpecification(@PathVariable("page") int pageNumber, @RequestParam(required = false) int pageSize,
                                                                 @RequestParam(required = false) String sortField,
                                                                 @RequestParam(required = false) String sortName, @RequestParam(required = false) String search
                                                                ) {
         ProductPaginationResponseDto listProducts = productService.getAllCategoriesPaginationBySpecification(pageNumber, pageSize, sortField, sortName, search, false);
-
-
         ResponseDto<ProductPaginationResponseDto> responseDto = new ResponseDto<>(200, listProducts, "Get list product successfully");
         return ResponseEntity.ok(responseDto);
     }

@@ -13,7 +13,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "Categories")
 public class Category extends Auditable<String> {
 
     @Id
@@ -26,7 +25,7 @@ public class Category extends Auditable<String> {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "parentId")
     private Category parent;
 
     @OneToMany(mappedBy = "parent")

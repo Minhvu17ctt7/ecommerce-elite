@@ -15,9 +15,7 @@ public class UserUpdateRequestDto {
 
     @NotNull(message = "Id is required")
     private Long id;
-    @JsonProperty("first_name")
     private String firstName;
-    @JsonProperty("last_name")
     private String lastName;
     private String photo;
     private String role;

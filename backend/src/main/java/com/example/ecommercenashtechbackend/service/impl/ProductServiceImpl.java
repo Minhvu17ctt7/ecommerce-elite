@@ -9,6 +9,8 @@ import com.example.ecommercenashtechbackend.entity.Product;
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.repository.CategoryRepository;
 import com.example.ecommercenashtechbackend.repository.ProductRepository;
+import com.example.ecommercenashtechbackend.repository.specification.ProductSpecificationsBuilder;
+import com.example.ecommercenashtechbackend.repository.specification.SearchCriteria;
 import com.example.ecommercenashtechbackend.service.ProductService;
 import com.example.ecommercenashtechbackend.util.Util;
 import lombok.RequiredArgsConstructor;
@@ -92,11 +94,26 @@ public class ProductServiceImpl implements ProductService {
         Sort sort = Sort.by(sortField);
         sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
-        Specification<Product> spec = util.buildProductSpecifications(search);
+        List<SearchCriteria> searchCriteriaList = util.buildListProductSpecifications(search);
+        convertSearchCriteriaCategoryId(searchCriteriaList);
+        ProductSpecificationsBuilder builder = new ProductSpecificationsBuilder(searchCriteriaList);
+        Specification<Product> spec = builder.build();
         Page<Product> pageProductList = productRepository.findAll(spec, pageable);
         List<ProductResponseDto> productResponseDtoList =  util.mapList(pageProductList.getContent(), ProductResponseDto.class);
         ProductPaginationResponseDto result = new ProductPaginationResponseDto(productResponseDtoList, pageProductList.getTotalPages(), 8);
         return result;
+    }
+
+    protected void convertSearchCriteriaCategoryId(List<SearchCriteria> searchCriteriaList) {
+        for (int i = 0; i < searchCriteriaList.size(); i++) {
+            SearchCriteria searchCriteria = searchCriteriaList.get(i);
+            if(searchCriteria.getKey().equals("category")) {
+                String stringToConvert = String.valueOf(searchCriteria.getValue());
+                Long categoryId = Long.parseLong(stringToConvert);
+                Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+                searchCriteria.setValue(categoryOptional.get());
+            }
+        }
     }
 
     @Override

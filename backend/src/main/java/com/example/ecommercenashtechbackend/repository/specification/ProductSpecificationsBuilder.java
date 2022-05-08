@@ -20,6 +20,10 @@ public class ProductSpecificationsBuilder {
         return this;
     }
 
+    public ProductSpecificationsBuilder (List<SearchCriteria> searchCriteriaList) {
+        params = searchCriteriaList;
+    }
+
     public Specification<Product> build() {
         if (params.size() == 0) {
             return null;
@@ -32,7 +36,7 @@ public class ProductSpecificationsBuilder {
         Specification result = specs.get(0);
 
         for (int i = 1; i < params.size(); i++) {
-            result = params.get(i)
+            result =  params.get(i)
                     .isOrPredicate()
                     ? Specification.where(result)
                     .or(specs.get(i))
