@@ -2,6 +2,7 @@ package com.example.ecommercenashtechbackend.service.impl;
 
 import com.example.ecommercenashtechbackend.dto.request.ReviewCreateRequestDto;
 import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.ReviewPaginationResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.ReviewResponseDto;
 import com.example.ecommercenashtechbackend.entity.Product;
 import com.example.ecommercenashtechbackend.entity.Review;
@@ -13,6 +14,7 @@ import com.example.ecommercenashtechbackend.service.ReviewService;
 import com.example.ecommercenashtechbackend.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -58,10 +60,10 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewResponseDto> getAllCategoriesPagination(int pageNumber, Long productId) {
+    public ReviewPaginationResponseDto getAllCategoriesPagination(int pageNumber, Long productId) {
         Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE_REVIEW);
-        List<Review> reviewList = reviewRepository.findAllByProductId(pageable, productId).getContent();
-        List<ReviewResponseDto> result =  util.mapList(reviewList, ReviewResponseDto.class);
-        return result;
+        Page<Review> reviewList = reviewRepository.findAllByProductId(pageable, productId);
+        List<ReviewResponseDto> reviewResponseDtoList =  util.mapList(reviewList.getContent(), ReviewResponseDto.class);
+        return new ReviewPaginationResponseDto(reviewResponseDtoList, reviewList.getTotalPages(), 4);
     }
 }

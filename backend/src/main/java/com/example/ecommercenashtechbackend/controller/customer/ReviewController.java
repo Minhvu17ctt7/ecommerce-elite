@@ -3,6 +3,7 @@ package com.example.ecommercenashtechbackend.controller.customer;
 import com.example.ecommercenashtechbackend.dto.request.ReviewCreateRequestDto;
 import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.ResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.ReviewPaginationResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.ReviewResponseDto;
 import com.example.ecommercenashtechbackend.entity.Review;
 import com.example.ecommercenashtechbackend.security.UserDetail;
@@ -39,8 +40,8 @@ public class ReviewController {
 
     @GetMapping("/{product}/{page}")
     public ResponseEntity<ResponseDto> getListReviewPaginationByProductId(@PathVariable("page") int pageNumber, @PathVariable("product") Long productId){
-        List<ReviewResponseDto> reviewList = reviewService.getAllCategoriesPagination(pageNumber, productId);
-        ResponseDto<List<ReviewResponseDto>> responseDto = new ResponseDto<>(200, reviewList, "Get list product successfully");
+        ReviewPaginationResponseDto reviewList = reviewService.getAllCategoriesPagination(pageNumber, productId);
+        ResponseDto<ReviewPaginationResponseDto> responseDto = new ResponseDto<>(200, reviewList, "Get list review successfully");
         return ResponseEntity.ok(responseDto);
     }
 }
