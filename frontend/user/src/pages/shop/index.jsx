@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import categoryApi from '../../api/categoryApi'
 import productApi from '../../api/productApi'
 import Header from '../../components/Layout/Header'
@@ -14,13 +14,25 @@ const titleHeader = {
 const Shop = () => {
     const [products, setProducts] = useState();
     const [categories, setCategories] = useState([]);
+    const [searchParams] = useSearchParams();
+    const categoryId = searchParams.get("categoryId");
+    const { page } = useParams();
 
     useEffect(() => {
         (async () => {
-            const categoriesResponse = await categoryApi.getAllcategory();
-            const productsResponse = await productApi.getAllProduct();
+            const data = {
+                "page": page,
+                "sortField": "name",
+                "sortName": "asc",
+                "pageSize": 4,
+                "search": categoryId ? `category:${categoryId},` : ""
+            }
+
+            const categoriesResponse = await categoryApi.getAllCategory();
+            const productsResponse = await productApi.getAllProductFilter(data);
             setProducts(productsResponse.data);
             setCategories(categoriesResponse.data);
+
         })()
     }, []);
     return (

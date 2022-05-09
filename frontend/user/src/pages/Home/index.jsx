@@ -14,24 +14,24 @@ const Home = () => {
     const [products, setProducts] = useState();
     useEffect(() => {
         (async () => {
-            const categoriesResponse = await categoryApi.getAllcategory();
-            const productsResponse = await productApi.getAllProduct();
+            const data = {
+                "page": 1,
+                "sortField": "name",
+                "sortName": "asc",
+                "pageSize": 4,
+                "search": ""
+            }
+            const categoriesResponse = await categoryApi.getAllCategory();
+            const productsResponse = await productApi.getAllProductFilter(data);
             setProducts(productsResponse.data);
             setCategories(categoriesResponse.data);
         })()
     }, []);
-    const dispatch = useDispatch();
-    const handleshowToast = () => {
-        dispatch(showToast({
-            "title": "error",
-            "message": "has error"
-        }));
-    }
+
 
     return (
         <>
             <Navbar categories={categories} />
-            <button onClick={() => handleshowToast()}>Toast</button>
             <Featured />
             <Categories categories={categories} />
             <Product productPagination={products} />

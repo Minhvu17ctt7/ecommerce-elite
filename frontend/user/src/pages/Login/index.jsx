@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { REG_EMAIL, REG_PASSWORD } from '../../constant/globalConstant';
 import { loginUserAction } from '../../redux/actions/authenticationActions';
+import { showToast } from '../../redux/actions/toastActions';
 import "./style.css"
 
 const Login = () => {
@@ -16,6 +17,13 @@ const Login = () => {
         navigation("/");
     }
 
+    if (error) {
+        const dispatch = useDispatch();
+        dispatch(showToast({
+            "title": "error",
+            "message": error.message
+        }));
+    }
     const onSubmit = (data) => {
         dispatch(loginUserAction(data));
     }
@@ -65,13 +73,12 @@ const Login = () => {
                                     <span className="ml-auto"><Link to="/register" className="forgot-pass">Register</Link></span>
                                 </div>
                                 <input type="submit" value="Log In" className="btn btn-block btn-primary" />
-                                {error != null && (<p>{error.message}</p>)}
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-           
+
         </div>
     );
 }

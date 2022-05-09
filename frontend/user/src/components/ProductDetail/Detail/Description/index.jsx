@@ -5,7 +5,7 @@ import { Rating } from 'react-simple-star-rating';
 import reviewApi from '../../../../api/reviewApi';
 import Pagination from '../../../Pagination';
 
-const Description = ({ product, reviews }) => {
+const Description = ({ product, reviewPagination }) => {
     const [rating, setRating] = useState(0);
     const [invalidRating, setInvalidRating] = useState(false);
     const { pageReview } = useParams();
@@ -89,7 +89,7 @@ const Description = ({ product, reviews }) => {
                         <div className="row">
                             <div className="col-md-6">
                                 <h4 className="mb-4">{product?.reviews.length} review for "Colorful Stylish Shirt"</h4>
-                                {reviews.map(review => (
+                                {reviewPagination && reviewPagination?.reviews.map(review => (
                                     <div className="media mb-4">
                                         <img src="img/user.jpg" alt="Image" className="img-fluid mr-3 mt-1" style={{ width: '45px' }} />
                                         <div className="media-body">
@@ -101,7 +101,8 @@ const Description = ({ product, reviews }) => {
                                         </div>
                                     </div>
                                 ))}
-                                <Pagination url={"/products/"} totalPage={[1, 2, 3]} currentPage={2} />
+
+                                <Pagination url={"/products/"} totalPage={parseInt(reviewPagination?.totalPage)} currentPage={pageReview} />
                             </div>
                             <div className="col-md-6">
                                 {isLogin ? (<> <h4 className="mb-4">Leave a review</h4>

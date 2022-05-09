@@ -37,9 +37,9 @@ const Product = ({ productPagination }) => {
                 {productPagination?.products.map(product => (<CardProduct key={product.id} product={product} />))}
                 <div className="col-12 pb-1">
                     <nav aria-label="Page navigation">
-                        <Pagination url={"/products/"}
-                            totalPage={5}
-                            currentPage={parseInt(page)} />
+                        {productPagination?.totalPage > 1 && (<Pagination url={"/shop/"}
+                            totalPage={parseInt(productPagination?.totalPage)}
+                            currentPage={parseInt(page)} />)}
                     </nav>
                 </div>
             </div>

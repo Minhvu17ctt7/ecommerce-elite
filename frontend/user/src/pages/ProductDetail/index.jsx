@@ -17,11 +17,13 @@ const titleHeader = {
 const ProductDetail = () => {
     const { id, pageReview } = useParams();
     const [product, setProduct] = useState();
-    const [reviews, setReviews] = useState([]);
+    const [reviews, setReviews] = useState();
 
 
     useEffect(() => {
+
         (async () => {
+
             const productResponse = await productApi.getProductById(id);
             const reviewResponse = await reviewApi.getReviews(id, pageReview);
 
@@ -38,7 +40,7 @@ const ProductDetail = () => {
                     <ImageProduct image={product?.mainImage} />
                     <Option product={product} />
                 </div>
-                <Description reviews={reviews} product={product} />
+                <Description reviewPagination={reviews} product={product} />
             </div>
             <Recommend />
         </>

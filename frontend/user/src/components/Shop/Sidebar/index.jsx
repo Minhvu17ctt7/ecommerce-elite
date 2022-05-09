@@ -1,9 +1,35 @@
 import React from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const Sidebar = ({ categories }) => {
+    const [searchParams] = useSearchParams();
+    const navigation = useNavigate();
+    const categoryId = searchParams.get("categoryId");
+    const handleFilterCategory = (categoryId) => {
+        alert("adsf")
+        navigation(`/shop/1?categoryId=${categoryId}`);
+    }
     return (
 
         <div className="col-lg-3 col-md-12">
+            {/* Color Start */}
+            <div className="border-bottom mb-4 pb-4">
+                <h5 className="font-weight-semi-bold mb-4">Filter by color</h5>
+                <form>
+                    {
+                        categories.map((category, index) => {
+                            console.log("true false: ", categoryId === category.id);
+                            return (
+                                <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                                    <input type="radio" className="custom-control-input" id={`color-${index}`} onChange={() => handleFilterCategory(category.id)} defaultChecked={categoryId == category.id ? true : false} name="filter-categories" />
+                                    <label className="custom-control-label" htmlFor={`color-${index}`}>{category.name}</label>
+                                </div>)
+                        })
+                    }
+                </form>
+            </div>
+            {/* Color End */}
+
             {/* Price Start */}
             <div className="border-bottom mb-4 pb-4">
                 <h5 className="font-weight-semi-bold mb-4">Filter by price</h5>
@@ -35,20 +61,6 @@ const Sidebar = ({ categories }) => {
                 </form>
             </div>
             {/* Price End */}
-            {/* Color Start */}
-            <div className="border-bottom mb-4 pb-4">
-                <h5 className="font-weight-semi-bold mb-4">Filter by color</h5>
-                <form>
-                    {
-                        categories.map((category, index) => (
-                            <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                <input type="checkbox" className="custom-control-input" id={`color-${index}`} name="filter-categories" />
-                                <label className="custom-control-label" htmlFor={`color-${index}`}>{category.name}</label>
-                            </div>))
-                    }
-                </form>
-            </div>
-            {/* Color End */}
             {/* Size Start */}
             <div className="mb-5">
                 <h5 className="font-weight-semi-bold mb-4">Filter by size</h5>

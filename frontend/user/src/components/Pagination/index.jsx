@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { usePagination } from './usePagination';
 
 const range = (start, end) => {
     let length = end - start + 1;
@@ -24,8 +23,9 @@ const Pagination = props => {
         totalPage
     );
 
+
+
     const pageRange = range(leftSiblingIndex, rightSiblingIndex);
-    console.log("pageRange", pageRange, leftSiblingIndex, rightSiblingIndex);
 
     return (
         <ul className="pagination justify-content-center mb-3">
@@ -45,13 +45,13 @@ const Pagination = props => {
                     );
                 })}
 
-            <li className={currentPage < totalPage.length ? "page-item disabled" : "page-item"} >
+            <li className={currentPage < totalPage ? "page-item" : "page-item disabled"} >
                 <Link to={`${url}${currentPage + 1}`} className="page-link" aria-label="Next"> <span aria-hidden="true">»</span>
                     <span className="sr-only">Next</span>
                 </Link>
             </li>
         </ul>
-    );
+    )
 };
 
 export default Pagination;
