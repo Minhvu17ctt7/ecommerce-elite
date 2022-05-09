@@ -27,7 +27,7 @@ const Navbar = ({ categories }) => {
                                     <a href className="dropdown-item">Baby's Dresses</a>
                                 </div>
                             </div> */}
-                            {categories.map(category => (<Link to="#" key={category.id} className="nav-item nav-link">{category.name}</Link>))}
+                            {categories.map(category => (<Link to={`/shop/1?categoryId=${category.id}`} key={category.id} className="nav-item nav-link">{category.name}</Link>))}
 
                         </div>
                     </nav>

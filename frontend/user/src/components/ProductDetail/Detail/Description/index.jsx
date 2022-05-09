@@ -40,7 +40,7 @@ const Description = ({ product, reviewPagination }) => {
                 <div className="nav nav-tabs justify-content-center border-secondary mb-4">
                     <a className="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Description</a>
                     <a className="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Information</a>
-                    <a className="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Reviews (0)</a>
+                    <a className="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Reviews ({product?.reviews.length})</a>
                 </div>
                 <div className="tab-content">
                     <div className="tab-pane fade show active" id="tab-pane-1">
@@ -91,7 +91,7 @@ const Description = ({ product, reviewPagination }) => {
                                 <h4 className="mb-4">{product?.reviews.length} review for "Colorful Stylish Shirt"</h4>
                                 {reviewPagination && reviewPagination?.reviews.map(review => (
                                     <div className="media mb-4">
-                                        <img src="img/user.jpg" alt="Image" className="img-fluid mr-3 mt-1" style={{ width: '45px' }} />
+                                        <img src="/public/img/user-default.png" alt="Image" className="img-fluid mr-3 mt-1" style={{ width: '45px' }} />
                                         <div className="media-body">
                                             <h6>{review.user.firstName} {review.user.lastName}<small> - <i>01 Jan 2045</i></small></h6>
                                             <div className="text-primary mb-2">
@@ -110,7 +110,7 @@ const Description = ({ product, reviewPagination }) => {
                                         <p className="mb-0 mr-2 d-flex align-items-center">Your Rating * :</p>
                                         <Rating onClick={handleRating} ratingValue={rating} />
                                     </div>
-                                    {invalidRating && (<p>Please rating!</p>)}
+                                    {invalidRating && (<p style={{ color: 'red', textAlign: 'left' }}>Please rating!</p>)}
                                     <form onSubmit={handleSubmit(onSubmit)}>
                                         <div className="form-group">
                                             <label htmlFor="message">Your Review *</label>

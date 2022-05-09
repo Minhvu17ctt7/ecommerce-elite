@@ -5,9 +5,16 @@ const Sidebar = ({ categories }) => {
     const [searchParams] = useSearchParams();
     const navigation = useNavigate();
     const categoryId = searchParams.get("categoryId");
+    const price = searchParams.get("price");
     const handleFilterCategory = (categoryId) => {
-        navigation(`/shop/1?categoryId=${categoryId}`);
+        if (categoryId) {
+            navigation(`/shop/1?categoryId=${categoryId}`);
+        } else {
+            navigation("/shop/1")
+        }
     }
+
+
     return (
 
         <div className="col-lg-3 col-md-12">
@@ -16,15 +23,15 @@ const Sidebar = ({ categories }) => {
                 <h5 className="font-weight-semi-bold mb-4">Filter by color</h5>
                 <form>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="radio" className="custom-control-input" id="color-0" onChange={() => { }} defaultChecked={categoryId ? true : false} name="filter-categories" />
-                        <label className="custom-control-label" htmlFor="color-0">All category</label>
+                        <input type="radio" className="custom-control-input" id={`color-0`} onChange={() => handleFilterCategory(null)} checked name="filter-categories" />
+                        <label className="custom-control-label" htmlFor={`color-0`}>All category</label>
                     </div>
                     {
                         categories.map((category, index) => {
-                            console.log("true false: ", categoryId === category.id);
+
                             return (
-                                <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                    <input type="radio" className="custom-control-input" id={`color-${index + 1}`} onChange={() => handleFilterCategory(category.id)} defaultChecked={categoryId === category.id ? true : false} name="filter-categories" />
+                                <div key={category.id} className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                                    <input type="radio" className="custom-control-input" id={`color-${index + 1}`} onChange={() => handleFilterCategory(category.id)} checked={categoryId != null && categoryId == category.id} name="filter-categories" />
                                     <label className="custom-control-label" htmlFor={`color-${index + 1}`}>{category.name}</label>
                                 </div>)
                         })
@@ -43,23 +50,19 @@ const Sidebar = ({ categories }) => {
                     </div>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                         <input type="checkbox" className="custom-control-input" id="price-1" />
-                        <label className="custom-control-label" htmlFor="price-1">$0 - $100</label>
+                        <label className="custom-control-label" htmlFor="price-1">0 - 100.000 VND</label>
                     </div>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                         <input type="checkbox" className="custom-control-input" id="price-2" />
-                        <label className="custom-control-label" htmlFor="price-2">$100 - $200</label>
+                        <label className="custom-control-label" htmlFor="price-2">100.000 - 200.000 VND</label>
                     </div>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                         <input type="checkbox" className="custom-control-input" id="price-3" />
-                        <label className="custom-control-label" htmlFor="price-3">$200 - $300</label>
+                        <label className="custom-control-label" htmlFor="price-3">200.000 - 400.000</label>
                     </div>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                         <input type="checkbox" className="custom-control-input" id="price-4" />
-                        <label className="custom-control-label" htmlFor="price-4">$300 - $400</label>
-                    </div>
-                    <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                        <input type="checkbox" className="custom-control-input" id="price-5" />
-                        <label className="custom-control-label" htmlFor="price-5">$400 - $500</label>
+                        <label className="custom-control-label" htmlFor="price-4">400.000 - 500.000 VND</label>
                     </div>
                 </form>
             </div>

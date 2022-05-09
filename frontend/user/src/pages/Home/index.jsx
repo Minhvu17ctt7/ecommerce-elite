@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+
 import categoryApi from '../../api/categoryApi'
 import productApi from '../../api/productApi'
 import Categories from '../../components/Home/Categories'

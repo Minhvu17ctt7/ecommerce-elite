@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import CardProduct from '../../CardProduct';
 import Pagination from '../../Pagination';
 
-const Product = ({ productPagination }) => {
+const Product = ({ productPagination, handleSearchCallback }) => {
     const { page } = useParams();
     return (
 
@@ -14,7 +14,7 @@ const Product = ({ productPagination }) => {
                     <div className="d-flex align-items-center justify-content-between mb-4">
                         <form action>
                             <div className="input-group">
-                                <input type="text" className="form-control" placeholder="Search by name" />
+                                <input type="text" className="form-control" onChange={(e) => handleSearchCallback(e)} placeholder="Search by name" />
                                 <div className="input-group-append">
                                     <span className="input-group-text bg-transparent text-primary">
                                         <i className="fa fa-search" />
@@ -27,9 +27,8 @@ const Product = ({ productPagination }) => {
                                 Sort by
                             </button>
                             <div className="dropdown-menu dropdown-menu-right" aria-labelledby="triggerId">
-                                <a className="dropdown-item" href="#">Latest</a>
-                                <a className="dropdown-item" href="#">Popularity</a>
-                                <a className="dropdown-item" href="#">Best Rating</a>
+                                <a className="dropdown-item">A-Z</a>
+                                <a className="dropdown-item">Z-A</a>
                             </div>
                         </div>
                     </div>
