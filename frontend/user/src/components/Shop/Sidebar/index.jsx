@@ -6,7 +6,6 @@ const Sidebar = ({ categories }) => {
     const navigation = useNavigate();
     const categoryId = searchParams.get("categoryId");
     const handleFilterCategory = (categoryId) => {
-        alert("adsf")
         navigation(`/shop/1?categoryId=${categoryId}`);
     }
     return (
@@ -16,13 +15,17 @@ const Sidebar = ({ categories }) => {
             <div className="border-bottom mb-4 pb-4">
                 <h5 className="font-weight-semi-bold mb-4">Filter by color</h5>
                 <form>
+                    <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                        <input type="radio" className="custom-control-input" id="color-0" onChange={() => { }} defaultChecked={categoryId ? true : false} name="filter-categories" />
+                        <label className="custom-control-label" htmlFor="color-0">All category</label>
+                    </div>
                     {
                         categories.map((category, index) => {
                             console.log("true false: ", categoryId === category.id);
                             return (
                                 <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                    <input type="radio" className="custom-control-input" id={`color-${index}`} onChange={() => handleFilterCategory(category.id)} defaultChecked={categoryId == category.id ? true : false} name="filter-categories" />
-                                    <label className="custom-control-label" htmlFor={`color-${index}`}>{category.name}</label>
+                                    <input type="radio" className="custom-control-input" id={`color-${index + 1}`} onChange={() => handleFilterCategory(category.id)} defaultChecked={categoryId === category.id ? true : false} name="filter-categories" />
+                                    <label className="custom-control-label" htmlFor={`color-${index + 1}`}>{category.name}</label>
                                 </div>)
                         })
                     }
