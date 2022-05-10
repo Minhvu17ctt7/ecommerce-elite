@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface UserService {
 
-    List<User> getAllUsers();
+    List<UserResponseDto> getAllUsers(boolean deleted);
 
     UserResponseDto createUser(UserRequestDto userRequestDto);
 

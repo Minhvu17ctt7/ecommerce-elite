@@ -11,7 +11,6 @@ import lombok.*;
 public class UserLoginResponseDto {
 
     private Long id;
-    @JsonProperty("email")
     private String email;
     private String firstName;
     private String lastName;

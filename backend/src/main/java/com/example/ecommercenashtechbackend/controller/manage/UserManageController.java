@@ -27,8 +27,15 @@ public class UserManageController {
 
     private final UserService userService;
 
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDto> getAllUser(@RequestParam boolean deleted) {
+        List<UserResponseDto> userResponseDtoList = userService.getAllUsers(deleted);
+        ResponseDto<List<UserResponseDto>> responseDto =  new ResponseDto<>(200, userResponseDtoList, "Get list users successfully");
+        return ResponseEntity.ok(responseDto);
+    }
+
     @GetMapping
-    public ResponseEntity<ResponseDto> getListUserFirstPage() {
+    public ResponseEntity<ResponseDto> getListUserPaginationFirstPage() {
         ResponseDto<List<User>> responseDto = getListUserPagination(1, 4, "email", "asc", null, false).getBody();
         return ResponseEntity.ok(responseDto);
     }
@@ -58,7 +65,7 @@ public class UserManageController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
     })
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ResponseDto> createUser(@Validated @RequestBody UserRequestDto userRequestCreateDto) {
         UserResponseDto userResponseDto = userService.createUser(userRequestCreateDto);
         ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(201, userResponseDto, "Create user successfully");
@@ -80,7 +87,7 @@ public class UserManageController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
     })
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<ResponseDto> updateUser(@Validated @RequestBody UserUpdateRequestDto userRequestUpdateDto) {
         UserResponseDto userResponseDto = userService.updateUser(userRequestUpdateDto);
         ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, userResponseDto, "Update user successfully");
@@ -102,7 +109,7 @@ public class UserManageController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
     })
-    @PutMapping("/update-status")
+    @PutMapping("/update-block-user")
     public ResponseEntity<ResponseDto> updateBlockUser(@Validated @RequestBody UserStatusRequestDto userStatusRequestDto) {
         UserResponseDto userUpdated = userService.updateBlockUser(userStatusRequestDto);
         ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, userUpdated, "Update user successfully");
@@ -120,7 +127,7 @@ public class UserManageController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
     })
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDto> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, null, "Deleted user");

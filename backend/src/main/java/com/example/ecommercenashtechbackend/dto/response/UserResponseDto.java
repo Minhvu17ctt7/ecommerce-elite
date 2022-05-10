@@ -1,7 +1,10 @@
 package com.example.ecommercenashtechbackend.dto.response;
 
+import com.example.ecommercenashtechbackend.entity.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -12,10 +15,9 @@ import lombok.*;
 public class UserResponseDto {
     private Long id;
     private String email;
-    @JsonProperty("first_name")
     private String firstName;
-    @JsonProperty("last_name")
     private String lastName;
     private String photo;
     private boolean blocked;
+    private Set<Role> roles;
 }

@@ -13,6 +13,7 @@ import com.example.ecommercenashtechbackend.repository.UserRepository;
 import com.example.ecommercenashtechbackend.security.UserDetail;
 import com.example.ecommercenashtechbackend.security.jwt.JwtUtil;
 import com.example.ecommercenashtechbackend.service.UserService;
+import com.example.ecommercenashtechbackend.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -40,11 +41,12 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
     private final JwtUtil jwtUtil;
+    private final Util util;
 
     @Override
-    public List<User> getAllUsers() {
-        List<User> listUser = userRepository.findAll();
-        return listUser;
+    public List<UserResponseDto> getAllUsers(boolean deleted) {
+        List<User> listUser = userRepository.findAllByDeleted(deleted);
+        return util.mapList(listUser, UserResponseDto.class);
     }
 
     @Override
