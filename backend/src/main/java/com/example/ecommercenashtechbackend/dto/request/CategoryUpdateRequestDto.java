@@ -16,10 +16,8 @@ public class CategoryUpdateRequestDto {
     private Long id;
     @NotBlank(message = "Name is required")
     private String name;
-    @NotBlank(message = "Alias is required")
     private String alias;
     private String image;
-    @NotBlank(message = "Description is required")
     private String description;
     private Long parentId;
 }

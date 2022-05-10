@@ -15,5 +15,5 @@ public class CategoryResponseDto {
     private String name;
     private String description;
     private String image;
-    private Set<Product> products;
+//    private Set<Product> products;
 }

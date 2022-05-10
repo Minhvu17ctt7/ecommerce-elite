@@ -13,10 +13,8 @@ import javax.validation.constraints.NotBlank;
 public class CategoryRequestDto {
     @NotBlank(message = "Name is required")
     private String name;
-    @NotBlank(message = "Alias is required")
     private String alias;
     private String image;
-    @NotBlank(message = "Description is required")
     private String description;
     private Long parentId;
 }

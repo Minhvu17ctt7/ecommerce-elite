@@ -2,6 +2,7 @@ package com.example.ecommercenashtechbackend.controller.manage;
 
 import com.example.ecommercenashtechbackend.dto.request.CategoryRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.CategoryUpdateRequestDto;
+import com.example.ecommercenashtechbackend.dto.response.CategoryResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.ResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
@@ -26,8 +27,15 @@ public class CategoryManageController {
 
     private final CategoryService categoryService;
 
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDto> getAllCategoriesPagination(@RequestParam boolean deleted) {
+        List<CategoryResponseDto> listCategories = categoryService.getAllCategories(deleted);
+        ResponseDto<List<CategoryResponseDto>> responseDto = new ResponseDto<>(200, listCategories, "Get categories user successfully");
+        return ResponseEntity.ok(responseDto);
+    }
+
     @GetMapping
-    public ResponseEntity<ResponseDto> getAllCategories() {
+    public ResponseEntity<ResponseDto> getAllCategoriesFirstPage() {
         return getAllCategoriesPagination(1, 4, "name", "asc", null);
     }
 
@@ -79,4 +87,8 @@ public class CategoryManageController {
         ResponseDto<Long> responseDto = new ResponseDto<>(200, id, "Category with id: " + id + " deleted");
         return ResponseEntity.ok(responseDto);
     }
+
+
+
+
 }

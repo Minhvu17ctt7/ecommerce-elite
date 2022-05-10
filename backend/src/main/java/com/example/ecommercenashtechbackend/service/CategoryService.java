@@ -12,6 +12,8 @@ public interface CategoryService {
 
     Category createCategory(CategoryRequestDto categoryRequestDto);
 
+    List<CategoryResponseDto> getAllCategories(boolean deleted);
+
     CategoryResponseDto findCategoryById(Long id);
 
     List<Category> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keyword);

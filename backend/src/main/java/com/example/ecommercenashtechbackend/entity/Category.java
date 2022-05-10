@@ -22,6 +22,7 @@ public class Category extends Auditable<String> {
     private String alias;
     private String image;
     private String description;
+    private boolean deleted = false;
 
     @ManyToOne
     @JsonIgnore
@@ -32,5 +33,6 @@ public class Category extends Auditable<String> {
     private Set<Category> children = new HashSet<>();
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Product> products = new HashSet<>();
 }

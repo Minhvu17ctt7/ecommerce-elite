@@ -34,6 +34,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<CategoryResponseDto> getAllCategories(boolean deleted) {
+        List<Category> listCategory =  categoryRepository.findAllByDeleted(deleted);
+        return util.mapList(listCategory, CategoryResponseDto.class);
+    }
+
+    @Override
     public CategoryResponseDto findCategoryById(Long id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if(categoryOptional.isEmpty()) {
