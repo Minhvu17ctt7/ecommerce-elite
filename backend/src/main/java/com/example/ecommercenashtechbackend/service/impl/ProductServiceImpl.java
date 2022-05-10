@@ -149,7 +149,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    ProductResponseDto save(Product productSave, Long categoryId) {
+    protected ProductResponseDto save(Product productSave, Long categoryId) {
         Optional<Category> categoryOpt = categoryRepository.findById(categoryId);
         if (categoryOpt.isPresent()) {
             productSave.setCategory(categoryOpt.get());
