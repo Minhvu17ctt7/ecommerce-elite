@@ -21,6 +21,13 @@ public class ProductManageController {
 
     private final ProductService productService;
 
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDto> getAllProduct(@RequestParam boolean deleted) {
+        List<ProductResponseDto> listProducts = productService.getAllProducts( deleted);
+        ResponseDto<List<ProductResponseDto>> responseDto = new ResponseDto<>(200, listProducts, "Get list user successfully");
+        return ResponseEntity.ok(responseDto);
+    }
+
     @GetMapping
     public ResponseEntity<ResponseDto> getListUserFirstPage() {
         ResponseDto<ProductPaginationResponseDto> responseDto = getListProductPagination(1, 4, "name", "asc", null, false).getBody();
@@ -33,7 +40,7 @@ public class ProductManageController {
                                                                              @RequestParam String sortName, @RequestParam String keyword,
                                                                              @RequestParam(value = "deleted", required = false) Boolean deleted) {
         deleted = deleted == null ? false : deleted;
-        ProductPaginationResponseDto listProducts = productService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword, deleted);
+        ProductPaginationResponseDto listProducts = productService.getAllProductsPagination(pageNumber, pageSize, sortField, sortName, keyword, deleted);
         ResponseDto<ProductPaginationResponseDto> responseDto = new ResponseDto<>(200, listProducts, "Get list user successfully");
         return ResponseEntity.ok(responseDto);
     }

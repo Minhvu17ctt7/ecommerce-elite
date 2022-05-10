@@ -38,7 +38,7 @@ public class ProductController {
                                                                 @RequestParam(required = false) String sortField,
                                                                 @RequestParam(required = false) String sortName, @RequestParam(required = false) String search
                                                                ) {
-        ProductPaginationResponseDto listProducts = productService.getAllCategoriesPaginationBySpecification(pageNumber, pageSize, sortField, sortName, search, false);
+        ProductPaginationResponseDto listProducts = productService.getAllProductsPaginationBySpecification(pageNumber, pageSize, sortField, sortName, search, false);
         ResponseDto<ProductPaginationResponseDto> responseDto = new ResponseDto<>(200, listProducts, "Get list product successfully");
         return ResponseEntity.ok(responseDto);
     }

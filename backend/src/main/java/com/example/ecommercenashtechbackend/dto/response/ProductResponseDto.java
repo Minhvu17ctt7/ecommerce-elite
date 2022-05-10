@@ -17,7 +17,6 @@ import java.util.Set;
 @Builder
 public class  ProductResponseDto {
 
-
     private Long id;
     private String name;
     private String alias;
@@ -29,6 +28,7 @@ public class  ProductResponseDto {
     private float discountPercent;
     private Long categoryId;
     private float averageRating;
+    private CategoryResponseDto category;
     private Set<ProductImage> productImages = new HashSet<>();
     private Set<ProductDetail> productDetails = new HashSet<>();
     private Set<Review> reviews = new HashSet<>();

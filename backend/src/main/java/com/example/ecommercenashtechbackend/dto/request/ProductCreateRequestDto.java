@@ -19,7 +19,6 @@ public class ProductCreateRequestDto {
 
     @NotBlank(message = "Name product is required!")
     private String name;
-    @NotBlank(message = "ALias product is required!")
     private String alias;
     @NotBlank(message = "Short description is required!")
     private String shortDescription;

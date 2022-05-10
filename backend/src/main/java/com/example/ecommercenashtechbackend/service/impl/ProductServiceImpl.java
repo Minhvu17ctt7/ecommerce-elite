@@ -48,6 +48,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductResponseDto> getAllProducts( boolean deleted) {
+        List<Product> productList = productRepository.findAllByDeleted(deleted);
+        List<ProductResponseDto> result =  util.mapList(productList, ProductResponseDto.class);
+        return result;
+    }
+
+
+    @Override
     public ProductResponseDto createProduct(ProductCreateRequestDto productCreateRequestDto) {
         Optional<Product> productOpt = productRepository.findByName(productCreateRequestDto.getName());
         if (!productOpt.isPresent()) {
@@ -74,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
 //    }
 
     @Override
-    public ProductPaginationResponseDto getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted) {
+    public ProductPaginationResponseDto getAllProductsPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted) {
         Sort sort = Sort.by(sortField);
         sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
@@ -90,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductPaginationResponseDto getAllCategoriesPaginationBySpecification(int pageNumber, int pageSize, String sortField, String sortName, String search, boolean deleted) {
+    public ProductPaginationResponseDto getAllProductsPaginationBySpecification(int pageNumber, int pageSize, String sortField, String sortName, String search, boolean deleted) {
         Sort sort = Sort.by(sortField);
         sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
@@ -122,7 +130,7 @@ public class ProductServiceImpl implements ProductService {
         if (productOldOpt.isPresent()) {
             Product productOld = productOldOpt.get();
             Optional<Product> productExist = productRepository.findByName(productUpdateRequestDto.getName());
-            if (!productExist.isPresent() || productExist.get().getId() != productOld.getId()) {
+            if (productExist.isPresent() && productExist.get().getId() != productOld.getId()) {
                 Product productSave = modelMapper.map(productUpdateRequestDto, Product.class);
                 return save(productSave, productUpdateRequestDto.getCategoryId());
             }
