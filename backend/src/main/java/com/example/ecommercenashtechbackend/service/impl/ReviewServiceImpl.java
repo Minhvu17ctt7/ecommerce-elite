@@ -50,7 +50,7 @@ public class ReviewServiceImpl implements ReviewService {
         Product product = productOptional.get();
         User user = userOptional.get();
         Review reviewSave = modelMapper.map(reviewCreateRequestDto, Review.class);
-        float averageRating = (product.getAverageRating() + reviewCreateRequestDto.getRating()) / (product.getReviews().size() + 1);
+        float averageRating = (product.getAverageRating()*product.getReviews().size() + reviewCreateRequestDto.getRating()) / (product.getReviews().size() + 1);
         product.setAverageRating(averageRating);
         reviewSave.setProduct(product);
         reviewSave.setUser(user);
