@@ -2,10 +2,7 @@ package com.example.ecommercenashtechbackend.controller.manage;
 
 import com.example.ecommercenashtechbackend.dto.request.CategoryRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.CategoryUpdateRequestDto;
-import com.example.ecommercenashtechbackend.dto.response.CategoryResponseDto;
-import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
-import com.example.ecommercenashtechbackend.dto.response.ResponseDto;
-import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.*;
 import com.example.ecommercenashtechbackend.entity.Category;
 import com.example.ecommercenashtechbackend.exception.ExceptionResponse;
 import com.example.ecommercenashtechbackend.service.CategoryService;
@@ -88,7 +85,11 @@ public class CategoryManageController {
         return ResponseEntity.ok(responseDto);
     }
 
-
-
+    @GetMapping("/{id}/check-available-delete")
+    public ResponseEntity<ResponseDto> checkAvailableDelete(@PathVariable("id") Long id) {
+        boolean result = categoryService.checkAvailableDelete(id);
+        ResponseDto<CheckAvalableDeleteResponseDto> responseDto = new ResponseDto<>(200, new CheckAvalableDeleteResponseDto(result), "Category with id: " + id + " available delete");
+        return ResponseEntity.ok(responseDto);
+    }
 
 }

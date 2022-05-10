@@ -104,4 +104,16 @@ public class CategoryServiceImpl implements CategoryService {
         throw new NotFoundException("Category not found");
     }
 
+    @Override
+    public boolean checkAvailableDelete(Long categoryId) {
+        Optional<Category> categoryOptional = categoryRepository.findByIdAndDeleted(categoryId, false);
+        if(categoryOptional.isPresent()) {
+            if(categoryOptional.get().getProducts().size() > 0) {
+                return false;
+            }
+            return true;
+        }
+        throw new NotFoundException("Category with id: " + categoryId + " not found");
+    }
+
 }
