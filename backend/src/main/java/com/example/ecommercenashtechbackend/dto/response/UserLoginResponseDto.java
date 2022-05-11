@@ -1,7 +1,10 @@
 package com.example.ecommercenashtechbackend.dto.response;
 
+import com.example.ecommercenashtechbackend.entity.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+
+import java.util.Set;
 
 @Setter
 @Getter
@@ -18,4 +21,5 @@ public class UserLoginResponseDto {
     private boolean blocked;
     private String refreshToken;
     private String accessToken;
+    private Set<Role> roles;
 }

@@ -11,6 +11,7 @@ import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
 import com.example.ecommercenashtechbackend.repository.RoleRepository;
 import com.example.ecommercenashtechbackend.repository.UserRepository;
 import com.example.ecommercenashtechbackend.security.jwt.JwtUtil;
+import com.example.ecommercenashtechbackend.util.Util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -32,6 +33,7 @@ public class UserServiceImplTest {
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
     private JwtUtil jwtUtil;
+    private Util util;
     private ModelMapper modelMapper;
     private User userInitial;
     private UserLoginRequestDto userLoginRequestDto;
@@ -47,12 +49,13 @@ public class UserServiceImplTest {
         passwordEncoder = mock(PasswordEncoder.class);
         modelMapper = mock(ModelMapper.class);
         jwtUtil = mock(JwtUtil.class);
+        util = mock(Util.class);
         userInitial = mock(User.class);
         userLoginRequestDto = mock(UserLoginRequestDto.class);
         userRequestDto = mock(UserRequestDto.class);
         userResponseDto = mock(UserResponseDto.class);
         role = mock(Role.class);
-        userService = new UserServiceImpl(passwordEncoder, userRepository, roleRepository, modelMapper, jwtUtil);
+        userService = new UserServiceImpl(passwordEncoder, userRepository, roleRepository, modelMapper, jwtUtil, util);
         when(jwtUtil.generateAccessToken(any())).thenReturn("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c");
         when(jwtUtil.generateRefreshToken(any())).thenReturn("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ik1pbmh2dSIsImlkIjoiMSIsImlhdCI6MTUxNjIzOTAyMn0.gzNQnKOmWScnrMgcCdACiPT3NBjAfJ8sQeDBagcg8PA");
     }

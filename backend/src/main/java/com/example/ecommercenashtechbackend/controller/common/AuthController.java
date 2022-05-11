@@ -1,12 +1,10 @@
-package com.example.ecommercenashtechbackend.controller.customer;
+package com.example.ecommercenashtechbackend.controller.common;
 
 import com.example.ecommercenashtechbackend.common.RoleName;
 import com.example.ecommercenashtechbackend.dto.request.RefreshTokenRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserLoginRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserRequestDto;
-import com.example.ecommercenashtechbackend.dto.response.JwtResponse;
-import com.example.ecommercenashtechbackend.dto.response.UserLoginResponseDto;
-import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.*;
 import com.example.ecommercenashtechbackend.exception.ExceptionResponse;
 import com.example.ecommercenashtechbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,9 +43,11 @@ public class AuthController {
                     })
     })
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDto> register(@Validated @RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<ResponseDto> register(@Validated @RequestBody UserRequestDto userRequestDto) {
         userRequestDto.setRole(RoleName.ROLE_USER);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userRequestDto));
+        UserResponseDto userResponseDto = userService.createUser(userRequestDto);
+        ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, userResponseDto, "Register successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "Login user")
@@ -67,9 +67,10 @@ public class AuthController {
     })
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Validated @RequestBody UserLoginRequestDto userLoginDto) {
+    public ResponseEntity<ResponseDto> login(@Validated @RequestBody UserLoginRequestDto userLoginDto) {
         UserLoginResponseDto userLoginResponseDto = userService.login(userLoginDto);
-        return ResponseEntity.ok(userLoginResponseDto);
+        ResponseDto<UserLoginResponseDto> responseDto = new ResponseDto<>(200, userLoginResponseDto, "Login successfully");
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "Refresh token")
@@ -85,7 +86,7 @@ public class AuthController {
     })
 
     @PutMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@Validated @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
+    public ResponseEntity<JwtResponse> refreshToken(@Validated @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
         JwtResponse jwtResponse = userService.refreshToken(refreshTokenRequestDto);
         return ResponseEntity.ok(jwtResponse);
     }
