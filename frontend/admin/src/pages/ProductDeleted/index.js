@@ -5,7 +5,7 @@ import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import React, { useEffect, useRef, useState } from 'react';
 import categoryApi from '../../service/categoryService';
-import { ProductService } from '../../service/ProductService';
+import ProductService from '../../service/ProductService';
 
 const ProductDeleted = () => {
     let emptyProduct = {
@@ -33,7 +33,6 @@ const ProductDeleted = () => {
     const [countFetchData, setCountFetchDate] = useState(0);
     const toast = useRef(null);
     const dt = useRef(null);
-    const productService = new ProductService();
 
 
     useEffect(() => {
@@ -42,7 +41,7 @@ const ProductDeleted = () => {
         (async () => {
 
             const categoryResponse = await categoryApi.getAllCategory(false);
-            const productResponse = await productService.getAllProductFilter(true);
+            const productResponse = await ProductService.getAllProductFilter(true);
 
             setCategories(categoryResponse.data);
             setProducts(productResponse.data);

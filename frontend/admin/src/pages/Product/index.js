@@ -12,7 +12,7 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
 import categoryApi from '../../service/categoryService';
-import { ProductService } from '../../service/ProductService';
+import ProductService from '../../service/ProductService';
 
 const User = () => {
     let emptyProduct = {
@@ -40,7 +40,6 @@ const User = () => {
     const [countFetchData, setCountFetchDate] = useState(0);
     const toast = useRef(null);
     const dt = useRef(null);
-    const productService = new ProductService();
 
     const forceFetchData = () => {
         setCountFetchDate(preState => preState + 1);
@@ -52,7 +51,7 @@ const User = () => {
         (async () => {
 
             const categoryResponse = await categoryApi.getAllCategory(false);
-            const productResponse = await productService.getAllProductFilter(false);
+            const productResponse = await ProductService.getAllProductFilter(false);
 
             setCategories(categoryResponse.data);
             setProducts(productResponse.data);
@@ -91,12 +90,12 @@ const User = () => {
         if (product.name.trim()) {
             if (product.id) {
                 console.log("update: ", product);
-                await productService.updateProduct(product);
+                await ProductService.updateProduct(product);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
             }
             else {
                 console.log("create: ", product);
-                await productService.createProduct(product);
+                await ProductService.createProduct(product);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
             }
 
@@ -118,7 +117,7 @@ const User = () => {
     }
 
     const deleteProduct = async () => {
-        await productService.deleteProduct(product.id);
+        await ProductService.deleteProduct(product.id);
         setDeleteProductDialog(false);
         setProduct(emptyProduct);
         toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
@@ -165,7 +164,6 @@ const User = () => {
             <React.Fragment>
                 <div className="my-2">
                     <Button label="New" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                    <Button label="Delete" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} />
                 </div>
             </React.Fragment>
         )
@@ -275,14 +273,14 @@ const User = () => {
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
                         globalFilter={globalFilter} emptyMessage="No products found." header={header} responsiveLayout="scroll">
-                        <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
+
                         <Column field="Id" header="Id" sortable body={codeBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="name" header="Name" sortable body={nameBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column header="Image" body={imageBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="price" header="Price" body={priceBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="category" header="Category" sortable body={categoryBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="rating" header="Reviews" body={ratingBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
-                        {/* <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '10rem' }}></Column> */}
+
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 

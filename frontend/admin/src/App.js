@@ -25,11 +25,6 @@ import ProductDeleted from './pages/ProductDeleted';
 import User from './pages/User';
 import UserDeleted from './pages/UserDeleted';
 
-
-
-
-
-
 const App = () => {
     const [layoutMode, setLayoutMode] = useState('static');
     const [layoutColorMode, setLayoutColorMode] = useState('light')

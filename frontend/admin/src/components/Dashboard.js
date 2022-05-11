@@ -1,16 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Menu } from 'primereact/menu';
-import { Button } from 'primereact/button';
-import { Chart } from 'primereact/chart';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { ProductService } from '../service/ProductService';
+import React, { useEffect, useState } from 'react';
 
 
 const Dashboard = (props) => {
-    const [products, setProducts] = useState(null);
-    const menu1 = useRef(null);
-    const menu2 = useRef(null);
     const [lineOptions, setLineOptions] = useState(null)
 
     const applyLightTheme = () => {
@@ -77,10 +68,6 @@ const Dashboard = (props) => {
         setLineOptions(lineOptions)
     }
 
-    useEffect(() => {
-        const productService = new ProductService();
-        productService.getProductsSmall().then(data => setProducts(data));
-    }, []);
 
     useEffect(() => {
         if (props.colorMode === 'light') {
@@ -90,9 +77,6 @@ const Dashboard = (props) => {
         }
     }, [props.colorMode]);
 
-    const formatCurrency = (value) => {
-        return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    };
 
     return (
         <div className="grid">
