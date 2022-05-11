@@ -16,22 +16,22 @@ export class ProductService {
     }
 
     getAllProductFilter(deleted) {
-        const url = `/products/all?deleted=${deleted}`;
+        const url = `/admin/products/all?deleted=${deleted}`;
         return axiosClient.get(url);
     }
 
     createProduct(product) {
-        const url = "/products";
+        const url = "/admin/products";
         return axiosClient.post(url, product);
     }
 
     updateProduct(product) {
-        const url = "/products";
+        const url = "/admin/products";
         return axiosClient.put(url, product);
     }
 
     deleteProduct(productId) {
-        const url = `/products/${productId}`;
+        const url = `/admin/products/${productId}`;
         return axiosClient.delete(url);
     }
 }

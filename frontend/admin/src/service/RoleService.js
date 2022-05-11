@@ -3,7 +3,7 @@ import axiosClient from './axiosClients'
 
 const RoleService = {
     getAllRole: () => {
-        const url = "/roles/all";
+        const url = "/admin/roles/all";
         return axiosClient.get(url);
     }
 }

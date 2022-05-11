@@ -1,20 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import classNames from 'classnames';
-import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Toast } from 'primereact/toast';
-import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
-import { Rating } from 'primereact/rating';
-import { Toolbar } from 'primereact/toolbar';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton } from 'primereact/radiobutton';
-import { InputNumber } from 'primereact/inputnumber';
-import { Dialog } from 'primereact/dialog';
+import { DataTable } from 'primereact/datatable';
 import { InputText } from 'primereact/inputtext';
-import productApi from '../../api/productApi';
-import { ProductService } from '../../service/ProductService';
-import categoryApi, { CategoryService } from '../../service/categoryService';
+import { Toast } from 'primereact/toast';
+import React, { useEffect, useRef, useState } from 'react';
+import categoryApi from '../../service/categoryService';
 
 const CategoryDeleted = () => {
     let emptyProduct = {

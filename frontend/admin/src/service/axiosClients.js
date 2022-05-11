@@ -1,7 +1,7 @@
 import axios from 'axios';
 import queryString from 'query-string';
 
-const BASE_URL = 'http://localhost:8080/api/admin';
+const BASE_URL = 'http://localhost:8080/api';
 
 const axiosClient = axios.create({
 	baseURL: BASE_URL,
