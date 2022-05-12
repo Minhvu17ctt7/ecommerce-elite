@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { RadioButton } from 'primereact/radiobutton';
-import { InputSwitch } from 'primereact/inputswitch';
 import classNames from 'classnames';
 import { Button } from "primereact/button";
+import { InputSwitch } from 'primereact/inputswitch';
+import { RadioButton } from 'primereact/radiobutton';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 export const AppConfig = (props) => {
 

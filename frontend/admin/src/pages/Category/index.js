@@ -45,8 +45,6 @@ const Category = () => {
         })()
     }, [countFetchData]);
 
-    console.log("products: ", product);
-
     const openNew = () => {
         setProduct(emptyProduct);
         setSubmitted(false);

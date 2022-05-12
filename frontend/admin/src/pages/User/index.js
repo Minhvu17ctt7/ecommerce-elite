@@ -52,8 +52,6 @@ const User = () => {
         })()
     }, [countFetchData]);
 
-    console.log("products: ", product);
-
     const formatCurrency = (value) => {
         return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     }

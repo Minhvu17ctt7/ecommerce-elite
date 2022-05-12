@@ -11,7 +11,6 @@ const UserService = {
         return axiosClient.post(url, user);
     },
     updateUserBlocked: (updateUser) => {
-        console.log("update user: ", updateUser)
         const url = "/admin/users/update-block-user";
         return axiosClient.put(url, updateUser);
     },

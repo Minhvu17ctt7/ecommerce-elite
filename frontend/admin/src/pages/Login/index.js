@@ -23,7 +23,6 @@ const Login = () => {
         try {
             const userResponse = await AuthService.login(data);
             const user = userResponse.data;
-            console.log("user: ", user);
             const roles = user.roles.map(role => role.name);
             if (roles.indexOf("ADMIN") !== -1) {
                 localStorage.setItem('user', JSON.stringify(userResponse.data));

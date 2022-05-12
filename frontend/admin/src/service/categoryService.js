@@ -1,5 +1,4 @@
-import React from 'react'
-import axiosClient from './axiosClients'
+import axiosClient from './axiosClients';
 
 const categoryApi = {
     getAllCategory: (deleted) => {

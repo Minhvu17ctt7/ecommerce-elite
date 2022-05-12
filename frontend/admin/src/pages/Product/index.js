@@ -11,6 +11,7 @@ import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
+import uploadImage from '../../firebase/upload';
 import categoryApi from '../../service/categoryService';
 import ProductService from '../../service/ProductService';
 
@@ -59,7 +60,6 @@ const User = () => {
         })()
     }, [countFetchData]);
 
-    console.log("products: ", product);
 
     const formatCurrency = (value) => {
         return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
@@ -89,12 +89,13 @@ const User = () => {
 
         if (product.name.trim()) {
             if (product.id) {
-                console.log("update: ", product);
+
+                const urlImage = await uploadImage("/products", mainImage);
+                product['mainImage'] = urlImage
                 await ProductService.updateProduct(product);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
             }
             else {
-                console.log("create: ", product);
                 await ProductService.createProduct(product);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
             }
@@ -261,6 +262,14 @@ const User = () => {
         </>
     );
 
+    const [mainImage, setMainImage] = useState(null);
+
+    const handleChangeImage = (e) => {
+        setMainImage(e.target.files[0]);
+        const objectUrl = URL.createObjectURL(e.target.files[0])
+        product['mainImage'] = objectUrl;
+    }
+
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -286,6 +295,11 @@ const User = () => {
 
                     <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                         {product.mainImage && <img src={product.mainImage} alt={product.mainImage} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
+                        <div className="field">
+                            <label htmlFor="name">Avatar</label>
+                            <input type="file" id="mainImage" required onChange={handleChangeImage} autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
+                            {submitted && !product.name && <small className="p-invalid">Image is required.</small>}
+                        </div>
                         <div className="field">
                             <label htmlFor="name">Name</label>
                             <InputText id="name" value={product.name} onChange={(e) => { onInputChange(e, 'name') }} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
@@ -325,11 +339,7 @@ const User = () => {
                                 <InputNumber id="quantity" value={product.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} integeronly />
                             </div>
                         </div>
-                        <div className="field">
-                            <label htmlFor="name">Image</label>
-                            <input type="file" id="mainImage" required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">Image is required.</small>}
-                        </div>
+
                     </Dialog>
 
                     <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>

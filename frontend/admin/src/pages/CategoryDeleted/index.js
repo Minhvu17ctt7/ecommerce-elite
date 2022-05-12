@@ -37,8 +37,6 @@ const CategoryDeleted = () => {
         })()
     }, []);
 
-    console.log("products: ", product);
-
     const codeBodyTemplate = (rowData) => {
         return (
             <>

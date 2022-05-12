@@ -1,9 +1,9 @@
+import classNames from 'classnames';
+import { Badge } from 'primereact/badge';
+import { Ripple } from "primereact/ripple";
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
-import classNames from 'classnames';
-import { Ripple } from "primereact/ripple";
-import { Badge } from 'primereact/badge';
 
 const AppSubmenu = (props) => {
 
