@@ -4,6 +4,7 @@ import com.example.ecommercenashtechbackend.dto.request.CategoryRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.CategoryUpdateRequestDto;
 import com.example.ecommercenashtechbackend.dto.response.CategoryResponseDto;
 import com.example.ecommercenashtechbackend.entity.Category;
+import com.example.ecommercenashtechbackend.entity.Product;
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.repository.CategoryRepository;
 import com.example.ecommercenashtechbackend.service.CategoryService;
@@ -76,6 +77,10 @@ public class CategoryServiceImpl implements CategoryService {
         Optional<Category> categoryOpt = categoryRepository.findById(categoryUpdateRequestDto.getId());
         if (categoryOpt.isPresent()) {
             Category categoryOld = categoryOpt.get();
+            Optional<Category> categoryExist = categoryRepository.findByName(categoryUpdateRequestDto.getName());
+            if (categoryExist.isPresent() && categoryExist.get().getId() != categoryOld.getId()) {
+                throw new ConflictException("Category name already exits");
+            }
             return save(categoryOld, categoryUpdateRequestDto);
         }
         throw new NotFoundException("Category not found");
