@@ -6,6 +6,8 @@ import 'primereact/resources/primereact.css';
 import { Tooltip } from 'primereact/tooltip';
 import 'prismjs/themes/prism-coy.css';
 import React, { useEffect, useRef, useState } from 'react';
+import { Switch } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { Route, useLocation } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 import './App.scss';
@@ -24,6 +26,7 @@ import Product from './pages/Product';
 import ProductDeleted from './pages/ProductDeleted';
 import User from './pages/User';
 import UserDeleted from './pages/UserDeleted';
+import PrivateRoute from './PrivateRoute';
 
 const App = () => {
     const [layoutMode, setLayoutMode] = useState('static');
@@ -196,6 +199,8 @@ const App = () => {
 
     let splitPathName = location.pathname.split('/');
 
+    let isLogin = localStorage.getItem('isLogin') === 'true'
+
     return (
         <div className={wrapperClass} onClick={onWrapperClick}>
             <Tooltip ref={copyTooltipRef} target=".block-action-copy" position="bottom" content="Copied to clipboard" event="focus" />
@@ -210,14 +215,25 @@ const App = () => {
 
             <div className="layout-main-container">
                 <div className="layout-main">
-                    <Route path="/" exact render={() => <Dashboard colorMode={layoutColorMode} location={location} />} />
-                    <Route path="/products" component={Product} />
-                    <Route path="/products-deleted" component={ProductDeleted} />
-                    <Route path="/categories" component={Category} />
-                    <Route path="/categories-deleted" component={CategoryDeleted} />
-                    <Route path="/users" component={User} />
-                    <Route path="/users-deleted" component={UserDeleted} />
-                    <Route path="/login" component={Login} />
+                    <Switch>
+                        <Route path="/login">
+                            {
+                                isLogin ? <Redirect to="/" /> : <Login />
+                            }
+                        </Route>
+                        <Route path="/" exact>
+                            {
+                                isLogin ? <Dashboard /> : <Redirect to="/login" />
+                            }
+                        </Route>
+                        <PrivateRoute path="/products" component={Product} />
+                        <PrivateRoute path="/products-deleted" component={ProductDeleted} />
+                        <PrivateRoute path="/categories" component={Category} />
+                        <PrivateRoute path="/categories-deleted" component={CategoryDeleted} />
+                        <PrivateRoute path="/users" component={User} />
+                        <PrivateRoute path="/users-deleted" component={UserDeleted} />
+
+                    </Switch>
                 </div>
                 {headerExclusionArray.indexOf(splitPathName[1]) < 0 &&
                     <AppFooter layoutColorMode={layoutColorMode} />}

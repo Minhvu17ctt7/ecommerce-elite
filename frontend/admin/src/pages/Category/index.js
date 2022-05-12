@@ -10,7 +10,6 @@ import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
 import uploadImage from '../../firebase/upload';
 import categoryApi from '../../service/categoryService';
-
 const Category = () => {
     let emptyProduct = {
         id: null,
@@ -220,11 +219,12 @@ const Category = () => {
                     </DataTable>
 
                     <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                        {product.image && <img src={product.image} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
+                        {/* {product.image && <img src={product.image} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />} */}
+                        <img src={product.image ? product.image : "/images/image-default.jpg"} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />
                         <div className="field">
                             <label htmlFor="name">Image</label>
-                            <input type="file" id="mainImage" required onChange={handleChangeImage} autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">Image is required.</small>}
+                            <input type="file" id="mainImage" required onChange={handleChangeImage} className="custom-file-input" />
+                            {submitted && !product.image && <small className="p-invalid">Image is required.</small>}
                         </div>
                         <div className="field">
                             <label htmlFor="name">Name</label>

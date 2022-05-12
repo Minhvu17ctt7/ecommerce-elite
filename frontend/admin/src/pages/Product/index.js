@@ -295,10 +295,11 @@ const User = () => {
                     </DataTable>
 
                     <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                        {product.mainImage && <img src={product.mainImage} alt={product.mainImage} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
+                        {/* {product.mainImage && <img src={product.mainImage} alt={product.mainImage} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />} */}
+                        <img src={product.mainImage ? product.mainImage : "/images/image-default.jpg"} alt={product.mainImage} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />
                         <div className="field">
                             <label htmlFor="name">Image</label>
-                            <input type="file" id="mainImage" required onChange={handleChangeImage} autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
+                            <input type="file" id="mainImage" required onChange={handleChangeImage} />
                             {submitted && !product.name && <small className="p-invalid">Image is required.</small>}
                         </div>
                         <div className="field">
