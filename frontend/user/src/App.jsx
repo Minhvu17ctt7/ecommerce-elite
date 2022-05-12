@@ -20,8 +20,8 @@ function App() {
         <Topbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path='/shop/:page' element={<Shop />} />
-          <Route path='/products/:id/:pageReview' element={<ProductDetail />} />
+          <Route path='/shop' element={<Shop />} />
+          <Route path='/products/:id' element={<ProductDetail />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='*' element={<NotFound />} />

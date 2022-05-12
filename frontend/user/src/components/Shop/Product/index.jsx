@@ -1,11 +1,36 @@
 
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import CardProduct from '../../CardProduct';
-import Pagination from '../../Pagination';
+import Pagination from '../../Pagination2';
 
-const Product = ({ productPagination, handleSearchCallback }) => {
-    const { page } = useParams();
+const Product = ({ productPagination }) => {
+    const [searchParams] = useSearchParams();
+    const page = searchParams.get("page") || 1;
+    const categoryId = searchParams.get("categoryId");
+    const search = searchParams.get("search")
+    const navigate = useNavigate();
+
+    const handleNextPage = (nextPage) => {
+        let url = `/shop?page=${nextPage}`;
+        if (categoryId) {
+            url += `&categoryId=${categoryId}`;
+        }
+        if (search) {
+            url += `&search=${search}`
+        }
+        navigate(url);
+    }
+
+    const handleSearch = (e) => {
+        let url = `/shop?page=${page}`;
+        if (categoryId) {
+            url += `&categoryId=${categoryId}`;
+        }
+        url += `&search=${e.target.value}`
+        navigate(url);
+    }
+
     return (
 
         <div className="col-lg-9 col-md-12">
@@ -14,7 +39,7 @@ const Product = ({ productPagination, handleSearchCallback }) => {
                     <div className="d-flex align-items-center justify-content-between mb-4">
                         <form action>
                             <div className="input-group">
-                                <input type="text" className="form-control" onChange={(e) => handleSearchCallback(e)} placeholder="Search by name" />
+                                <input type="text" className="form-control" onChange={(e) => handleSearch(e)} placeholder="Search by name" />
                                 <div className="input-group-append">
                                     <span className="input-group-text bg-transparent text-primary">
                                         <i className="fa fa-search" />
@@ -38,7 +63,9 @@ const Product = ({ productPagination, handleSearchCallback }) => {
                     <nav aria-label="Page navigation">
                         {productPagination?.totalPage > 1 && (<Pagination url={"/shop/"}
                             totalPage={parseInt(productPagination?.totalPage)}
-                            currentPage={parseInt(page)} />)}
+                            currentPage={parseInt(page)}
+                            handleNextPage={handleNextPage}
+                        />)}
                     </nav>
                 </div>
             </div>

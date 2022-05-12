@@ -6,11 +6,11 @@ const Sidebar = ({ categories }) => {
     const navigation = useNavigate();
     const categoryId = searchParams.get("categoryId");
     const price = searchParams.get("price");
-    const handleFilterCategory = (categoryId) => {
-        if (categoryId) {
-            navigation(`/shop/1?categoryId=${categoryId}`);
+    const handleFilterCategory = (id) => {
+        if (id) {
+            navigation(`/shop?categoryId=${id}`);
         } else {
-            navigation("/shop/1")
+            navigation("/shop")
         }
     }
 
@@ -23,8 +23,8 @@ const Sidebar = ({ categories }) => {
                 <h5 className="font-weight-semi-bold mb-4">Filter by color</h5>
                 <form>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="radio" className="custom-control-input" id={`color-0`} onChange={() => handleFilterCategory(null)} checked name="filter-categories" />
-                        <label className="custom-control-label" htmlFor={`color-0`}>All category</label>
+                        <input type="radio" className="custom-control-input" id="color-0" onChange={() => handleFilterCategory()} name="filter-categories" />
+                        <label className="custom-control-label" htmlFor="color-0">All category</label>
                     </div>
                     {
                         categories.map((category, index) => {
@@ -68,7 +68,7 @@ const Sidebar = ({ categories }) => {
             </div>
             {/* Price End */}
             {/* Size Start */}
-            <div className="mb-5">
+            {/* <div className="mb-5">
                 <h5 className="font-weight-semi-bold mb-4">Filter by size</h5>
                 <form>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
@@ -96,7 +96,7 @@ const Sidebar = ({ categories }) => {
                         <label className="custom-control-label" htmlFor="size-5">XL</label>
                     </div>
                 </form>
-            </div>
+            </div> */}
             {/* Size End */}
         </div>
     );

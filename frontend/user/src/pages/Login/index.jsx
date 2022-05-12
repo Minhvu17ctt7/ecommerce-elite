@@ -14,7 +14,7 @@ const Login = () => {
 
     const { isLoading, user, error, isLogin } = useSelector(state => state.login);
     if (isLogin) {
-        navigation("/");
+        navigation(-1);
     }
 
     if (error) {

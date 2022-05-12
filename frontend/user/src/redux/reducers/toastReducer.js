@@ -12,7 +12,6 @@ export default function (state = initialState, action) {
 
   switch (action.type) {
     case types.SHOW_TOAST:
-      console.log("da vao", action.data)
       return { show: true, data: action.data };
     case types.CLOSE_TOAST:
       return { show: false, data: action.data };
