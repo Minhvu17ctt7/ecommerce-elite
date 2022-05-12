@@ -11,7 +11,10 @@ const axiosClient = axios.create({
 	paramsSerializer: (params) => queryString.stringify(params),
 });
 axiosClient.interceptors.request.use(async (config) => {
-	config.headers.Authorization = `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNaW5odnVAZ21haWwuY29tIiwiaWF0IjoxNjUyMTU1ODE5LCJleHAiOjE2NTI3NjA2MTl9.6DiDg1i2bhfCMybF6yrOl8Z5m5uRnuSzMuSRE7Ioc2baCiV504KJBspwt9IZQ6JUhY9HJRymu7qOtp5G2IiwiQ`;
+	const token = localStorage.getItem('accessToken');
+	if (token) {
+		config.headers.Authorization = `Bearer ${token}`;
+	}
 	return config;
 });
 axiosClient.interceptors.response.use(

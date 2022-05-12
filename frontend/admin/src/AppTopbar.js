@@ -18,7 +18,6 @@ export const AppTopbar = (props) => {
     return (
         <div className="layout-topbar">
             <Link to="/" className="layout-topbar-logo">
-
                 <span>ADMIN MOSHOPPING</span>
             </Link>
 

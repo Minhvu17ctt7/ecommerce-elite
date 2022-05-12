@@ -6,6 +6,7 @@ import { Toast } from 'primereact/toast';
 import React, { useEffect, useRef, useState } from 'react';
 import categoryApi from '../../service/categoryService';
 import ProductService from '../../service/ProductService';
+import { convertTime } from '../../uitl/time';
 
 const ProductDeleted = () => {
     let emptyProduct = {
@@ -102,6 +103,24 @@ const ProductDeleted = () => {
         );
     }
 
+    const createdDateBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {convertTime(rowData.createdDate)}
+            </>
+        );
+    }
+
+    const updatedDateBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {convertTime(rowData.lastModifiedDate)}
+            </>
+        );
+    }
+
     const ratingBodyTemplate = (rowData) => {
         return (
             <>
@@ -141,6 +160,9 @@ const ProductDeleted = () => {
                         <Column header="Image" body={imageBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="price" header="Price" body={priceBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="category" header="Category" sortable body={categoryBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
+                        <Column field="createdDate" header="CreatedDate" sortable body={createdDateBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
+                        <Column field="updatedDate" header="UpdatedDate" sortable body={updatedDateBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
+
                         <Column field="rating" header="Reviews" body={ratingBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         {/* <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '10rem' }}></Column> */}
                     </DataTable>
@@ -153,7 +175,7 @@ const ProductDeleted = () => {
 }
 
 const comparisonFn = function (prevProps, nextProps) {
-    return prevProps.location.pathname === nextProps.location.pathname;
+    return prevProps.history.location.pathname === nextProps.history.location.pathname;
 };
 
 export default React.memo(ProductDeleted, comparisonFn);

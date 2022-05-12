@@ -156,8 +156,6 @@ const UserDeleted = () => {
     );
 }
 
-const comparisonFn = function (prevProps, nextProps) {
-    return prevProps.location.pathname === nextProps.location.pathname;
-};
 
-export default React.memo(UserDeleted, comparisonFn);   
+
+export default React.memo(UserDeleted);   

@@ -14,6 +14,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import uploadImage from '../../firebase/upload';
 import categoryApi from '../../service/categoryService';
 import ProductService from '../../service/ProductService';
+import { convertTime } from '../../uitl/time';
 
 const User = () => {
     let emptyProduct = {
@@ -234,6 +235,24 @@ const User = () => {
         );
     }
 
+    const createdDateBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {convertTime(rowData.createdDate)}
+            </>
+        );
+    }
+
+    const updatedDateBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {convertTime(rowData.lastModifiedDate)}
+            </>
+        );
+    }
+
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
             <h5 className="m-0">Manage Products</h5>
@@ -289,6 +308,8 @@ const User = () => {
                         <Column header="Image" body={imageBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="price" header="Price" body={priceBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="category" header="Category" sortable body={categoryBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
+                        <Column field="createdDate" header="CreatedDate" sortable body={createdDateBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
+                        <Column field="updatedDate" header="UpdatedDate" sortable body={updatedDateBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="rating" header="Reviews" body={ratingBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
 
                         <Column body={actionBodyTemplate}></Column>
@@ -364,7 +385,7 @@ const User = () => {
 }
 
 const comparisonFn = function (prevProps, nextProps) {
-    return prevProps.location.pathname === nextProps.location.pathname;
+    return prevProps.history.location.pathname === nextProps.history.location.pathname;
 };
 
 export default React.memo(User, comparisonFn);

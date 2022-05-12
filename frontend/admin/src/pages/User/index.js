@@ -362,7 +362,7 @@ const User = () => {
 }
 
 const comparisonFn = function (prevProps, nextProps) {
-    return prevProps.location.pathname === nextProps.location.pathname;
+    return prevProps.history.location.pathname === nextProps.history.location.pathname;
 };
 
 export default React.memo(User, comparisonFn);   

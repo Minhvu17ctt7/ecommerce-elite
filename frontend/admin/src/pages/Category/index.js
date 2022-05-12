@@ -250,7 +250,7 @@ const Category = () => {
 }
 
 const comparisonFn = function (prevProps, nextProps) {
-    return prevProps.location.pathname === nextProps.location.pathname;
+    return prevProps.history.location.pathname === nextProps.location.pathname;
 };
 
 export default React.memo(Category, comparisonFn);
