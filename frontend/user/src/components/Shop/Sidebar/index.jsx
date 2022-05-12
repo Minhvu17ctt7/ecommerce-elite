@@ -23,7 +23,7 @@ const Sidebar = ({ categories }) => {
                 <h5 className="font-weight-semi-bold mb-4">Filter by color</h5>
                 <form>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="radio" className="custom-control-input" id="color-0" onChange={() => handleFilterCategory()} name="filter-categories" />
+                        <input type="radio" className="custom-control-input" id="color-0" onChange={() => handleFilterCategory()} checked={categoryId == null} name="filter-categories" />
                         <label className="custom-control-label" htmlFor="color-0">All category</label>
                     </div>
                     {
@@ -39,7 +39,7 @@ const Sidebar = ({ categories }) => {
                 </form>
             </div>
             {/* Color End */}
-
+            
             {/* Price Start */}
             <div className="border-bottom mb-4 pb-4">
                 <h5 className="font-weight-semi-bold mb-4">Filter by price</h5>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import productApi from '../../api/productApi'
 import reviewApi from '../../api/reviewApi'
 import Header from '../../components/Layout/Header'
@@ -15,10 +15,16 @@ const titleHeader = {
 
 
 const ProductDetail = () => {
-    const { id, pageReview } = useParams();
+    const [countFetchData, setCountFetchDate] = useState(0);
+    const { id } = useParams();
     const [product, setProduct] = useState();
     const [reviews, setReviews] = useState();
+    const [searchParams] = useSearchParams();
+    const pageReview = searchParams.get("pageReview") || 1;
 
+    const forceFetchData = () => {
+        setCountFetchDate(preState => preState + 1);
+    }
 
     useEffect(() => {
 
@@ -30,7 +36,7 @@ const ProductDetail = () => {
             setProduct(productResponse.data);
             setReviews(reviewResponse.data);
         })()
-    }, []);
+    }, [pageReview, countFetchData]);
 
     return (
         <>
@@ -40,7 +46,7 @@ const ProductDetail = () => {
                     <ImageProduct image={product?.mainImage} />
                     <Option product={product} />
                 </div>
-                <Description reviewPagination={reviews} product={product} />
+                <Description reviewPagination={reviews} product={product} forceFetchData={forceFetchData} />
             </div>
             <Recommend />
         </>

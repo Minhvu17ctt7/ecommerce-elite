@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react'
-import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import React from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import CardProduct from '../../CardProduct';
-import Pagination from '../../Pagination2';
+import Pagination from '../../Pagination';
 
 const Product = ({ productPagination }) => {
     const [searchParams] = useSearchParams();
@@ -61,7 +61,7 @@ const Product = ({ productPagination }) => {
                 {productPagination?.products.map(product => (<CardProduct key={product.id} product={product} />))}
                 <div className="col-12 pb-1">
                     <nav aria-label="Page navigation">
-                        {productPagination?.totalPage > 1 && (<Pagination url={"/shop/"}
+                        {productPagination?.totalPage > 1 && (<Pagination
                             totalPage={parseInt(productPagination?.totalPage)}
                             currentPage={parseInt(page)}
                             handleNextPage={handleNextPage}

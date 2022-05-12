@@ -1,15 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Rating } from 'react-simple-star-rating';
 import reviewApi from '../../../../api/reviewApi';
 import Pagination from '../../../Pagination';
 
-const Description = ({ product, reviewPagination }) => {
+const Description = ({ product, reviewPagination, forceFetchData }) => {
+    const navigate = useNavigate();
     const [rating, setRating] = useState(0);
     const [invalidRating, setInvalidRating] = useState(false);
-    const { pageReview } = useParams();
-
+    const [searchParams] = useSearchParams();
+    const pageReview = searchParams.get("pageReview") || 1;
+    const { id } = useParams();
 
     const { register, formState: { errors }, handleSubmit, watch } = useForm();
 
@@ -28,8 +30,13 @@ const Description = ({ product, reviewPagination }) => {
             setInvalidRating(true);
         } else {
             await reviewApi.createReview(dataReview);
-            window.location.reload(false);
+            forceFetchData();
         }
+    }
+
+    const handleNextPage = (nextPage) => {
+        let url = `/products/${id}?pageReview=${nextPage}`;
+        navigate(url);
     }
 
     const isLogin = localStorage.getItem("isLogin") === 'true';
@@ -101,8 +108,12 @@ const Description = ({ product, reviewPagination }) => {
                                         </div>
                                     </div>
                                 ))}
-
-                                <Pagination url={"/products/"} totalPage={parseInt(reviewPagination?.totalPage)} currentPage={pageReview} />
+                                {reviewPagination?.totalPage > 1 && (<Pagination
+                                    totalPage={parseInt(reviewPagination?.totalPage)}
+                                    currentPage={parseInt(pageReview)}
+                                    handleNextPage={handleNextPage}
+                                />)}
+                                {/* <Pagination totalPage={parseInt(reviewPagination?.totalPage)} currentPage={pageReview} handl /> */}
                             </div>
                             <div className="col-md-6">
                                 {isLogin ? (<> <h4 className="mb-4">Leave a review</h4>

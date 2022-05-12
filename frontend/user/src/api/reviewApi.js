@@ -3,7 +3,7 @@ import axiosClient from './axiosClients'
 
 const reviewApi = {
     createReview: (data) => {
-        const url = '/reviews';
+        const url = '/reviews/create';
         return axiosClient.post(url, data);
     },
     getReviews: (productId, pageReview) => {
