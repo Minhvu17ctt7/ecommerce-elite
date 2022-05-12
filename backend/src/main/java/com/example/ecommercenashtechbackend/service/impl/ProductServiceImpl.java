@@ -131,10 +131,10 @@ public class ProductServiceImpl implements ProductService {
             Product productOld = productOldOpt.get();
             Optional<Product> productExist = productRepository.findByName(productUpdateRequestDto.getName());
             if (productExist.isPresent() && productExist.get().getId() != productOld.getId()) {
-                Product productSave = modelMapper.map(productUpdateRequestDto, Product.class);
-                return save(productSave, productUpdateRequestDto.getCategoryId());
+                throw new ConflictException("Product name already exits");
             }
-            throw new ConflictException("Product name already exits");
+            Product productSave = modelMapper.map(productUpdateRequestDto, Product.class);
+            return save(productSave, productUpdateRequestDto.getCategoryId());
         }
         throw new NotFoundException("Product not found");
     }
