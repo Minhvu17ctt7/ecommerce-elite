@@ -15,6 +15,7 @@ const UserService = {
         return axiosClient.put(url, updateUser);
     },
     deleteUser: (userId) => {
+        alert("fsddf")
         const url = `/admin/users/${userId}`;
         return axiosClient.delete(url);
     }

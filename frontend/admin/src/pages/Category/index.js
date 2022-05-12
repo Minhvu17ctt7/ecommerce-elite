@@ -8,13 +8,14 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
+import uploadImage from '../../firebase/upload';
 import categoryApi from '../../service/categoryService';
 
 const Category = () => {
     let emptyProduct = {
         id: null,
         name: '',
-        photo: "https://cdn.ssstutter.com/products/nCRHI1bpbr1ZIsxG/042022/1650424149829.jpeg",
+        image: "",
         description: ''
     };
 
@@ -64,6 +65,10 @@ const Category = () => {
         setSubmitted(true);
 
         if (product.name.trim()) {
+            if (mainImage != null) {
+                const urlImage = await uploadImage("/categories", mainImage);
+                product['image'] = urlImage;
+            }
             if (product.id) {
                 await categoryApi.updateCategories(product);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Category Updated', life: 3000 });
@@ -95,7 +100,6 @@ const Category = () => {
     }
 
     const deleteProduct = async () => {
-
         await categoryApi.deleteCategory(product.id);
         setDeleteProductDialog(false);
         setProduct(emptyProduct);
@@ -188,6 +192,15 @@ const Category = () => {
         </>
     );
 
+
+    const [mainImage, setMainImage] = useState(null);
+
+    const handleChangeImage = (e) => {
+        setMainImage(e.target.files[0]);
+        const objectUrl = URL.createObjectURL(e.target.files[0])
+        product['image'] = objectUrl;
+    }
+
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -207,7 +220,12 @@ const Category = () => {
                     </DataTable>
 
                     <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                        {product.image && <img src={product.image} alt={product.mainImage} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
+                        {product.image && <img src={product.image} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
+                        <div className="field">
+                            <label htmlFor="name">Image</label>
+                            <input type="file" id="mainImage" required onChange={handleChangeImage} autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
+                            {submitted && !product.name && <small className="p-invalid">Image is required.</small>}
+                        </div>
                         <div className="field">
                             <label htmlFor="name">Name</label>
                             <InputText id="name" value={product.name} onChange={(e) => { onInputChange(e, 'name') }} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
@@ -216,12 +234,6 @@ const Category = () => {
                         <div className="field">
                             <label htmlFor="description">Description</label>
                             <InputTextarea id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
-                        </div>
-
-                        <div className="field">
-                            <label htmlFor="name">Image</label>
-                            <input type="file" id="mainImage" required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">Image is required.</small>}
                         </div>
                     </Dialog>
 

@@ -20,7 +20,7 @@ const User = () => {
         id: null,
         name: '',
         alias: '',
-        mainImage: "https://cdn.ssstutter.com/products/nCRHI1bpbr1ZIsxG/042022/1650424149829.jpeg",
+        mainImage: "",
         shortDescription: '',
         fullDescription: '',
         categoryId: null,
@@ -88,10 +88,11 @@ const User = () => {
         setSubmitted(true);
 
         if (product.name.trim()) {
-            if (product.id) {
-
+            if (mainImage != null) {
                 const urlImage = await uploadImage("/products", mainImage);
                 product['mainImage'] = urlImage
+            }
+            if (product.id) {
                 await ProductService.updateProduct(product);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
             }
@@ -296,7 +297,7 @@ const User = () => {
                     <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                         {product.mainImage && <img src={product.mainImage} alt={product.mainImage} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
                         <div className="field">
-                            <label htmlFor="name">Avatar</label>
+                            <label htmlFor="name">Image</label>
                             <input type="file" id="mainImage" required onChange={handleChangeImage} autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
                             {submitted && !product.name && <small className="p-invalid">Image is required.</small>}
                         </div>

@@ -8,6 +8,7 @@ import { RadioButton } from 'primereact/radiobutton';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
+import uploadImage from '../../firebase/upload';
 import RoleService from '../../service/RoleService';
 import UserService from '../../service/UserService';
 
@@ -80,6 +81,10 @@ const User = () => {
 
         if (product.email.trim()) {
             try {
+                if (mainImage != null) {
+                    const urlImage = await uploadImage("/users", mainImage);
+                    product['photo'] = urlImage
+                }
                 await UserService.createUser(product);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'User Created', life: 3000 });
             }
@@ -110,17 +115,13 @@ const User = () => {
     }
 
     const deleteProduct = async () => {
-        await UserService.deleteProduct(product.id);
+        await UserService.deleteUser(product.id);
         setDeleteProductDialog(false);
         setProduct(emptyProduct);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'User Deleted', life: 3000 });
         forceFetchData();
     }
 
-
-    const confirmDeleteSelected = () => {
-        setDeleteProductsDialog(true);
-    }
 
     const updateBlockUser = async () => {
         try {
@@ -261,6 +262,15 @@ const User = () => {
         </>
     );
 
+
+    const [mainImage, setMainImage] = useState(null);
+
+    const handleChangeImage = (e) => {
+        setMainImage(e.target.files[0]);
+        const objectUrl = URL.createObjectURL(e.target.files[0])
+        product['photo'] = objectUrl;
+    }
+
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -286,6 +296,11 @@ const User = () => {
 
                     <Dialog visible={productDialog} style={{ width: '450px' }} header="Create User" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                         {<img src={product.photo ? product.photo : "/images/user-default.png"} alt={product.photo} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
+                        <div className="field">
+                            <label htmlFor="name">Image</label>
+                            <input type="file" id="mainImage" required onChange={handleChangeImage} autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
+                            {submitted && !product.name && <small className="p-invalid">Image is required.</small>}
+                        </div>
                         <div className="field">
                             <label htmlFor="name">Email</label>
                             <InputText id="name" value={product.email} onChange={(e) => { onInputChange(e, 'email') }} required autoFocus className={classNames({ 'p-invalid': submitted && !product.email })} />
@@ -324,10 +339,7 @@ const User = () => {
                             </div>
                         </div>
 
-                        <div className="field">
-                            <label htmlFor="name">Avatar</label>
-                            <input type="file" id="mainImage" />
-                        </div>
+
                     </Dialog>
 
                     <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>

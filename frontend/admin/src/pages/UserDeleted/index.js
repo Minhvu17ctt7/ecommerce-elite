@@ -41,7 +41,7 @@ const UserDeleted = () => {
     useEffect(() => {
         (async () => {
 
-            const productsResponse = await UserService.getAllUser(false);
+            const productsResponse = await UserService.getAllUser(true);
             const roleResponse = await RoleService.getAllRole();
             setProducts(productsResponse.data);
             setRoles(roleResponse.data);
