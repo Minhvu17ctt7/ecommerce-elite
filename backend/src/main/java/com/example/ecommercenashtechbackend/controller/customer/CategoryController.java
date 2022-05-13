@@ -18,14 +18,14 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<ResponseDto> getAllCategories() {
+    public ResponseEntity<ResponseDto<List<CategoryResponseDto>>> getAllCategories() {
         List<CategoryResponseDto> listCategories = categoryService.getAllCategories();
         ResponseDto<List<CategoryResponseDto>> responseDto = new ResponseDto<>(200, listCategories, "Get category user successfully");
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getCategoryDetail(@PathVariable Long id) {
+    public ResponseEntity<ResponseDto<CategoryResponseDto>> getCategoryDetail(@PathVariable Long id) {
         CategoryResponseDto category = categoryService.findCategoryById(id);
         ResponseDto<CategoryResponseDto> responseDto = new ResponseDto<>(200, category, "Get category successfully");
         return ResponseEntity.ok(responseDto);

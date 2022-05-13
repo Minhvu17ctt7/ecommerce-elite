@@ -43,7 +43,7 @@ public class AuthController {
                     })
     })
     @PostMapping("/register")
-    public ResponseEntity<ResponseDto> register(@Validated @RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<ResponseDto<UserResponseDto>> register(@Validated @RequestBody UserRequestDto userRequestDto) {
         userRequestDto.setRole(RoleName.ROLE_USER);
         UserResponseDto userResponseDto = userService.createUser(userRequestDto);
         ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, userResponseDto, "Register successfully");
@@ -67,7 +67,7 @@ public class AuthController {
     })
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto> login(@Validated @RequestBody UserLoginRequestDto userLoginDto) {
+    public ResponseEntity<ResponseDto<UserLoginResponseDto>> login(@Validated @RequestBody UserLoginRequestDto userLoginDto) {
         UserLoginResponseDto userLoginResponseDto = userService.login(userLoginDto);
         ResponseDto<UserLoginResponseDto> responseDto = new ResponseDto<>(200, userLoginResponseDto, "Login successfully");
         return ResponseEntity.ok(responseDto);
