@@ -15,6 +15,8 @@ export default function (state = initialState, action) {
       return { error: null, user: action.response, isLoading: false };
     case types.REGISTER_USER_ERROR:
       return { user: null, error: action.error, isLoading: false };
+    case types.REFRESH_REGISTER:
+      return { ...initialState };
     default:
       return state;
   }

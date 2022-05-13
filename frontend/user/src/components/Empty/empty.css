@@ -1,0 +1,10 @@
+.empty {
+  opacity: 0.6;
+  margin-top: 80px;
+}
+.empty > p {
+  font-size: 20px;
+}
+.empty > i {
+  font-size: 100px;
+}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import productApi from '../../api/productApi'
 import reviewApi from '../../api/reviewApi'
+import BackDrop from '../../components/BackDrop'
 import Header from '../../components/Layout/Header'
 import Description from '../../components/ProductDetail/Detail/Description'
 import ImageProduct from '../../components/ProductDetail/Detail/Image'
@@ -21,6 +22,7 @@ const ProductDetail = () => {
     const [reviews, setReviews] = useState();
     const [searchParams] = useSearchParams();
     const pageReview = searchParams.get("pageReview") || 1;
+    const [isLoading, setIsLoading] = useState(false);
 
     const forceFetchData = () => {
         setCountFetchDate(preState => preState + 1);
@@ -29,16 +31,17 @@ const ProductDetail = () => {
     useEffect(() => {
 
         (async () => {
-
+            setIsLoading(true);
             const productResponse = await productApi.getProductById(id);
             const reviewResponse = await reviewApi.getReviews(id, pageReview);
 
-            setProduct(productResponse.data);
-            setReviews(reviewResponse.data);
+            await setProduct(productResponse.data);
+            await setReviews(reviewResponse.data);
+            setIsLoading(false);
         })()
     }, [pageReview, countFetchData]);
 
-    return (
+    return isLoading ? (<BackDrop />) : (
         <>
             <Header titleHeader={titleHeader} />
             <div className="container-fluid py-5">

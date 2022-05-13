@@ -1,14 +1,22 @@
+import { useSnackbar } from 'notistack';
 import React from 'react'
+import { useDispatch } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { logoutUserAction } from '../../../redux/actions/authenticationActions';
 
 
 const Header = () => {
     const navigation = useNavigate();
+    const dispatch = useDispatch();
+    const location = useLocation();
+    const { enqueueSnackbar } = useSnackbar();
     const listPathShowTab = ["/login", "/register"];
     const isLogin = localStorage.getItem("isLogin") === 'true';
     const logout = () => {
+        dispatch(logoutUserAction());
         localStorage.setItem("isLogin", false);
-        navigation('/login', { replace: true });
+        navigation(location.pathname + location.search);
+        enqueueSnackbar("Logout success", { variant: "success", autoHideDuration: 3000 });
     }
     return (
         <div className="container-fluid">
@@ -28,7 +36,7 @@ const Header = () => {
                             <span className="text-muted px-2">|</span>
                             <Link to="/register" className="text-dark">Register</Link></>)}
 
-                        {isLogin && (<p onClick={() => logout()} to="/log" className="text-dark">Logout</p>)}
+                        {isLogin && (<p onClick={() => logout()} to="/log" style={{ cursor: "pointer" }} className="text-dark">Logout</p>)}
                         {/* <Link to="#" className="text-dark px-2">
                             <i className="fab fa-facebook-f" />
                         </Link>

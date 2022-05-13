@@ -1,10 +1,10 @@
 import { useSnackbar } from 'notistack';
-import React, { useEffect } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { REG_EMAIL, REG_PASSWORD } from '../../constant/globalConstant';
-import { registerUserAction } from '../../redux/actions/authenticationActions';
+import { refreshRegisterAction, registerUserAction } from '../../redux/actions/authenticationActions';
 import "./style.css"
 
 const Register = () => {
@@ -18,14 +18,26 @@ const Register = () => {
         navigation("/login")
     }
 
+    const [firstUpdate, setFirstUpdate] = useState(true);
+
+
+    useLayoutEffect(() => {
+        if (firstUpdate) {
+            dispatch(refreshRegisterAction());
+            setFirstUpdate(false)
+            return;
+        } else {
+            if (error) {
+                enqueueSnackbar(error.message, { variant: "error", autoHideDuration: 3000 });
+            }
+            if (user) {
+                enqueueSnackbar("Register success", { variant: "success", autoHideDuration: 3000 });
+            }
+        }
+    }, [error, user])
+
     const onSubmit = (data) => {
         dispatch(registerUserAction(data));
-        if (error) {
-            enqueueSnackbar(error.message, { variant: "error" });
-        }
-        if (user) {
-            enqueueSnackbar("Register successful", { variant: "success" });
-        }
     }
 
     return (
@@ -71,6 +83,8 @@ const Register = () => {
                                         {errors.password.message}
                                     </div>}
                                 </div>
+
+
                                 <div className="form-group mb-3">
                                     <div className="form-label">
                                         <label>Password repeat</label>
@@ -107,11 +121,20 @@ const Register = () => {
                                         </div>}
                                     </div>
                                 </div>
-                                <input type="submit" value="Register" className="btn btn-block btn-primary mb-3" />
-                                <div className="d-flex align-items-center">
+                                <div className="form-group mb-3">
+                                    <div className="form-label">
+                                        <label style={{ opacity: 0.6 }}>* Password must be at least 8 characters including uppercase, lowercase letters, numbers*</label>
+                                    </div>
+                                </div>
+                                <div className="d-flex mb-5 align-items-center">
                                     <span className="mr-auto"><Link to="/" className="forgot-pass">Back home page</Link></span>
                                     <span className="ml-auto"><Link to="/login" className="forgot-pass">Login</Link></span>
                                 </div>
+                                {isLoading && (<button type="submit" className="btn btn-block btn-primary" disabled>
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </button>)}
+                                {!isLoading && (<input type="submit" value="Registry" className="btn btn-block btn-primary" />)}
+
                                 {error && (<p>{error.message}</p>)}
                             </form>
                         </div>

@@ -1,10 +1,9 @@
 import { useSnackbar } from 'notistack';
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { REG_EMAIL } from '../../constant/globalConstant';
-import { loginUserAction } from '../../redux/actions/authenticationActions';
+import { loginUserAction, refreshUserAction } from '../../redux/actions/authenticationActions';
 import "./style.css";
 
 const Login = () => {
@@ -13,19 +12,28 @@ const Login = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
     const { enqueueSnackbar } = useSnackbar();
     const isLogin = localStorage.getItem("isLogin") === "true"
+    const [firstUpdate, setFirstUpdate] = useState(true);
 
     const { isLoading, error } = useSelector(state => state.login);
 
+    useLayoutEffect(() => {
+        if (firstUpdate) {
+            dispatch(refreshUserAction());
+            setFirstUpdate(false)
+            return;
+        } else {
+            if (error !== null) {
+                enqueueSnackbar(error.message, { variant: "error", autoHideDuration: 3000 });
+            }
+            if (isLogin) {
+                enqueueSnackbar("Login success", { variant: "success", autoHideDuration: 3000 });
+                navigation("/");
+            }
+        }
+    }, [error, isLogin])
+
     const onSubmit = (data) => {
         dispatch(loginUserAction(data));
-        if (error) {
-            enqueueSnackbar(error.message, { variant: "error", autoHideDuration: 4000 });
-        }
-        if (isLogin) {
-            enqueueSnackbar("Login successful", { variant: "success", autoHideDuration: 4000 });
-            navigation(-1);
-        }
-
     }
 
     return (
@@ -44,11 +52,7 @@ const Login = () => {
                                     </div>
                                     <input type="text" className="form-control is-invalid" placeholder="your-email@gmail.com" id="email"
                                         {...register('email', {
-                                            required: 'Please enter email',
-                                            pattern: {
-                                                value: REG_EMAIL,
-                                                message: 'Email is wrong format',
-                                            },
+                                            required: 'Please enter email'
                                         })}
 
                                     />
@@ -72,7 +76,10 @@ const Login = () => {
                                     <span className="mr-auto"><Link to="/" className="forgot-pass">Back to home</Link></span>
                                     <span className="ml-auto"><Link to="/register" className="forgot-pass">Register</Link></span>
                                 </div>
-                                <input type="submit" value="Log In" className="btn btn-block btn-primary" />
+                                {isLoading && (<button type="submit" className="btn btn-block btn-primary" disabled>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </button>)}
+                                {!isLoading && (<input type="submit" value="Log In" className="btn btn-block btn-primary" />)}
                             </form>
                         </div>
                     </div>

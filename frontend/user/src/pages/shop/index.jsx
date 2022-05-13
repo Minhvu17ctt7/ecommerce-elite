@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import categoryApi from '../../api/categoryApi'
 import productApi from '../../api/productApi'
+import BackDrop from '../../components/BackDrop'
 import Header from '../../components/Layout/Header'
 import Product from '../../components/Shop/Product'
 import Sidebar from '../../components/Shop/Sidebar'
@@ -15,6 +16,7 @@ const titleHeader = {
 const Shop = () => {
     const [products, setProducts] = useState();
     const [categories, setCategories] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const [searchParams] = useSearchParams();
     const categoryId = searchParams.get("categoryId");
     const page = searchParams.get("page") || 1;
@@ -54,6 +56,7 @@ const Shop = () => {
 
     useEffect(() => {
         (async () => {
+            setIsLoading(true);
             const data = {
                 "page": page,
                 "sortField": "name",
@@ -66,12 +69,12 @@ const Shop = () => {
             const productsResponse = await productApi.getAllProductFilter(data);
             setProducts(productsResponse.data);
             setCategories(categoriesResponse.data);
-
+            setIsLoading(false)
         })()
     }, [search, page, categoryId]);
 
 
-    return (
+    return isLoading ? (<BackDrop />) : (
         <>
             <Header main titleHeader={titleHeader} />
             <div className="container-fluid pt-5">

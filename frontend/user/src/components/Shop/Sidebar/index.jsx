@@ -6,6 +6,7 @@ const Sidebar = ({ categories }) => {
     const navigation = useNavigate();
     const categoryId = searchParams.get("categoryId");
     const price = searchParams.get("price");
+    console.log(categoryId !== null, categoryId === null)
     const handleFilterCategory = (id) => {
         if (id) {
             navigation(`/shop?categoryId=${id}`);
@@ -21,14 +22,14 @@ const Sidebar = ({ categories }) => {
             <div className="border-bottom mb-4 pb-4">
                 <h5 className="font-weight-semi-bold mb-4">Filter by color</h5>
                 <form>
-                    {categoryId == null &&
-                        <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="radio" className="custom-control-input" id="color-0" onClick={() => handleFilterCategory()} name="filter-categories" />
+                    {categoryId === null &&
+                        (<div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" className="custom-control-input" id="color-0" onClick={() => handleFilterCategory()} checked name="filter-categories" />
                             <label className="custom-control-label" htmlFor="color-0">All category</label>
-                        </div>}
-                    {categoryId != null &&
+                        </div>)}
+                    {categoryId !== null &&
                         <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="radio" className="custom-control-input" id="color-0" onClick={() => handleFilterCategory()} checked name="filter-categories" />
+                            <input type="checkbox" className="custom-control-input" id="color-0" onClick={() => handleFilterCategory()} name="filter-categories" />
                             <label className="custom-control-label" htmlFor="color-0">All category</label>
                         </div>}
                     {
@@ -36,7 +37,7 @@ const Sidebar = ({ categories }) => {
 
                             return (
                                 <div key={category.id} className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                                    <input type="radio" className="custom-control-input" id={`color-${index + 1}`} onClick={() => handleFilterCategory(category.id)} checked={categoryId != null && categoryId == category.id} name="filter-categories" />
+                                    <input type="checkbox" className="custom-control-input" id={`color-${index + 1}`} onClick={() => handleFilterCategory(category.id)} checked={categoryId != null && categoryId == category.id} name="filter-categories" />
                                     <label className="custom-control-label" htmlFor={`color-${index + 1}`}>{category.name}</label>
                                 </div>)
                         })
