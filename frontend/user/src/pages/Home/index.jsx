@@ -6,7 +6,6 @@ import Featured from '../../components/Home/Featured'
 import Navbar from '../../components/Home/Navbar'
 import Product from '../../components/Home/Product'
 
-
 const Home = () => {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState();
@@ -26,9 +25,9 @@ const Home = () => {
         })()
     }, []);
 
-
     return (
         <>
+
             <Navbar categories={categories} />
             <Featured />
             <Categories categories={categories} />

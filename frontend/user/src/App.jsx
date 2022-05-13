@@ -1,22 +1,18 @@
-import { useState } from 'react'
-import logo from './logo.svg'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
-import Home from './pages/Home'
 import Footer from './components/Layout/Footer'
 import Topbar from './components/Layout/Topbar'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import Shop from './pages/shop'
-import ProductDetail from './pages/ProductDetail'
+import Home from './pages/Home'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
+import ProductDetail from './pages/ProductDetail'
 import Register from './pages/Register'
-import ToastComponent from './components/Toast'
+import Shop from './pages/shop'
 
 function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        <ToastComponent />
         <Topbar />
         <Routes>
           <Route path="/" element={<Home />} />

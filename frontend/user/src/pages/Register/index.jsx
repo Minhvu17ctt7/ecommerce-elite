@@ -1,4 +1,5 @@
-import React from 'react'
+import { useSnackbar } from 'notistack';
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,9 +11,16 @@ const Register = () => {
     const dispatch = useDispatch();
     const navigation = useNavigate();
     const { register, formState: { errors }, handleSubmit, watch } = useForm();
-
+    const { enqueueSnackbar } = useSnackbar();
     const { isLoading, error, user } = useSelector(state => state.register);
-
+    useEffect(() => {
+        if (error) {
+            enqueueSnackbar(error.message, { variant: "error" });
+        }
+        if (user) {
+            enqueueSnackbar("Register successful", { variant: "success" });
+        }
+    }, [error, user])
     if (user) {
         navigation("/login")
     }

@@ -1,29 +1,31 @@
-import React from 'react'
+import { useSnackbar } from 'notistack';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { REG_EMAIL, REG_PASSWORD } from '../../constant/globalConstant';
+import { REG_EMAIL } from '../../constant/globalConstant';
 import { loginUserAction } from '../../redux/actions/authenticationActions';
-import { showToast } from '../../redux/actions/toastActions';
-import "./style.css"
+import "./style.css";
 
 const Login = () => {
     const dispatch = useDispatch();
     const navigation = useNavigate();
     const { register, formState: { errors }, handleSubmit } = useForm();
+    const { enqueueSnackbar } = useSnackbar();
+    const isLogin = localStorage.getItem("isLogin") === "true"
 
-    const { isLoading, user, error, isLogin } = useSelector(state => state.login);
+    const { isLoading, error } = useSelector(state => state.login);
     if (isLogin) {
         navigation(-1);
     }
-
-    if (error) {
-        const dispatch = useDispatch();
-        dispatch(showToast({
-            "title": "error",
-            "message": error.message
-        }));
-    }
+    useEffect(() => {
+        if (error) {
+            enqueueSnackbar(error.message, { variant: "error" });
+        }
+        if (isLogin) {
+            enqueueSnackbar("Login successful", { variant: "success" });
+        }
+    }, [error, isLogin])
     const onSubmit = (data) => {
         dispatch(loginUserAction(data));
     }

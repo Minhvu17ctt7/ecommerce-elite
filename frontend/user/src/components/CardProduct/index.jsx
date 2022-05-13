@@ -1,7 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { formatCurrency } from '../../uitl/util'
 
 const CardProduct = ({ product }) => {
+
     return (
         <div className="col-lg-4 col-md-6 col-sm-12 pb-1">
             <div className="card product-item border-0 mb-4 h-100">
@@ -11,7 +13,7 @@ const CardProduct = ({ product }) => {
                 <div className="card-body border-left border-right text-center p-0 pt-4 pb-3">
                     <h6 className="text-truncate mb-3">{product.name}</h6>
                     <div className="d-flex justify-content-center">
-                        <h6>${product.price}</h6><h6 className="text-muted ml-2"><del>${product.price}</del></h6>
+                        <h6>{formatCurrency(product.price)}</h6><h6 className="text-muted ml-2"><del>{formatCurrency(product.price)}</del></h6>
                     </div>
                 </div>
                 <div className="card-footer d-flex justify-content-between bg-light border">
