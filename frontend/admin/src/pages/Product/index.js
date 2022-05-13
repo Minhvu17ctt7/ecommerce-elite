@@ -90,7 +90,7 @@ const User = () => {
 
         if (product.name.trim()) {
             if (mainImage != null) {
-                const urlImage = await uploadImage("/products", mainImage);
+                const urlImage = await uploadImage("products", mainImage);
                 product['mainImage'] = urlImage
             }
             if (product.id) {
@@ -384,8 +384,5 @@ const User = () => {
     );
 }
 
-const comparisonFn = function (prevProps, nextProps) {
-    return prevProps.history.location.pathname === nextProps.history.location.pathname;
-};
 
-export default React.memo(User, comparisonFn);
+export default React.memo(User);

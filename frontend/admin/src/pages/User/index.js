@@ -35,6 +35,7 @@ const User = () => {
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [countFetchData, setCountFetchDate] = useState(0);
+    const [urlImage, setUrlImage] = useState();
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -82,19 +83,20 @@ const User = () => {
         if (product.email.trim()) {
             try {
                 if (mainImage != null) {
-                    const urlImage = await uploadImage("/users", mainImage);
+                    const urlImage = await uploadImage("users", mainImage);
                     product['photo'] = urlImage
                 }
                 await UserService.createUser(product);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'User Created', life: 3000 });
+                setProductDialog(false);
+                setProduct(emptyProduct);
+                forceFetchData();
             }
             catch (e) {
                 toast.current.show({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
             }
 
-            setProductDialog(false);
-            setProduct(emptyProduct);
-            forceFetchData();
+
         }
     }
 
@@ -361,8 +363,4 @@ const User = () => {
     );
 }
 
-const comparisonFn = function (prevProps, nextProps) {
-    return prevProps.history.location.pathname === nextProps.history.location.pathname;
-};
-
-export default React.memo(User, comparisonFn);   
+export default React.memo(User);   

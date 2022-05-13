@@ -174,8 +174,5 @@ const ProductDeleted = () => {
     );
 }
 
-const comparisonFn = function (prevProps, nextProps) {
-    return prevProps.history.location.pathname === nextProps.history.location.pathname;
-};
 
-export default React.memo(ProductDeleted, comparisonFn);
+export default React.memo(ProductDeleted);

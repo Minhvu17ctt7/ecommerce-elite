@@ -1,14 +1,18 @@
 package com.example.ecommercenashtechbackend.config;
 
+import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
+import com.example.ecommercenashtechbackend.entity.Product;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.print.attribute.standard.Destination;
 import java.util.Optional;
 
 @Configuration
@@ -32,4 +36,6 @@ public class GlobalConfiguration {
 
         return modelMapper;
     }
+
+
 }

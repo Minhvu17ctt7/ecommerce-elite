@@ -22,10 +22,16 @@ const Sidebar = ({ categories }) => {
             <div className="border-bottom mb-4 pb-4">
                 <h5 className="font-weight-semi-bold mb-4">Filter by color</h5>
                 <form>
-                    <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="radio" className="custom-control-input" id="color-0" onChange={() => handleFilterCategory()} checked={categoryId == null} name="filter-categories" />
-                        <label className="custom-control-label" htmlFor="color-0">All category</label>
-                    </div>
+                    {categoryId &&
+                        <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="radio" className="custom-control-input" id="color-0" onChange={() => handleFilterCategory()} name="filter-categories" />
+                            <label className="custom-control-label" htmlFor="color-0">All category</label>
+                        </div>}
+                    {!categoryId &&
+                        <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="radio" className="custom-control-input" id="color-0" onChange={() => handleFilterCategory()} checked name="filter-categories" />
+                            <label className="custom-control-label" htmlFor="color-0">All category</label>
+                        </div>}
                     {
                         categories.map((category, index) => {
 
@@ -39,29 +45,29 @@ const Sidebar = ({ categories }) => {
                 </form>
             </div>
             {/* Color End */}
-            
+
             {/* Price Start */}
             <div className="border-bottom mb-4 pb-4">
                 <h5 className="font-weight-semi-bold mb-4">Filter by price</h5>
                 <form>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" className="custom-control-input" defaultChecked id="price-all" />
+                        <input type="radio" className="custom-control-input" defaultChecked id="price-all" value="" />
                         <label className="custom-control-label" htmlFor="price-all">All Price</label>
                     </div>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" className="custom-control-input" id="price-1" />
+                        <input type="radio" className="custom-control-input" id="price-1" value="price>0;price<100000" />
                         <label className="custom-control-label" htmlFor="price-1">0 - 100.000 VND</label>
                     </div>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" className="custom-control-input" id="price-2" />
+                        <input type="radio" className="custom-control-input" id="price-2" value="price>100000;price<200000" />
                         <label className="custom-control-label" htmlFor="price-2">100.000 - 200.000 VND</label>
                     </div>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" className="custom-control-input" id="price-3" />
+                        <input type="radio" className="custom-control-input" id="price-3" value="price>200000;price<400000" />
                         <label className="custom-control-label" htmlFor="price-3">200.000 - 400.000</label>
                     </div>
                     <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" className="custom-control-input" id="price-4" />
+                        <input type="radio" className="custom-control-input" id="price-4" value="price>400000;price<500000" />
                         <label className="custom-control-label" htmlFor="price-4">400.000 - 500.000 VND</label>
                     </div>
                 </form>

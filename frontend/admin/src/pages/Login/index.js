@@ -25,7 +25,7 @@ const Login = () => {
             const user = userResponse.data;
             const roles = user.roles.map(role => role.name);
             if (roles.indexOf("ADMIN") !== -1) {
-                localStorage.setItem('user', JSON.stringify(userResponse.data));
+                localStorage.setItem('user', JSON.stringify(user));
                 localStorage.setItem('accessToken', userResponse.data.accessToken);
                 localStorage.setItem('refreshToken', userResponse.data.refreshToken);
                 localStorage.setItem('isLogin', 'true');

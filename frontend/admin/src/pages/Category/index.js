@@ -65,7 +65,7 @@ const Category = () => {
 
         if (product.name.trim()) {
             if (mainImage != null) {
-                const urlImage = await uploadImage("/categories", mainImage);
+                const urlImage = await uploadImage("categories", mainImage);
                 product['image'] = urlImage;
             }
             if (product.id) {
@@ -249,8 +249,5 @@ const Category = () => {
     );
 }
 
-const comparisonFn = function (prevProps, nextProps) {
-    return prevProps.history.location.pathname === nextProps.location.pathname;
-};
 
-export default React.memo(Category, comparisonFn);
+export default React.memo(Category);

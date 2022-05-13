@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Rating } from 'react-simple-star-rating';
 import reviewApi from '../../../../api/reviewApi';
+import { convertTime } from '../../../../uitl/time';
 import Pagination from '../../../Pagination';
 
 const Description = ({ product, reviewPagination, forceFetchData }) => {
@@ -13,7 +14,11 @@ const Description = ({ product, reviewPagination, forceFetchData }) => {
     const pageReview = searchParams.get("pageReview") || 1;
     const { id } = useParams();
 
-    const { register, formState: { errors }, handleSubmit, watch } = useForm();
+    const formInital = {
+        "review": ""
+    }
+
+    const { register, formState: { errors }, handleSubmit, reset } = useForm(formInital);
 
     const handleRating = (rate) => {
         setRating(rate)
@@ -30,6 +35,8 @@ const Description = ({ product, reviewPagination, forceFetchData }) => {
             setInvalidRating(true);
         } else {
             await reviewApi.createReview(dataReview);
+            setRating(0);
+            reset();
             forceFetchData();
         }
     }
@@ -100,7 +107,7 @@ const Description = ({ product, reviewPagination, forceFetchData }) => {
                                     <div className="media mb-4">
                                         <img src="/public/img/user-default.png" alt="Image" className="img-fluid mr-3 mt-1" style={{ width: '45px' }} />
                                         <div className="media-body">
-                                            <h6>{review.user.firstName} {review.user.lastName}<small> - <i>01 Jan 2045</i></small></h6>
+                                            <h6>{review.user.firstName} {review.user.lastName}<small> - <i>{convertTime(review.createdDate)}</i></small></h6>
                                             <div className="text-primary mb-2">
                                                 <Rating readonly ratingValue={review.rating * 20} />
                                             </div>
