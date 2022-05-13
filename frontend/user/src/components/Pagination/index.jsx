@@ -24,9 +24,9 @@ const Pagination = props => {
     );
 
     const pageRange = range(leftSiblingIndex, rightSiblingIndex);
-    
+
     return (
-        <ul className="pagination justify-content-center mb-3">
+        <ul className="pagination justify-content-center mb-3 mt-5">
             <li onClick={() => handleNextPage(currentPage - 1)} className={currentPage == 1 ? "page-item disabled" : "page-item"}>
                 <span to="#" className="page-link" aria-label="Previous">
                     <span aria-hidden="true">«</span>

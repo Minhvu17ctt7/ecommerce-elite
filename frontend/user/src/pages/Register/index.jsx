@@ -13,20 +13,19 @@ const Register = () => {
     const { register, formState: { errors }, handleSubmit, watch } = useForm();
     const { enqueueSnackbar } = useSnackbar();
     const { isLoading, error, user } = useSelector(state => state.register);
-    useEffect(() => {
-        if (error) {
-            enqueueSnackbar(error.message, { variant: "error" });
-        }
-        if (user) {
-            enqueueSnackbar("Register successful", { variant: "success" });
-        }
-    }, [error, user])
+
     if (user) {
         navigation("/login")
     }
 
     const onSubmit = (data) => {
         dispatch(registerUserAction(data));
+        if (error) {
+            enqueueSnackbar(error.message, { variant: "error" });
+        }
+        if (user) {
+            enqueueSnackbar("Register successful", { variant: "success" });
+        }
     }
 
     return (

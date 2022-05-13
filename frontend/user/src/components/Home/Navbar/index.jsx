@@ -4,11 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 const Navbar = ({ categories }) => {
     const navigation = useNavigate();
 
-    const isLogin = localStorage.getItem("isLogin") === 'true';
-    const logout = () => {
-        localStorage.setItem("isLogin", false);
-        navigation('/login', { replace: true });
-    }
+
     return (
         <div className="container-fluid mb-5">
             <div className="row border-top px-xl-5">
@@ -19,14 +15,6 @@ const Navbar = ({ categories }) => {
                     </a>
                     <nav className="collapse show navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0" id="navbar-vertical">
                         <div className="navbar-nav w-100 overflow-hidden">
-                            {/* <div className="nav-item dropdown">
-                                <a href="#" className="nav-link" data-toggle="dropdown">Dresses <i className="fa fa-angle-down float-right mt-1" /></a>
-                                <div className="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                    <a href className="dropdown-item">Men's Dresses</a>
-                                    <a href className="dropdown-item">Women's Dresses</a>
-                                    <a href className="dropdown-item">Baby's Dresses</a>
-                                </div>
-                            </div> */}
                             {categories.map(category => (<Link to={`/shop?categoryId=${category.id}`} key={category.id} className="nav-item nav-link">{category.name}</Link>))}
 
                         </div>
@@ -43,10 +31,7 @@ const Navbar = ({ categories }) => {
                         <div className="collapse navbar-collapse justify-content-between" id="navbarCollapse">
 
                             <div className="navbar-nav ml-auto py-0">
-                                {isLogin && (<p onClick={() => logout()} className="nav-item nav-link">Logout</p>)}
-                                {!isLogin && (<><Link to="/login" className="nav-item nav-link">Login</Link>
-                                    <Link to="#" className="nav-item nav-link">Register</Link></>
-                                )}
+                                
 
                             </div>
                         </div>

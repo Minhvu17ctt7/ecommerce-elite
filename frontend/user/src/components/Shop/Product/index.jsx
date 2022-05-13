@@ -2,6 +2,7 @@
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import CardProduct from '../../CardProduct';
+import Empty from '../../Empty';
 import Pagination from '../../Pagination';
 
 const Product = ({ productPagination }) => {
@@ -58,7 +59,8 @@ const Product = ({ productPagination }) => {
                         </div>
                     </div>
                 </div>
-                {productPagination?.products.map(product => (<CardProduct key={product.id} product={product} />))}
+                {productPagination?.products.length === 0 && <Empty />}
+                {productPagination && productPagination?.products.map(product => (<CardProduct key={product.id} product={product} />))}
                 <div className="col-12 pb-1">
                     <nav aria-label="Page navigation">
                         {productPagination?.totalPage > 1 && (<Pagination

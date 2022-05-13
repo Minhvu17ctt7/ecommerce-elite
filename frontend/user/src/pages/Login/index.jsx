@@ -15,19 +15,17 @@ const Login = () => {
     const isLogin = localStorage.getItem("isLogin") === "true"
 
     const { isLoading, error } = useSelector(state => state.login);
-    if (isLogin) {
-        navigation(-1);
-    }
-    useEffect(() => {
-        if (error) {
-            enqueueSnackbar(error.message, { variant: "error" });
-        }
-        if (isLogin) {
-            enqueueSnackbar("Login successful", { variant: "success" });
-        }
-    }, [error, isLogin])
+
     const onSubmit = (data) => {
         dispatch(loginUserAction(data));
+        if (error) {
+            enqueueSnackbar(error.message, { variant: "error", autoHideDuration: 4000 });
+        }
+        if (isLogin) {
+            enqueueSnackbar("Login successful", { variant: "success", autoHideDuration: 4000 });
+            navigation(-1);
+        }
+
     }
 
     return (

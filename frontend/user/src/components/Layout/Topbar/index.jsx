@@ -1,10 +1,15 @@
 import React from 'react'
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 
 const Header = () => {
-    const location = useLocation();
+    const navigation = useNavigate();
     const listPathShowTab = ["/login", "/register"];
+    const isLogin = localStorage.getItem("isLogin") === 'true';
+    const logout = () => {
+        localStorage.setItem("isLogin", false);
+        navigation('/login', { replace: true });
+    }
     return (
         <div className="container-fluid">
             <div className="row bg-secondary py-2 px-xl-5">
@@ -19,7 +24,12 @@ const Header = () => {
                 </div>
                 <div className="col-lg-6 text-center text-lg-right">
                     <div className="d-inline-flex align-items-center">
-                        <Link to="#" className="text-dark px-2">
+                        {!isLogin && (<><Link to="/login" className="text-dark">Login</Link>
+                            <span className="text-muted px-2">|</span>
+                            <Link to="/register" className="text-dark">Register</Link></>)}
+
+                        {isLogin && (<p onClick={() => logout()} to="/log" className="text-dark">Logout</p>)}
+                        {/* <Link to="#" className="text-dark px-2">
                             <i className="fab fa-facebook-f" />
                         </Link>
                         <Link to="#" className="text-dark px-2">
@@ -33,14 +43,14 @@ const Header = () => {
                         </Link>
                         <Link to="#" className="text-dark pl-2">
                             <i className="fab fa-youtube" />
-                        </Link>
+                        </Link> */}
                     </div>
                 </div>
             </div>
             <div className="row align-items-center py-3 px-xl-5">
                 <div className="col-lg-3 d-none d-lg-block">
                     <Link to="/" className="text-decoration-none">
-                        <h1 className="m-0 display-5 font-weight-semi-bold"><span className="text-primary font-weight-bold border px-3 mr-1">MO</span>Shopper</h1>
+                        <h1 className="m-0 display-5 font-weight-semi-bold"><span className="text-primary font-weight-bold border px-3 mr-1">MO</span>Shopping</h1>
                     </Link>
                 </div>
                 <div className="col-lg-6 col-6 text-left">
