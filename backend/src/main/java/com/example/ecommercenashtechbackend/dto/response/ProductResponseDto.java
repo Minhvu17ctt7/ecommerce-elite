@@ -6,7 +6,12 @@ import com.example.ecommercenashtechbackend.entity.ProductImage;
 import com.example.ecommercenashtechbackend.entity.Review;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +33,8 @@ public class  ProductResponseDto {
     private float discountPercent;
     private Long categoryId;
     private float averageRating;
+    private LocalDateTime createdDate;
+    private LocalDateTime lastModifiedDate;
     private CategoryResponseDto category;
     private Set<ProductImage> productImages = new HashSet<>();
     private Set<ProductDetail> productDetails = new HashSet<>();

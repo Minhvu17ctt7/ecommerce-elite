@@ -24,7 +24,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ResponseDto> createReview(@Validated @RequestBody ReviewCreateRequestDto reviewCreateRequestDto) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetail userDetail = (UserDetail)principal;
