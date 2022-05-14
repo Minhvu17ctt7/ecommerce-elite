@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import productApi from '../../api/productApi'
 import reviewApi from '../../api/reviewApi'
-import BackDrop from '../../components/BackDrop'
 import Header from '../../components/Layout/Header'
 import Description from '../../components/ProductDetail/Detail/Description'
 import ImageProduct from '../../components/ProductDetail/Detail/Image'
@@ -46,8 +45,7 @@ const ProductDetail = () => {
             setIsLoading(false);
         })()
     }, [pageReview, countFetchData]);
-    console.log(product)
-    return isLoading ? (<BackDrop />) : (
+    return (
         <>
             <Header titleHeader={titleHeader} />
             <div className="container-fluid py-5">

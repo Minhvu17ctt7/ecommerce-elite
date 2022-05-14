@@ -4,8 +4,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import CardProduct from '../../CardProduct';
 import Empty from '../../Empty';
 import Pagination from '../../Pagination';
+import CircularProgress from '@mui/material/CircularProgress';
+import Spinner from '../../Spinner';
 
-const Product = ({ productPagination }) => {
+const Product = ({ productPagination, isLoading }) => {
     const [searchParams] = useSearchParams();
     const page = searchParams.get("page") || 1;
     const categoryId = searchParams.get("categoryId");
@@ -59,6 +61,8 @@ const Product = ({ productPagination }) => {
                         </div>
                     </div>
                 </div>
+
+                {isLoading && <Spinner />}
                 {productPagination?.products.length === 0 && <Empty />}
                 {productPagination && productPagination?.products.map(product => (<CardProduct key={product.id} product={product} />))}
                 <div className="col-12 pb-1">
