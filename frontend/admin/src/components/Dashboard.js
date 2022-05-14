@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import categoryApi from '../service/categoryService';
 
 
 const Dashboard = (props) => {
     const [lineOptions, setLineOptions] = useState(null)
+    const [categories, setCategories] = useState(null);
+    const history = useHistory();
 
     const applyLightTheme = () => {
         const lineOptions = {
@@ -76,6 +80,20 @@ const Dashboard = (props) => {
             applyDarkTheme();
         }
     }, [props.colorMode]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const categoryResponse = await categoryApi.getAllCategory(false);
+                setCategories(categoryResponse.data);
+            } catch (e) {
+                if (e.status === 403) {
+                    localStorage.removeItem("isLogin");
+                    history.push("/login")
+                }
+            }
+        })()
+    }, []);
 
 
     return (

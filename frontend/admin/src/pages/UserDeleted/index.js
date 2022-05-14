@@ -5,6 +5,7 @@ import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import RoleService from '../../service/RoleService';
 import UserService from '../../service/UserService';
 
@@ -21,6 +22,7 @@ const UserDeleted = () => {
         blocked: false
     };
 
+    const history = useHistory();
     const [products, setProducts] = useState([]);
     const [roles, setRoles] = useState([]);
     const [productDialog, setProductDialog] = useState(false);
@@ -40,7 +42,14 @@ const UserDeleted = () => {
 
     useEffect(() => {
         (async () => {
-
+            try { } catch (e) {
+                if (e.status === 403) {
+                    localStorage.removeItem("isLogin");
+                    history.push("/login")
+                } else {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
+                }
+            }
             const productsResponse = await UserService.getAllUser(true);
             const roleResponse = await RoleService.getAllRole();
             setProducts(productsResponse.data);

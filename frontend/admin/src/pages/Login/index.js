@@ -35,7 +35,12 @@ const Login = () => {
                 toast.current.show({ severity: 'error', summary: 'Error', detail: 'UnAuthorization', life: 3000 });
             }
         } catch (e) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
+            if (e.status === 403) {
+                localStorage.removeItem("isLogin");
+                history.push("/login")
+            } else {
+                toast.current.show({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
+            }
         }
     };
 

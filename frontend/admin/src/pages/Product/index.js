@@ -11,6 +11,7 @@ import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import uploadImage from '../../firebase/upload';
 import categoryApi from '../../service/categoryService';
 import ProductService from '../../service/ProductService';
@@ -40,6 +41,7 @@ const User = () => {
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [countFetchData, setCountFetchDate] = useState(0);
+    const history = useHistory();
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -51,13 +53,20 @@ const User = () => {
         // const productService = new ProductService();
         // productService.getProducts().then(data => setProducts(data));
         (async () => {
+            try {
+                const categoryResponse = await categoryApi.getAllCategory(false);
+                const productResponse = await ProductService.getAllProductFilter(false);
 
-            const categoryResponse = await categoryApi.getAllCategory(false);
-            const productResponse = await ProductService.getAllProductFilter(false);
-
-            setCategories(categoryResponse.data);
-            setProducts(productResponse.data);
-
+                setCategories(categoryResponse.data);
+                setProducts(productResponse.data);
+            } catch (e) {
+                if (e.status === 403) {
+                    localStorage.removeItem("isLogin");
+                    history.push("/login")
+                } else {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
+                }
+            }
         })()
     }, [countFetchData]);
 

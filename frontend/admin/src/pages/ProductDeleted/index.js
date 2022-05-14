@@ -4,6 +4,7 @@ import { InputText } from 'primereact/inputtext';
 import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import categoryApi from '../../service/categoryService';
 import ProductService from '../../service/ProductService';
 import { convertTime } from '../../uitl/time';
@@ -22,6 +23,7 @@ const ProductDeleted = () => {
         averageRating: 0
     };
 
+    const history = useHistory();
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [productDialog, setProductDialog] = useState(false);
@@ -40,12 +42,21 @@ const ProductDeleted = () => {
         // const productService = new ProductService();
         // productService.getProducts().then(data => setProducts(data));
         (async () => {
+            try {
+                const categoryResponse = await categoryApi.getAllCategory(false);
+                const productResponse = await ProductService.getAllProductFilter(true);
 
-            const categoryResponse = await categoryApi.getAllCategory(false);
-            const productResponse = await ProductService.getAllProductFilter(true);
+                setCategories(categoryResponse.data);
+                setProducts(productResponse.data);
+            } catch (e) {
+                if (e.status === 403) {
+                    localStorage.removeItem("isLogin");
+                    history.push("/login")
+                } else {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
+                }
+            }
 
-            setCategories(categoryResponse.data);
-            setProducts(productResponse.data);
 
         })()
     }, []);

@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack'
 import React, { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import productApi from '../../api/productApi'
@@ -23,6 +24,7 @@ const ProductDetail = () => {
     const [searchParams] = useSearchParams();
     const pageReview = searchParams.get("pageReview") || 1;
     const [isLoading, setIsLoading] = useState(false);
+    const { enqueueSnackbar } = useSnackbar();
 
     const forceFetchData = () => {
         setCountFetchDate(preState => preState + 1);
@@ -32,15 +34,19 @@ const ProductDetail = () => {
 
         (async () => {
             setIsLoading(true);
-            const productResponse = await productApi.getProductById(id);
-            const reviewResponse = await reviewApi.getReviews(id, pageReview);
+            try {
+                const productResponse = await productApi.getProductById(id);
+                const reviewResponse = await reviewApi.getReviews(id, pageReview);
 
-            await setProduct(productResponse.data);
-            await setReviews(reviewResponse.data);
+                await setProduct(productResponse.data);
+                await setReviews(reviewResponse.data);
+            } catch (error) {
+                enqueueSnackbar(error.message, { variant: "error", autoHideDuration: 3000 });
+            }
             setIsLoading(false);
         })()
     }, [pageReview, countFetchData]);
-
+    console.log(product)
     return isLoading ? (<BackDrop />) : (
         <>
             <Header titleHeader={titleHeader} />

@@ -8,6 +8,7 @@ import { RadioButton } from 'primereact/radiobutton';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import uploadImage from '../../firebase/upload';
 import RoleService from '../../service/RoleService';
 import UserService from '../../service/UserService';
@@ -25,6 +26,7 @@ const User = () => {
         blocked: false
     };
 
+    const history = useHistory();
     const [products, setProducts] = useState([]);
     const [roles, setRoles] = useState([]);
     const [productDialog, setProductDialog] = useState(false);
@@ -45,12 +47,19 @@ const User = () => {
 
     useEffect(() => {
         (async () => {
-
-            const productsResponse = await UserService.getAllUser(false);
-            const roleResponse = await RoleService.getAllRole();
-            setProducts(productsResponse.data);
-            setRoles(roleResponse.data);
-
+            try {
+                const productsResponse = await UserService.getAllUser(false);
+                const roleResponse = await RoleService.getAllRole();
+                setProducts(productsResponse.data);
+                setRoles(roleResponse.data);
+            } catch (e) {
+                if (e.status === 403) {
+                    localStorage.removeItem("isLogin");
+                    history.push("/login")
+                } else {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
+                }
+            }
         })()
     }, [countFetchData]);
 
@@ -93,7 +102,12 @@ const User = () => {
                 forceFetchData();
             }
             catch (e) {
-                toast.current.show({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
+                if (e.status === 403) {
+                    localStorage.removeItem("isLogin");
+                    history.push("/login")
+                } else {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
+                }
             }
 
 

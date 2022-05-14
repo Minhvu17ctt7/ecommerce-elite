@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
@@ -11,6 +12,8 @@ const Description = ({ product, reviewPagination, forceFetchData }) => {
     const [rating, setRating] = useState(0);
     const [invalidRating, setInvalidRating] = useState(false);
     const [searchParams] = useSearchParams();
+    const { enqueueSnackbar } = useSnackbar();
+
     const pageReview = searchParams.get("pageReview") || 1;
     const { id } = useParams();
 
@@ -34,10 +37,15 @@ const Description = ({ product, reviewPagination, forceFetchData }) => {
         if (rating / 20 === 0) {
             setInvalidRating(true);
         } else {
-            await reviewApi.createReview(dataReview);
-            setRating(0);
-            reset();
-            forceFetchData();
+            try {
+                await reviewApi.createReview(dataReview);
+                enqueueSnackbar("Comment success", { variant: "success", autoHideDuration: 3000 });
+                setRating(0);
+                reset();
+                forceFetchData();
+            } catch (e) {
+                enqueueSnackbar("Comment fail: " + e.message, { variant: "error", autoHideDuration: 3000 });
+            }
         }
     }
 
@@ -52,54 +60,12 @@ const Description = ({ product, reviewPagination, forceFetchData }) => {
         <div className="row px-xl-5">
             <div className="col">
                 <div className="nav nav-tabs justify-content-center border-secondary mb-4">
-                    <a className="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Description</a>
-                    <a className="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Information</a>
-                    <a className="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Reviews ({product?.reviews.length})</a>
+
+                    <a className="nav-item nav-link active" data-toggle="tab" href="#tab-pane-3">Reviews ({product?.reviews.length})</a>
+                    <a className="nav-item nav-link" data-toggle="tab" href="#tab-pane-1">Description</a>
                 </div>
                 <div className="tab-content">
-                    <div className="tab-pane fade show active" id="tab-pane-1">
-                        <h4 className="mb-3">Product Description</h4>
-                        <p>{product?.fullDescription}</p>
-                    </div>
-                    <div className="tab-pane fade" id="tab-pane-2">
-                        <h4 className="mb-3">Additional Information</h4>
-                        <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.</p>
-                        <div className="row">
-                            <div className="col-md-6">
-                                <ul className="list-group list-group-flush">
-                                    <li className="list-group-item px-0">
-                                        Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                                    </li>
-                                    <li className="list-group-item px-0">
-                                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                                    </li>
-                                    <li className="list-group-item px-0">
-                                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                                    </li>
-                                    <li className="list-group-item px-0">
-                                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="col-md-6">
-                                <ul className="list-group list-group-flush">
-                                    <li className="list-group-item px-0">
-                                        Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                                    </li>
-                                    <li className="list-group-item px-0">
-                                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                                    </li>
-                                    <li className="list-group-item px-0">
-                                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                                    </li>
-                                    <li className="list-group-item px-0">
-                                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="tab-pane fade" id="tab-pane-3">
+                    <div className="tab-pane fade show active" id="tab-pane-3">
                         <div className="row">
                             <div className="col-md-6">
                                 <h4 className="mb-4">{product?.reviews.length} review for "Colorful Stylish Shirt"</h4>
@@ -144,6 +110,10 @@ const Description = ({ product, reviewPagination, forceFetchData }) => {
                                 ) : (<Link to="/login"><input type="button" value="Login to review" className="btn btn-primary px-3" /></Link>)}
                             </div>
                         </div>
+                    </div>
+                    <div className="tab-pane fade " id="tab-pane-1">
+                        <h4 className="mb-3">Product Description</h4>
+                        <p>{product?.fullDescription}</p>
                     </div>
                 </div>
             </div>

@@ -62,7 +62,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewPaginationResponseDto getAllCategoriesPagination(int pageNumber, Long productId) {
         Sort sort = Sort.by("createdDate").descending();
-        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE_REVIEW);
+        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE_REVIEW, sort);
         Page<Review> reviewList = reviewRepository.findAllByProductId(pageable, productId);
         List<ReviewResponseDto> reviewResponseDtoList =  util.mapList(reviewList.getContent(), ReviewResponseDto.class);
         return new ReviewPaginationResponseDto(reviewResponseDtoList, reviewList.getTotalPages(), 4);

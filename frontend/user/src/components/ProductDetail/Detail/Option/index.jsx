@@ -1,7 +1,9 @@
 import React from 'react'
 import { Rating } from 'react-simple-star-rating';
+import { formatCurrency } from '../../../../uitl/util';
 
 const Option = ({ product }) => {
+
     return (
 
         <div className="col-lg-7 pb-5">
@@ -12,7 +14,7 @@ const Option = ({ product }) => {
                 </div>
                 <small className="pt-1">{product?.reviews.length} review</small>
             </div>
-            <h3 className="font-weight-semi-bold mb-4">$150.00</h3>
+            <h4 className="font-weight-semi-bold mb-4">{product && formatCurrency(product?.price)}</h4>
             <p className="mb-4">{product?.shortDescription}</p>
             <div className="d-flex mb-3">
                 <p className="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>

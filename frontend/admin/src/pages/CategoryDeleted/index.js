@@ -3,6 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import categoryApi from '../../service/categoryService';
 
 const CategoryDeleted = () => {
@@ -13,6 +14,7 @@ const CategoryDeleted = () => {
         description: ''
     };
 
+    const history = useHistory();
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [productDialog, setProductDialog] = useState(false);
@@ -29,10 +31,16 @@ const CategoryDeleted = () => {
 
     useEffect(() => {
         (async () => {
+            try {
+                const categoryResponse = await categoryApi.getAllCategory(true);
 
-            const categoryResponse = await categoryApi.getAllCategory(true);
-
-            setCategories(categoryResponse.data);
+                setCategories(categoryResponse.data);
+            } catch (e) {
+                if (e.status === 403) {
+                    localStorage.removeItem("isLogin");
+                    history.push("/login")
+                }
+            }
 
         })()
     }, []);

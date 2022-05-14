@@ -8,6 +8,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import uploadImage from '../../firebase/upload';
 import categoryApi from '../../service/categoryService';
 const Category = () => {
@@ -19,6 +20,7 @@ const Category = () => {
     };
 
     const [products, setProducts] = useState([]);
+    const history = useHistory();
     const [categories, setCategories] = useState([]);
     const [productDialog, setProductDialog] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -37,10 +39,16 @@ const Category = () => {
 
     useEffect(() => {
         (async () => {
+            try {
+                const categoryResponse = await categoryApi.getAllCategory(false);
 
-            const categoryResponse = await categoryApi.getAllCategory(false);
-
-            setCategories(categoryResponse.data);
+                setCategories(categoryResponse.data);
+            } catch (e) {
+                if (e.status === 403) {
+                    localStorage.removeItem("isLogin");
+                    history.push("/login")
+                }
+            }
 
         })()
     }, [countFetchData]);
