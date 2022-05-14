@@ -25,19 +25,19 @@ public class CategoryManageController {
     private final CategoryService categoryService;
 
     @GetMapping("/all")
-    public ResponseEntity<ResponseDto> getAllCategoriesPagination(@RequestParam boolean deleted) {
+    public ResponseEntity<ResponseDto<List<CategoryResponseDto>>> getAllCategoriesPagination(@RequestParam boolean deleted) {
         List<CategoryResponseDto> listCategories = categoryService.getAllCategories(deleted);
         ResponseDto<List<CategoryResponseDto>> responseDto = new ResponseDto<>(200, listCategories, "Get categories user successfully");
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto> getAllCategoriesFirstPage() {
+    public ResponseEntity<ResponseDto<List<Category>>> getAllCategoriesFirstPage() {
         return getAllCategoriesPagination(1, 4, "name", "asc", null);
     }
 
     @GetMapping("/{pageNumber}")
-    public ResponseEntity<ResponseDto> getAllCategoriesPagination(@PathVariable int pageNumber, @RequestParam int pageSize,
+    public ResponseEntity<ResponseDto<List<Category>>> getAllCategoriesPagination(@PathVariable int pageNumber, @RequestParam int pageSize,
                                                                      @RequestParam String sortField,
                                                                      @RequestParam String sortName, @RequestParam String keyword) {
         List<Category> listCategories = categoryService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword);
@@ -65,28 +65,28 @@ public class CategoryManageController {
                     })
     })
     @PostMapping
-    public ResponseEntity<ResponseDto> createCategory(@RequestBody CategoryRequestDto categoryRequest) {
+    public ResponseEntity<ResponseDto<Category>> createCategory(@RequestBody CategoryRequestDto categoryRequest) {
         Category categorySaved = categoryService.createCategory(categoryRequest);
         ResponseDto<Category> responseDto = new ResponseDto<>(200, categorySaved, "Create category successfully");
         return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDto> updateCategory(@RequestBody CategoryUpdateRequestDto categoryUpdateRequestDto) {
+    public ResponseEntity<ResponseDto<Category>> updateCategory(@RequestBody CategoryUpdateRequestDto categoryUpdateRequestDto) {
         Category categorySaved = categoryService.updateCategory(categoryUpdateRequestDto);
         ResponseDto<Category> responseDto = new ResponseDto<>(200, categorySaved, "Update category successfully");
         return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDto> deleteCategory(@PathVariable("id") Long id) {
+    public ResponseEntity<ResponseDto<Long>> deleteCategory(@PathVariable("id") Long id) {
         categoryService.deleteCategory(id);
         ResponseDto<Long> responseDto = new ResponseDto<>(200, id, "Category with id: " + id + " deleted");
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/{id}/check-available-delete")
-    public ResponseEntity<ResponseDto> checkAvailableDelete(@PathVariable("id") Long id) {
+    public ResponseEntity<ResponseDto<CheckAvalableDeleteResponseDto>> checkAvailableDelete(@PathVariable("id") Long id) {
         boolean result = categoryService.checkAvailableDelete(id);
         ResponseDto<CheckAvalableDeleteResponseDto> responseDto = new ResponseDto<>(200, new CheckAvalableDeleteResponseDto(result), "Category with id: " + id + " available delete");
         return ResponseEntity.ok(responseDto);

@@ -1,5 +1,6 @@
 package com.example.ecommercenashtechbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,8 +39,10 @@ public class Order extends Auditable<String>{
 
     @ManyToOne
     @JoinColumn(name = "userId")
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<OrderItem> orderItems = new HashSet<>();
 }

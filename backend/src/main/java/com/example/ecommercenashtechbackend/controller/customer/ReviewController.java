@@ -25,7 +25,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseDto> createReview(@Validated @RequestBody ReviewCreateRequestDto reviewCreateRequestDto) {
+    public ResponseEntity<ResponseDto<ReviewResponseDto>> createReview(@Validated @RequestBody ReviewCreateRequestDto reviewCreateRequestDto) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetail userDetail = (UserDetail)principal;
         ReviewResponseDto reviewResponseDto = reviewService.createReview(reviewCreateRequestDto, userDetail.getUser().getId());
@@ -34,12 +34,12 @@ public class ReviewController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto> getListReviewFirstPaginationByProductId( @PathVariable("product") Long productId){
+    public ResponseEntity< ResponseDto<ReviewPaginationResponseDto>> getListReviewFirstPaginationByProductId( @PathVariable("product") Long productId){
         return getListReviewPaginationByProductId(1, productId);
     }
 
     @GetMapping("/{product}/{page}")
-    public ResponseEntity<ResponseDto> getListReviewPaginationByProductId(@PathVariable("page") int pageNumber, @PathVariable("product") Long productId){
+    public ResponseEntity< ResponseDto<ReviewPaginationResponseDto>> getListReviewPaginationByProductId(@PathVariable("page") int pageNumber, @PathVariable("product") Long productId){
         ReviewPaginationResponseDto reviewList = reviewService.getAllCategoriesPagination(pageNumber, productId);
         ResponseDto<ReviewPaginationResponseDto> responseDto = new ResponseDto<>(200, reviewList, "Get list review successfully");
         return ResponseEntity.ok(responseDto);

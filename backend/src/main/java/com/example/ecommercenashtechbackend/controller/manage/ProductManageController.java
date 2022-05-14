@@ -22,20 +22,20 @@ public class ProductManageController {
     private final ProductService productService;
 
     @GetMapping("/all")
-    public ResponseEntity<ResponseDto> getAllProduct(@RequestParam boolean deleted) {
+    public ResponseEntity<ResponseDto<List<ProductResponseDto>>> getAllProduct(@RequestParam boolean deleted) {
         List<ProductResponseDto> listProducts = productService.getAllProducts( deleted);
         ResponseDto<List<ProductResponseDto>> responseDto = new ResponseDto<>(200, listProducts, "Get list user successfully");
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto> getListUserFirstPage() {
+    public ResponseEntity<ResponseDto<ProductPaginationResponseDto>> getListUserFirstPage() {
         ResponseDto<ProductPaginationResponseDto> responseDto = getListProductPagination(1, 4, "name", "asc", null, false).getBody();
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/page")
-    public ResponseEntity<ResponseDto> getListProductPagination(@PathVariable("page") int pageNumber, @RequestParam int pageSize,
+    public ResponseEntity<ResponseDto<ProductPaginationResponseDto>> getListProductPagination(@PathVariable("page") int pageNumber, @RequestParam int pageSize,
                                                                              @RequestParam String sortField,
                                                                              @RequestParam String sortName, @RequestParam String keyword,
                                                                              @RequestParam(value = "deleted", required = false) Boolean deleted) {
@@ -46,21 +46,21 @@ public class ProductManageController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDto> createProduct(@Validated @RequestBody ProductCreateRequestDto productCreateRequestDto) {
+    public ResponseEntity<ResponseDto<ProductResponseDto>> createProduct(@Validated @RequestBody ProductCreateRequestDto productCreateRequestDto) {
         ProductResponseDto productReponseDto = productService.createProduct(productCreateRequestDto);
         ResponseDto<ProductResponseDto> responseDto = new ResponseDto<>(200, productReponseDto, "Create user successfully");
         return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDto> updateProduct(@Validated @RequestBody ProductUpdateRequestDto productUpdateRequestDto) {
+    public ResponseEntity<ResponseDto<ProductResponseDto>> updateProduct(@Validated @RequestBody ProductUpdateRequestDto productUpdateRequestDto) {
         ProductResponseDto productResponseDto = productService.updateProduct(productUpdateRequestDto);
         ResponseDto<ProductResponseDto> responseDto = new ResponseDto<>(200, productResponseDto, "Update user successfully");
         return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDto> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<ResponseDto<Long>> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         ResponseDto<Long> responseDto = new ResponseDto<>(200, id, "Delete user "+id+" successfully");
         return ResponseEntity.ok(responseDto);

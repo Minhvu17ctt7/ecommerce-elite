@@ -17,24 +17,9 @@ public class ProductController {
 
     private final ProductService productService;
 
-//    @GetMapping
-//    public ResponseEntity<ResponseDto> getListUserFirstPage() {
-//        ResponseDto<ProductPaginationResponseDto> responseDto = getListProductPagination(1, 4, "name", "asc", null).getBody();
-//        return ResponseEntity.ok(responseDto);
-//    }
-
-//    @GetMapping("/page/{page}")
-//    public ResponseEntity<ResponseDto> getListProductPagination(@PathVariable("page") int pageNumber, @RequestParam(required = false) int pageSize,
-//                                                                @RequestParam(required = false) String sortField,
-//                                                                @RequestParam(required = false) String sortName, @RequestParam(required = false) String keyword
-//                                                               ) {
-//        ProductPaginationResponseDto listProducts = productService.getAllCategoriesPagination(pageNumber, pageSize, sortField, sortName, keyword, false);
-//        ResponseDto<ProductPaginationResponseDto> responseDto = new ResponseDto<>(200, listProducts, "Get list product successfully");
-//        return ResponseEntity.ok(responseDto);
-//    }
 
     @GetMapping("/page/{page}")
-    public ResponseEntity<ResponseDto> getListProductPaginationBySpecification(@PathVariable("page") int pageNumber, @RequestParam(required = false) int pageSize,
+    public ResponseEntity<ResponseDto<ProductPaginationResponseDto>> getListProductPaginationBySpecification(@PathVariable("page") int pageNumber, @RequestParam(required = false) int pageSize,
                                                                 @RequestParam(required = false) String sortField,
                                                                 @RequestParam(required = false) String sortName, @RequestParam(required = false) String search
                                                                ) {
@@ -44,7 +29,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getProductDetail(@PathVariable Long id) {
+    public ResponseEntity<ResponseDto<ProductResponseDto>> getProductDetail(@PathVariable Long id) {
         ProductResponseDto productResponseDto = productService.getProductDetail(id);
         ResponseDto<ProductResponseDto> responseDto = new ResponseDto<>(200, productResponseDto, "Get product successfully");
         return ResponseEntity.ok(responseDto);

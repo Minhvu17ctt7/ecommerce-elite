@@ -28,18 +28,18 @@ public class Util {
                 .collect(Collectors.toList());
     }
 
-    public Specification buildProductSpecifications(String search) {
-        ProductSpecificationsBuilder builder = new ProductSpecificationsBuilder();
-        Pattern pattern = Pattern.compile("([a-zA-Z0-9\\.\\_]+?)(:|<|>)([a-zA-Z0-9 ]+?)(,|;)");
-        Matcher matcher = pattern.matcher(search);
-        while (matcher.find()) {
-            boolean orPredicate = matcher.group(4).equals(",");
-            builder.with(matcher.group(1), matcher.group(2), matcher.group(3), orPredicate);
-        }
-
-        Specification<Product> spec = builder.build();
-        return spec;
-    }
+//    public Specification buildProductSpecifications(String search) {
+//        ProductSpecificationsBuilder builder = new ProductSpecificationsBuilder();
+//        Pattern pattern = Pattern.compile("([a-zA-Z0-9\\.\\_]+?)(:|<|>)([a-zA-Z0-9 ]+?)(,|;)");
+//        Matcher matcher = pattern.matcher(search);
+//        while (matcher.find()) {
+//            boolean orPredicate = matcher.group(4).equals(",");
+//            builder.with(matcher.group(1), matcher.group(2), matcher.group(3), orPredicate);
+//        }
+//
+//        Specification<Product> spec = builder.build();
+//        return spec;
+//    }
 
     public List<SearchCriteria> buildListProductSpecifications(String search) {
         List<SearchCriteria> listSpec = new ArrayList<>();
