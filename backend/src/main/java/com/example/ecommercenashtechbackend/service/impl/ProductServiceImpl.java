@@ -104,6 +104,8 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
         List<SearchCriteria> searchCriteriaList = util.buildListProductSpecifications(search);
         convertSearchCriteriaCategoryId(searchCriteriaList);
+        SearchCriteria deletedCriteria = new SearchCriteria("deleted", ":", deleted, false);
+        searchCriteriaList.add(deletedCriteria);
         ProductSpecificationsBuilder builder = new ProductSpecificationsBuilder(searchCriteriaList);
         Specification<Product> spec = builder.build();
         Page<Product> pageProductList = productRepository.findAll(spec, pageable);

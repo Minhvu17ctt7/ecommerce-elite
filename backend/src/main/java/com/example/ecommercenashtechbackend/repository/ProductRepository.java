@@ -32,9 +32,13 @@ public interface ProductRepository extends JpaRepository<Product, Long>,  JpaSpe
 
     public Page<Product> findAll(Specification<Product> specification, Pageable pageable);
 
+    public Page<Product> findAllByDeleted(Pageable pageable,boolean deleted);
+
     @Query("SELECT p FROM Product p WHERE p.name LIKE %?1% and p.deleted = ?2 and p.category.id = ?3")
     public Page<Product> findAll(String keyword, boolean deleted,Long categoryId, Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE p.deleted = ?2 and p.category.id = ?3")
     public Page<Product> findAll( boolean deleted,Long categoryId, Pageable pageable);
+
+    Page<Product> findAllByDeleted(Specification<Product> spec, Pageable pageable, boolean deleted);
 }
