@@ -1,9 +1,9 @@
 use ecommercedb;
 
 insert into roles(name, description)
-values ("ADMIN", "ADMIN");
+values ("ADMIN", "MANGAGE EVERYTHING");
 insert into roles(name, description)
-values ("USER", "USER");
+values ("USER", "CUSTOMER");
 
 insert into category(name, description, image)
 values ("Jean", "Jean","https://cdn.ssstutter.com/products/nCRHI1bpbr1ZIsxG/102021/1634891848905.jpeg");

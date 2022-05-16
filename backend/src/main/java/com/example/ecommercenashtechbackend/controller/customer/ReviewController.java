@@ -27,6 +27,7 @@ public class ReviewController {
     @PostMapping("/create")
     public ResponseEntity<ResponseDto<ReviewResponseDto>> createReview(@Validated @RequestBody ReviewCreateRequestDto reviewCreateRequestDto) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         UserDetail userDetail = (UserDetail)principal;
         ReviewResponseDto reviewResponseDto = reviewService.createReview(reviewCreateRequestDto, userDetail.getUser().getId());
         ResponseDto<ReviewResponseDto> responseDto = new ResponseDto<>(200, reviewResponseDto, "Create review successful");

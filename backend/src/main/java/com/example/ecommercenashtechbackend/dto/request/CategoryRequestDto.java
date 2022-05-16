@@ -14,7 +14,7 @@ public class CategoryRequestDto {
     @NotBlank(message = "Name is required")
     private String name;
     private String alias;
-    private String photo;
+    private String image;
     private String description;
     private Long parentId;
 }
