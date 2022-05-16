@@ -62,14 +62,14 @@ public class UserServiceImplTest {
 
     @Test
     public void login_ShouldThrownForbiddenException_WhenUserNotFindByEmail() {
-        when(userRepository.findByEmail(userLoginRequestDto.getEmail())).thenReturn(Optional.of(null));
+        when(userRepository.findByEmail(userLoginRequestDto.getEmail())).thenReturn(Optional.ofNullable(null));
         ForbiddenException forbiddenException = assertThrows(ForbiddenException.class, () -> userService.login(userLoginRequestDto));
         assertThat(forbiddenException.getMessage()).isEqualTo("Email or password is incorrect");
     }
 
     @Test
     public void login_ShouldThrownForbiddenException_WhenPasswordNotMatch() {
-        when(userRepository.findByEmail(userLoginRequestDto.getEmail())).thenReturn(Optional.of(userInitial));
+        when(userRepository.findByEmail(userLoginRequestDto.getEmail())).thenReturn(Optional.ofNullable(userInitial));
         when(passwordEncoder.matches(userLoginRequestDto.getPassword(), userInitial.getPassword())).thenReturn(false);
         ForbiddenException forbiddenException = assertThrows(ForbiddenException.class, () -> userService.login(userLoginRequestDto));
         assertThat(forbiddenException.getMessage()).isEqualTo("Email or password is incorrect");
@@ -87,7 +87,7 @@ public class UserServiceImplTest {
     @Test
     public void login_ShouldReturnUserLoginResponseDto_WhenLoginSuccess() {
         UserLoginResponseDto userLoginResponseDto = mock(UserLoginResponseDto.class);
-        when(userRepository.findByEmail(userLoginRequestDto.getEmail())).thenReturn(Optional.of(userInitial));
+        when(userRepository.findByEmail(userLoginRequestDto.getEmail())).thenReturn(Optional.ofNullable(userInitial));
         when(passwordEncoder.matches(userLoginRequestDto.getPassword(), userInitial.getPassword())).thenReturn(true);
         when(modelMapper.map(userInitial, UserLoginResponseDto.class)).thenReturn(userLoginResponseDto);
         UserLoginResponseDto result = userService.login(userLoginRequestDto);
@@ -106,7 +106,6 @@ public class UserServiceImplTest {
 
     @Test
     public void createUser_ShouldReturnUserResponseDto_WhenCreateUserSuccess() {
-        Pageable pageable = mock(Pageable.class);
         when(roleRepository.findByName(userRequestDto.getRole())).thenReturn(role);
         when(modelMapper.map(userRequestDto, User.class)).thenReturn(userInitial);
         when(userRepository.findByEmail(userInitial.getEmail())).thenReturn(Optional.ofNullable(null));
