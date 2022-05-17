@@ -28,9 +28,16 @@ public class ProductRepositoryTest {
 
     @Test
     public void findByName_ShouldReturnOptionalProduct_WhenFindByName() {
-//        when(productRepository.findByName("Product 1")).thenReturn(Optional.ofNullable(PRODUCT_1));
         Optional<Product> productOptional = productRepository.findByName("Áo Thun Dry Cổ Tròn Ngắn Tay");
         assertThat(productOptional.isPresent()).isTrue();
         assertThat(productOptional.get().getName()).isEqualTo("Áo Thun Dry Cổ Tròn Ngắn Tay");
     }
+
+    @Test
+    public void findById_ShouldReturnOptionalProduct_WhenFindById() {
+        Optional<Product> productOptional = productRepository.findById(1L);
+        assertThat(productOptional.isPresent()).isTrue();
+        assertThat(productOptional.get().getId()).isEqualTo(1L);
+    }
+
 }
