@@ -3,6 +3,7 @@ package com.example.ecommercenashtechbackend.service.impl;
 import com.example.ecommercenashtechbackend.dto.request.CategoryRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.CategoryUpdateRequestDto;
 import com.example.ecommercenashtechbackend.entity.Category;
+import com.example.ecommercenashtechbackend.entity.Product;
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.repository.CategoryRepository;
 import com.example.ecommercenashtechbackend.util.Util;
@@ -11,7 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.webjars.NotFoundException;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,7 +28,6 @@ public class CategoryServiceImplTest {
     private CategoryServiceImpl categoryService;
     private Category categoryInitial;
     private Category categoryExpected;
-    private CategoryRequestDto categoryRequestDto;
     private CategoryUpdateRequestDto categoryUpdateRequestDto;
 
     @BeforeEach
@@ -35,7 +37,6 @@ public class CategoryServiceImplTest {
         util = mock(Util.class);
         categoryService = new CategoryServiceImpl(categoryRepository, modelMapper, util);
         categoryInitial = mock(Category.class);
-        categoryRequestDto = mock(CategoryRequestDto.class);
         categoryUpdateRequestDto = mock(CategoryUpdateRequestDto.class);
         categoryExpected = mock(Category.class);
     }
@@ -69,7 +70,7 @@ public class CategoryServiceImplTest {
 
 //    @Test
 //    public void updateCategory_ShouldThrownNotFoundException_WhenFindCategoryParentByIdNotFound() {
-//        CategoryUpdateRequestDto categoryUpdateRequest = CategoryUpdateRequestDto.builder().parentId(1L).build();
+//        CategoryUpdateRequestDto categoryUpdateRequest = mock(CategoryUpdateRequestDto.class);
 //        when(categoryRepository.findById(categoryUpdateRequest.getId())).thenReturn(Optional.ofNullable(categoryInitial));
 //        when(categoryRepository.findByName(categoryUpdateRequest.getName())).thenReturn(Optional.ofNullable(null));
 //        when(modelMapper.map(categoryUpdateRequest, Category.class)).thenReturn(categoryExpected);
@@ -78,4 +79,28 @@ public class CategoryServiceImplTest {
 //        assertThat(notFoundException.getMessage()).isEqualTo("Parent category not found");
 //    }
 
+    @Test
+    public void checkAvailableDelete_ShouldThrownNotFoundException_WhenFindCategoryByIdNotFound() {
+        when(categoryRepository.findByIdAndDeleted(1L, false)).thenReturn(Optional.ofNullable(null));
+        NotFoundException  notFoundException = assertThrows(NotFoundException.class, () -> categoryService.checkAvailableDelete(1L));
+        assertThat(notFoundException.getMessage()).isEqualTo("Category with id: 1 not found");
+    }
+
+    @Test
+    public void checkAvailableDelete_ShouldReturnTrue_WhenSizeProductsGreaterThanZero() {
+        Set<Product> products = new HashSet<>();
+        Product product = mock(Product.class);
+        products.add(product);
+        Category categoryChecked = Category.builder().products(products).build();
+        when(categoryRepository.findByIdAndDeleted(1L, false)).thenReturn(Optional.ofNullable(categoryChecked));
+        Boolean checkAvailable = categoryService.checkAvailableDelete(1L);
+        assertThat(checkAvailable).isFalse();
+    }
+
+    @Test
+    public void checkAvailableDelete_ShouldReturnFalse_WhenSizeProductsEqualZero() {
+        when(categoryRepository.findByIdAndDeleted(1L, false)).thenReturn(Optional.ofNullable(categoryInitial));
+        Boolean checkAvailable = categoryService.checkAvailableDelete(1L);
+        assertThat(checkAvailable).isTrue();
+    }
 }
