@@ -32,13 +32,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException,
             IOException {
-        String path = request.getRequestURI();
-        List<String> acceptURL = List.of("/api/admin", "/api/reviews/create");
-        boolean isAcceptURL = checkAcceptURL(acceptURL, path);
+//        String path = request.getRequestURI();
+//        List<String> acceptURL = List.of("/api/admin", "/api/reviews/create", "/user");
+//        boolean isAcceptURL = checkAcceptURL(acceptURL, path);
         ExceptionResponse exceptionResponse = ExceptionResponse.builder().timestamp(new Date())
                 .detail(request.getRequestURI()).status(HttpStatus.FORBIDDEN.value()).build();
         boolean hasError = false;
-        if (isAcceptURL) {
+//        if (isAcceptURL) {
             String jwt = parseJwt(request);
             if (jwt != null) {
                 try {
@@ -53,11 +53,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                     exceptionResponse.setMessage(e.getMessage());
                     hasError = true;
                 }
-            } else {
-                exceptionResponse.setMessage("Missing token");
-                hasError = true;
             }
-        }
+//            } else {
+//                exceptionResponse.setMessage("Missing token");
+//                hasError = true;
+//            }
+//        }
 
         if(hasError) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
