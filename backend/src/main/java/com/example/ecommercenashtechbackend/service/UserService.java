@@ -12,6 +12,8 @@ public interface UserService {
 
     UserResponseDto getUserById(Long id);
 
+    UserResponseDto changePassword(UserChangePasswordRequestDto userChangePasswordRequestDto, Long userId);
+
     List<UserResponseDto> getAllUsers(boolean deleted);
 
     UserResponseDto createUser(UserRequestDto userRequestDto);

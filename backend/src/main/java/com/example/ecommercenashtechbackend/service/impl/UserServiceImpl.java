@@ -8,6 +8,7 @@ import com.example.ecommercenashtechbackend.entity.Role;
 import com.example.ecommercenashtechbackend.entity.User;
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
+import com.example.ecommercenashtechbackend.exception.custom.UnauthorizedException;
 import com.example.ecommercenashtechbackend.repository.RoleRepository;
 import com.example.ecommercenashtechbackend.repository.UserRepository;
 import com.example.ecommercenashtechbackend.security.UserDetail;
@@ -48,6 +49,18 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findById(id);
         userOptional.orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
         return modelMapper.map(userOptional.get(), UserResponseDto.class);
+    }
+
+    @Override
+    public UserResponseDto changePassword(UserChangePasswordRequestDto userChangePasswordRequestDto, Long userId) {
+        Optional<User> oldUserOptional = userRepository.findById(userId);
+        oldUserOptional.orElseThrow(() -> new NotFoundException("Not found user with id: " + userId));
+        User oldUser = oldUserOptional.get();
+        if (!passwordEncoder.matches(userChangePasswordRequestDto.getOldPassword(), oldUser.getPassword()))
+            throw new UnauthorizedException("Password not match");
+        oldUser.setPassword(passwordEncoder.encode(userChangePasswordRequestDto.getPassword()));
+        User userSaved = userRepository.save(oldUser);
+        return modelMapper.map(userSaved, UserResponseDto.class);
     }
 
     @Override
