@@ -116,7 +116,7 @@ public class UserManageController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @Operation(summary = "Delete user by adin")
+    @Operation(summary = "Delete user by admin")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Success, user registered",
                     content = {

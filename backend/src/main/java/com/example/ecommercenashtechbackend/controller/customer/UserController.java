@@ -28,4 +28,15 @@ public class UserController {
         ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, userResponseDto, "Update user successfully");
         return ResponseEntity.ok(responseDto);
     }
+
+    @GetMapping
+    public ResponseEntity<ResponseDto<UserResponseDto>> getUserDetail() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetail userDetail = (UserDetail)principal;
+
+        UserResponseDto userResponseDto = userService.getUserById(userDetail.getUser().getId());
+        ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, userResponseDto, "Get user successfully");
+        return ResponseEntity.ok(responseDto);
+    }
+
 }
