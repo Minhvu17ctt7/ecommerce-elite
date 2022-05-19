@@ -44,9 +44,9 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewResponseDto createReview(ReviewCreateRequestDto reviewCreateRequestDto, Long userId) {
         Optional<Product> productOptional = productRepository.findById(reviewCreateRequestDto.getProductId());
-        if(!productOptional.isPresent()) throw new NotFoundException("Not found product with id: " + reviewCreateRequestDto.getProductId());
+        productOptional.orElseThrow(() -> new NotFoundException("Not found product with id: " + reviewCreateRequestDto.getProductId()));
         Optional<User> userOptional = userRepository.findById(userId);
-        if(!userOptional.isPresent()) throw new NotFoundException("Not found user with email: " + authentication.getName());
+        userOptional.orElseThrow(() -> new NotFoundException("Not found user with email: " + authentication.getName()));
         Product product = productOptional.get();
         User user = userOptional.get();
         Review reviewSave = modelMapper.map(reviewCreateRequestDto, Review.class);
