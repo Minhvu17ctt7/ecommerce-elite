@@ -62,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category createCategory(CategoryRequestDto categoryRequestDto) {
+    public CategoryResponseDto createCategory(CategoryRequestDto categoryRequestDto) {
         Optional<Category> categoryOptional = categoryRepository.findByName(categoryRequestDto.getName());
         if (!categoryOptional.isPresent()) {
             Category categorySave = new Category();

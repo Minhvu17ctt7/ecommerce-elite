@@ -10,7 +10,7 @@ import java.util.List;
 public interface CategoryService {
     List<CategoryResponseDto> getAllCategories();
 
-    Category createCategory(CategoryRequestDto categoryRequestDto);
+    CategoryResponseDto createCategory(CategoryRequestDto categoryRequestDto);
 
     List<CategoryResponseDto> getAllCategories(boolean deleted);
 
