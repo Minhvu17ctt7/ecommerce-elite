@@ -1,10 +1,7 @@
 package com.example.ecommercenashtechbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -17,6 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Builder
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "product")
 public class Product extends Auditable<String> {
@@ -24,15 +22,11 @@ public class Product extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     private String alias;
     private String shortDescription;
     private String fullDescription;
-
     private Long quantity;
-
     private float price;
     private Float discountPercent;
     private String mainImage;
