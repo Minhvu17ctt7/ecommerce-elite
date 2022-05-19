@@ -1,5 +1,6 @@
 package com.example.ecommercenashtechbackend.controller.customer;
 
+import com.example.ecommercenashtechbackend.dto.request.UserChangePasswordRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserUpdateRequestDto;
 import com.example.ecommercenashtechbackend.dto.response.ResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
@@ -36,6 +37,16 @@ public class UserController {
 
         UserResponseDto userResponseDto = userService.getUserById(userDetail.getUser().getId());
         ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, userResponseDto, "Get user successfully");
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<ResponseDto<UserResponseDto>> changePassword(@RequestBody UserChangePasswordRequestDto userChangePasswordRequestDto) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetail userDetail = (UserDetail)principal;
+
+        UserResponseDto userResponseDto = userService.changePassword(userChangePasswordRequestDto, userDetail.getUser().getId());
+        ResponseDto<UserResponseDto> responseDto = new ResponseDto<>(200, userResponseDto, "Change password successfully");
         return ResponseEntity.ok(responseDto);
     }
 
