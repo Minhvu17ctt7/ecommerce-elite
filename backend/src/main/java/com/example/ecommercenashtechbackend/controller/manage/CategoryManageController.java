@@ -65,16 +65,16 @@ public class CategoryManageController {
                     })
     })
     @PostMapping
-    public ResponseEntity<ResponseDto<Category>> createCategory(@RequestBody CategoryRequestDto categoryRequest) {
-        Category categorySaved = categoryService.createCategory(categoryRequest);
-        ResponseDto<Category> responseDto = new ResponseDto<>(200, categorySaved, "Create category successfully");
+    public ResponseEntity<ResponseDto<CategoryResponseDto>> createCategory(@RequestBody CategoryRequestDto categoryRequest) {
+        CategoryResponseDto categorySaved = categoryService.createCategory(categoryRequest);
+        ResponseDto<CategoryResponseDto> responseDto = new ResponseDto<>(200, categorySaved, "Create category successfully");
         return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDto<Category>> updateCategory(@RequestBody CategoryUpdateRequestDto categoryUpdateRequestDto) {
-        Category categorySaved = categoryService.updateCategory(categoryUpdateRequestDto);
-        ResponseDto<Category> responseDto = new ResponseDto<>(200, categorySaved, "Update category successfully");
+    public ResponseEntity<ResponseDto<CategoryResponseDto>> updateCategory(@RequestBody CategoryUpdateRequestDto categoryUpdateRequestDto) {
+        CategoryResponseDto categorySaved = categoryService.updateCategory(categoryUpdateRequestDto);
+        ResponseDto<CategoryResponseDto> responseDto = new ResponseDto<>(200, categorySaved, "Update category successfully");
         return ResponseEntity.ok(responseDto);
     }
 
