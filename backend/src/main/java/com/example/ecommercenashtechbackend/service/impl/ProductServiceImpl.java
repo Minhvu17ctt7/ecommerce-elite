@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,46 +40,28 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto getProductDetail(Long id) {
         Optional<Product> productOptional = productRepository.findById(id);
-        if(!productOptional.isPresent()) {
-            throw new NotFoundException("Not found product witd id: "+ id);
-        }
+        productOptional.orElseThrow(() -> new NotFoundException("Not found product with id: " + id));
         return modelMapper.map(productOptional.get(), ProductResponseDto.class);
     }
 
     @Override
-    public List<ProductResponseDto> getAllProducts( boolean deleted) {
+    public List<ProductResponseDto> getAllProducts(boolean deleted) {
         List<Product> productList = productRepository.findAllByDeleted(deleted);
-        List<ProductResponseDto> result =  util.mapList(productList, ProductResponseDto.class);
+        List<ProductResponseDto> result = util.mapList(productList, ProductResponseDto.class);
         return result;
     }
-
 
     @Override
     public ProductResponseDto createProduct(ProductCreateRequestDto productCreateRequestDto) {
         Optional<Product> productOpt = productRepository.findByName(productCreateRequestDto.getName());
-        if (!productOpt.isPresent()) {
+        if (productOpt.isEmpty()) {
             Product productSave = modelMapper.map(productCreateRequestDto, Product.class);
             return save(productSave, productCreateRequestDto.getCategoryId());
         }
         throw new ConflictException("Product name already exits");
     }
 
-
-//    @Override
-//    public List<ProductResponseDto> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted) {
-//        Sort sort = Sort.by(sortField);
-//        sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
-//        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
-//        List<Product> productList = new ArrayList<>();
-//        if (keywork != null) {
-//            productList = productRepository.findAll(keywork, deleted, pageable).getContent();
-//        } else {
-//            productList = productRepository.findAll(pageable).getContent();
-//        }
-//        List<ProductResponseDto> result =  util.mapList(productList, ProductResponseDto.class);
-//        return result;
-//    }
-
+    //Get all product pagination with native query
     @Override
     public ProductPaginationResponseDto getAllProductsPagination(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted) {
         Sort sort = Sort.by(sortField);
@@ -92,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
         } else {
             pageProductList = productRepository.findAll(pageable);
         }
-        List<ProductResponseDto> productResponseDtoList =  util.mapList(pageProductList.getContent(), ProductResponseDto.class);
+        List<ProductResponseDto> productResponseDtoList = util.mapList(pageProductList.getContent(), ProductResponseDto.class);
         ProductPaginationResponseDto result = new ProductPaginationResponseDto(productResponseDtoList, pageProductList.getTotalPages(), 8);
         return result;
     }
@@ -109,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
         ProductSpecificationsBuilder builder = new ProductSpecificationsBuilder(searchCriteriaList);
         Specification<Product> spec = builder.build();
         Page<Product> pageProductList = productRepository.findAll(spec, pageable);
-        List<ProductResponseDto> productResponseDtoList =  util.mapList(pageProductList.getContent(), ProductResponseDto.class);
+        List<ProductResponseDto> productResponseDtoList = util.mapList(pageProductList.getContent(), ProductResponseDto.class);
         ProductPaginationResponseDto result = new ProductPaginationResponseDto(productResponseDtoList, pageProductList.getTotalPages(), 8);
         return result;
     }
@@ -117,47 +98,40 @@ public class ProductServiceImpl implements ProductService {
     protected void convertSearchCriteriaCategoryId(List<SearchCriteria> searchCriteriaList) {
         for (int i = 0; i < searchCriteriaList.size(); i++) {
             SearchCriteria searchCriteria = searchCriteriaList.get(i);
-            if(searchCriteria.getKey().equals("category")) {
+            if (searchCriteria.getKey().equals("category")) {
                 String stringToConvert = String.valueOf(searchCriteria.getValue());
                 Long categoryId = Long.parseLong(stringToConvert);
-                Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
-                searchCriteria.setValue(categoryOptional.get());
+                Category category = Category.builder().id(categoryId).build();
+                searchCriteria.setValue(category);
             }
         }
     }
 
     @Override
     public ProductResponseDto updateProduct(ProductUpdateRequestDto productUpdateRequestDto) {
-        Optional<Product> productOldOpt = productRepository.findById(productUpdateRequestDto.getId());
-        if (productOldOpt.isPresent()) {
-            Product productOld = productOldOpt.get();
-            Optional<Product> productExist = productRepository.findByName(productUpdateRequestDto.getName());
-            if (productExist.isPresent() && productExist.get().getId() != productOld.getId()) {
-                throw new ConflictException("Product name already exits");
-            }
-            Product productSave = modelMapper.map(productUpdateRequestDto, Product.class);
-            return save(productSave, productUpdateRequestDto.getCategoryId());
+        Optional<Product> productOldOptional = productRepository.findById(productUpdateRequestDto.getId());
+        productOldOptional.orElseThrow(() -> new NotFoundException("Product not found"));
+        Product productOld = productOldOptional.get();
+        Optional<Product> productExist = productRepository.findByName(productUpdateRequestDto.getName());
+        if (productExist.isPresent() && productExist.get().getId() != productOld.getId()) {
+            throw new ConflictException("Product name already exits");
         }
-        throw new NotFoundException("Product not found");
+        Product productSave = modelMapper.map(productUpdateRequestDto, Product.class);
+        return save(productSave, productUpdateRequestDto.getCategoryId());
     }
 
     @Override
     public void deleteProduct(Long id) {
-        Optional<Product> productOpt = productRepository.findById(id);
-        if (productOpt.isPresent()) {
-            productRepository.updateDeletedProductById(productOpt.get().getId());
-        } else {
-            throw new NotFoundException("Product not found");
-        }
+        Optional<Product> productOldOptional = productRepository.findById(id);
+        productOldOptional.orElseThrow(() -> new NotFoundException("Product not found"));
+        productRepository.updateDeletedProductById(productOldOptional.get().getId());
     }
 
     protected ProductResponseDto save(Product productSave, Long categoryId) {
-        Optional<Category> categoryOpt = categoryRepository.findById(categoryId);
-        if (categoryOpt.isPresent()) {
-            productSave.setCategory(categoryOpt.get());
-            Product productSaved = productRepository.save(productSave);
-            return modelMapper.map(productSaved, ProductResponseDto.class);
-        }
-        throw new NotFoundException("Category not found");
+        Optional<Category> productOldOptional = categoryRepository.findById(categoryId);
+        productOldOptional.orElseThrow(() -> new NotFoundException("Category not found"));
+        productSave.setCategory(productOldOptional.get());
+        Product productSaved = productRepository.save(productSave);
+        return modelMapper.map(productSaved, ProductResponseDto.class);
     }
 }
