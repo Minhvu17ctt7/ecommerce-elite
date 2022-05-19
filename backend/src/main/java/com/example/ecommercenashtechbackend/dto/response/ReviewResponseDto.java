@@ -14,6 +14,6 @@ import java.time.LocalDateTime;
 public class ReviewResponseDto {
     private String comment;
     private int rating;
-    private User user;
+    private UserResponseDto user;
     private LocalDateTime createdDate;
 }
