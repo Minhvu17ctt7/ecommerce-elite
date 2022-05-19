@@ -45,9 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponseDto findCategoryById(Long id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
-        if(categoryOptional.isEmpty()) {
-            throw new NotFoundException("Not found category");
-        }
+        categoryOptional.orElseThrow(() -> new NotFoundException("Category with id: " + id + " not found"));
         return modelMapper.map(categoryOptional.get(), CategoryResponseDto.class);
     }
 
