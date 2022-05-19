@@ -2,6 +2,7 @@ package com.example.ecommercenashtechbackend.service.impl;
 
 import com.example.ecommercenashtechbackend.dto.request.CategoryRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.CategoryUpdateRequestDto;
+import com.example.ecommercenashtechbackend.dto.response.CategoryResponseDto;
 import com.example.ecommercenashtechbackend.entity.Category;
 import com.example.ecommercenashtechbackend.entity.Product;
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
@@ -64,7 +65,7 @@ public class CategoryServiceImplTest {
         when(categoryRepository.findByName(categoryUpdateRequestDto.getName())).thenReturn(Optional.ofNullable(null));
         when(modelMapper.map(categoryUpdateRequestDto, Category.class)).thenReturn(categoryExpected);
         when(categoryRepository.save(categoryExpected)).thenReturn(categoryResult);
-        Category result = categoryService.updateCategory(categoryUpdateRequestDto);
+        CategoryResponseDto result = categoryService.updateCategory(categoryUpdateRequestDto);
         assertThat(result).isEqualTo(categoryResult);
     }
 
@@ -103,4 +104,6 @@ public class CategoryServiceImplTest {
         Boolean checkAvailable = categoryService.checkAvailableDelete(1L);
         assertThat(checkAvailable).isTrue();
     }
+
+
 }
