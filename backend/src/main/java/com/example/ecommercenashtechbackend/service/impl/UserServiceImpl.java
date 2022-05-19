@@ -44,6 +44,13 @@ public class UserServiceImpl implements UserService {
     private final Util util;
 
     @Override
+    public UserResponseDto getUserById(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        userOptional.orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
+        return modelMapper.map(userOptional.get(), UserResponseDto.class);
+    }
+
+    @Override
     public List<UserResponseDto> getAllUsers(boolean deleted) {
         List<User> listUser = userRepository.findAllByDeleted(deleted);
         return util.mapList(listUser, UserResponseDto.class);
