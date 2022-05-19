@@ -66,28 +66,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserLoginResponseDto login(UserLoginRequestDto userLoginRequestDto) {
 
-        Optional<User> opt = userRepository.findByEmail(userLoginRequestDto.getEmail());
-
-        if (opt.isPresent()) {
-            User user = opt.get();
-
-            if (!passwordEncoder.matches(userLoginRequestDto.getPassword(), user.getPassword())) {
-                throw new ForbiddenException("Email or password is incorrect");
-            }
-
-            if (user.isBlocked()) {
-                throw new LockedException("User is locked");
-            }
-
-            UserDetail userDetail = new UserDetail(user);
-            String accessToken = jwtUtil.generateAccessToken(userDetail);
-            String refreshToken = jwtUtil.generateRefreshToken(userDetail);
-            UserLoginResponseDto userLoginResponseDto = modelMapper.map(user, UserLoginResponseDto.class);
-            userLoginResponseDto.setAccessToken(accessToken);
-            userLoginResponseDto.setRefreshToken(refreshToken);
-            return userLoginResponseDto;
+        Optional<User> userOptional = userRepository.findByEmail(userLoginRequestDto.getEmail());
+        userOptional.orElseThrow(() -> new ForbiddenException("Email or password is incorrect"));
+        User user = userOptional.get();
+        if (!passwordEncoder.matches(userLoginRequestDto.getPassword(), user.getPassword())) {
+            throw new ForbiddenException("Email or password is incorrect");
         }
-        throw new ForbiddenException("Email or password is incorrect");
+        if (user.isBlocked()) {
+            throw new LockedException("User is locked");
+        }
+        UserDetail userDetail = new UserDetail(user);
+        String accessToken = jwtUtil.generateAccessToken(userDetail);
+        String refreshToken = jwtUtil.generateRefreshToken(userDetail);
+        UserLoginResponseDto userLoginResponseDto = modelMapper.map(user, UserLoginResponseDto.class);
+        userLoginResponseDto.setAccessToken(accessToken);
+        userLoginResponseDto.setRefreshToken(refreshToken);
+        return userLoginResponseDto;
     }
 
     @Override
@@ -99,9 +93,9 @@ public class UserServiceImpl implements UserService {
         }
         String refreshToken = refreshTokenRequestDto.getRefreshToken();
         String email = jwtUtil.getUserNameFromJwtToken(refreshToken);
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        userOpt.orElseThrow(() -> new NotFoundException("User not found"));
-        UserDetail userDetail = new UserDetail(userOpt.get());
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        userOptional.orElseThrow(() -> new NotFoundException("User not found"));
+        UserDetail userDetail = new UserDetail(userOptional.get());
         String accessTokenNew = jwtUtil.generateAccessToken(userDetail);
         refreshToken = jwtUtil.generateRefreshToken(userDetail);
         return new JwtResponse(accessTokenNew, refreshToken);
@@ -110,41 +104,37 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto updateUser(UserUpdateRequestDto userUpdateRequestDto) {
         Optional<User> userOld = userRepository.findById(userUpdateRequestDto.getId());
-        if (userOld.isPresent()) {
-            User userSave = userOld.get();
-            BeanUtils.copyProperties(userUpdateRequestDto, userSave);
-            if (userUpdateRequestDto.getRole() != null) {
-                Role role = roleRepository.findByName(userUpdateRequestDto.getRole());
-                Set<Role> roles = new HashSet<>();
-                roles.add(role);
-                userSave.setRoles(roles);
-            }
-            User userSaved = userRepository.save(userSave);
-            UserResponseDto userResponseDto = modelMapper.map(userSaved, UserResponseDto.class);
-            return userResponseDto;
+        userOld.orElseThrow(() -> new NotFoundException("User not found"));
+        User userSave = userOld.get();
+        BeanUtils.copyProperties(userUpdateRequestDto, userSave);
+        if (userUpdateRequestDto.getRole() != null) {
+            Role role = roleRepository.findByName(userUpdateRequestDto.getRole());
+            Set<Role> roles = new HashSet<>();
+            roles.add(role);
+            userSave.setRoles(roles);
         }
-        throw new NotFoundException("User not found");
+        User userSaved = userRepository.save(userSave);
+        UserResponseDto userResponseDto = modelMapper.map(userSaved, UserResponseDto.class);
+        return userResponseDto;
     }
 
     @Override
     public UserResponseDto updateBlockUser(UserStatusRequestDto userStatusRequestDto) {
-        Optional<User> userOpt = userRepository.findById(userStatusRequestDto.getId());
-        if (userOpt.isPresent()) {
-            User userOld = userOpt.get();
-            userOld.setBlocked(userStatusRequestDto.isBlocked());
-            User userSaved = userRepository.save(userOld);
-            return modelMapper.map(userSaved, UserResponseDto.class);
-        }
-        throw new NotFoundException("User not found");
+        Optional<User> userOptional = userRepository.findById(userStatusRequestDto.getId());
+        userOptional.orElseThrow(() -> new NotFoundException("User not found"));
+        User userOld = userOptional.get();
+        userOld.setBlocked(userStatusRequestDto.isBlocked());
+        User userSaved = userRepository.save(userOld);
+        return modelMapper.map(userSaved, UserResponseDto.class);
     }
 
     @Override
-    public List<User> getListUser(int pageNumber, int pageSize, String sortField, String sortName, String keywork, boolean deleted) {
+    public List<User> getListUser(int pageNumber, int pageSize, String sortField, String sortName, String keyword, boolean deleted) {
         Sort sort = Sort.by(sortField);
         sort = sortName.equals("asc") ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
-        if (keywork != null) {
-            return userRepository.findAll(keywork, deleted, pageable).getContent();
+        if (keyword != null) {
+            return userRepository.findAll(keyword, deleted, pageable).getContent();
         }
         return userRepository.findAll(pageable).getContent();
     }
