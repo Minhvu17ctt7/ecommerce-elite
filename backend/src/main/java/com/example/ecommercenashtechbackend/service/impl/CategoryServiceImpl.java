@@ -32,13 +32,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponseDto> getAllCategories() {
-        List<Category> listCategory =  categoryRepository.findAll();
+        List<Category> listCategory = categoryRepository.findAll();
         return util.mapList(listCategory, CategoryResponseDto.class);
     }
 
     @Override
     public List<CategoryResponseDto> getAllCategories(boolean deleted) {
-        List<Category> listCategory =  categoryRepository.findAllByDeleted(deleted);
+        List<Category> listCategory = categoryRepository.findAllByDeleted(deleted);
         return util.mapList(listCategory, CategoryResponseDto.class);
     }
 
@@ -49,6 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
         return modelMapper.map(categoryOptional.get(), CategoryResponseDto.class);
     }
 
+    //Get categories native query
     @Override
     public List<Category> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keyword) {
         Sort sort = Sort.by(sortField);
@@ -62,8 +63,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category createCategory(CategoryRequestDto categoryRequestDto) {
-        Optional<Category> cateOpt = categoryRepository.findByName(categoryRequestDto.getName());
-        if (!cateOpt.isPresent()) {
+        Optional<Category> categoryOptional = categoryRepository.findByName(categoryRequestDto.getName());
+        if (!categoryOptional.isPresent()) {
             Category categorySave = new Category();
             return save(categorySave, modelMapper.map(categoryRequestDto, CategoryUpdateRequestDto.class));
         }
@@ -71,30 +72,26 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(CategoryUpdateRequestDto categoryUpdateRequestDto) {
-        Optional<Category> categoryOpt = categoryRepository.findById(categoryUpdateRequestDto.getId());
-        if (categoryOpt.isPresent()) {
-            Category categoryOld = categoryOpt.get();
-            Optional<Category> categoryExist = categoryRepository.findByName(categoryUpdateRequestDto.getName());
-            if (categoryExist.isPresent() && categoryExist.get().getId() != categoryOld.getId()) {
-                throw new ConflictException("Category name already exits");
-            }
-            return save(categoryOld, categoryUpdateRequestDto);
+    public CategoryResponseDto updateCategory(CategoryUpdateRequestDto categoryUpdateRequestDto) {
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryUpdateRequestDto.getId());
+        categoryOptional.orElseThrow(() -> new NotFoundException("Category not found"));
+        Category categoryOld = categoryOptional.get();
+        Optional<Category> categoryExist = categoryRepository.findByName(categoryUpdateRequestDto.getName());
+        if (categoryExist.isPresent() && categoryExist.get().getId() != categoryOld.getId()) {
+            throw new ConflictException("Category name already exits");
         }
-        throw new NotFoundException("Category not found");
+        return save(categoryOld, categoryUpdateRequestDto);
     }
 
-    Category save(Category category, CategoryUpdateRequestDto categoryRequestDto) {
+    private CategoryResponseDto save(Category category, CategoryUpdateRequestDto categoryRequestDto) {
         category = modelMapper.map(categoryRequestDto, Category.class);
         if (categoryRequestDto.getParentId() != null) {
-            Optional<Category> categoryParentOpt = categoryRepository.findById(categoryRequestDto.getParentId());
-            if (categoryParentOpt.isPresent()) {
-                category.setParent(categoryParentOpt.get());
-            } else {
-                throw new NotFoundException("Parent category not found");
-            }
+            Optional<Category> categoryParentOptional = categoryRepository.findById(categoryRequestDto.getParentId());
+            categoryParentOptional.orElseThrow(() -> new NotFoundException("Parent category not found"));
+            category.setParent(categoryParentOptional.get());
         }
-        return categoryRepository.save(category);
+        Category categorySaved =  categoryRepository.save(category);
+        return modelMapper.map(categorySaved, CategoryResponseDto.class);
     }
 
     @Override
@@ -110,8 +107,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public boolean checkAvailableDelete(Long categoryId) {
         Optional<Category> categoryOptional = categoryRepository.findByIdAndDeleted(categoryId, false);
-        if(categoryOptional.isPresent()) {
-            if(categoryOptional.get().getProducts().size() > 0) {
+        if (categoryOptional.isPresent()) {
+            if (categoryOptional.get().getProducts().size() > 0) {
                 return false;
             }
             return true;

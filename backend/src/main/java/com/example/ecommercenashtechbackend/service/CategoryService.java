@@ -18,7 +18,7 @@ public interface CategoryService {
 
     List<Category> getAllCategoriesPagination(int pageNumber, int pageSize, String sortField, String sortName, String keyword);
 
-    Category updateCategory(CategoryUpdateRequestDto categoryUpdateRequestDto);
+    CategoryResponseDto updateCategory(CategoryUpdateRequestDto categoryUpdateRequestDto);
 
     void deleteCategory(Long id);
 
