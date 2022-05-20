@@ -4,6 +4,7 @@ import com.example.ecommercenashtechbackend.dto.request.*;
 import com.example.ecommercenashtechbackend.dto.response.JwtResponse;
 import com.example.ecommercenashtechbackend.dto.response.UserLoginResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
+import com.example.ecommercenashtechbackend.entity.Cart;
 import com.example.ecommercenashtechbackend.entity.Role;
 import com.example.ecommercenashtechbackend.entity.User;
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
@@ -71,14 +72,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
-        Role roleUser = roleRepository.findByName(userRequestDto.getRole());
-        User userSave = modelMapper.map(userRequestDto, User.class);
-        userSave.setRoles(Set.of(roleUser));
-        Optional<User> userOld = userRepository.findByEmail(userSave.getEmail());
-        if (userOld.isPresent()) {
+        Optional<User> userOldOptional = userRepository.findByEmail(userRequestDto.getEmail());
+        if (userOldOptional.isPresent()) {
             throw new ConflictException("Email already exists");
         }
+
+        Optional<Role> roleUserOptional = roleRepository.findByName(userRequestDto.getRole());
+        roleUserOptional.orElseThrow(() -> new NotFoundException("Role " + userRequestDto.getRole() + " not found!"));
+
+        User userSave = modelMapper.map(userRequestDto, User.class);
+        userSave.setRoles(Set.of(roleUserOptional.get()));
         userSave.setPassword(passwordEncoder.encode(userSave.getPassword()));
+        if(userRequestDto.getRole().equals("USER")) {
+            Cart cart = new Cart();
+            userSave.setCart(cart);
+        }
+
         User userSaved = userRepository.save(userSave);
         return modelMapper.map(userSaved, UserResponseDto.class);
     }
