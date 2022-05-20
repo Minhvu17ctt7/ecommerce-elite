@@ -1,10 +1,7 @@
 package com.example.ecommercenashtechbackend.entity;
 
 import jdk.jfr.Enabled;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -14,6 +11,7 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 public class Cart extends Auditable<String>{
 
@@ -21,7 +19,7 @@ public class Cart extends Auditable<String>{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double totalPrice;
+    private Double totalPrice = 0D;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<CartItem> cartItems = new HashSet<>();
