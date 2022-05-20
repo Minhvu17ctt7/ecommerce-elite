@@ -1,9 +1,7 @@
 package com.example.ecommercenashtechbackend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.mapping.ToOne;
 
 import javax.persistence.*;
 
@@ -11,17 +9,20 @@ import javax.persistence.*;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table
-public class CartItem extends Auditable<String>{
+public class CartItem extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int quantity;
+    private String productName;
+    private float productPrice;
 
-    @OneToOne
-    @JoinColumn(name ="categoryId")
+    @ManyToOne
+    @JoinColumn(name = "productId")
     private Product product;
 
     @ManyToOne
