@@ -134,14 +134,18 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto updateUser(UserUpdateRequestDto userUpdateRequestDto) {
         Optional<User> userOld = userRepository.findById(userUpdateRequestDto.getId());
         userOld.orElseThrow(() -> new NotFoundException("User not found"));
+
         User userSave = userOld.get();
         BeanUtils.copyProperties(userUpdateRequestDto, userSave);
+
         if (userUpdateRequestDto.getRole() != null) {
-            Role role = roleRepository.findByName(userUpdateRequestDto.getRole());
+            Optional<Role> roleOptional = roleRepository.findByName(userUpdateRequestDto.getRole());
+            roleOptional.orElseThrow(() -> new NotFoundException("Role " + userUpdateRequestDto.getRole() + " not found!"));
             Set<Role> roles = new HashSet<>();
-            roles.add(role);
+            roles.add(roleOptional.get());
             userSave.setRoles(roles);
         }
+
         User userSaved = userRepository.save(userSave);
         UserResponseDto userResponseDto = modelMapper.map(userSaved, UserResponseDto.class);
         return userResponseDto;
