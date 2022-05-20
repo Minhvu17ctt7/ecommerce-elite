@@ -5,6 +5,7 @@ import com.example.ecommercenashtechbackend.repository.RoleRepository;
 import com.example.ecommercenashtechbackend.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getRoleByName(String roleName) {
-        return roleRepository.findByName(roleName);
+        return roleRepository.findByName(roleName).orElseThrow(() -> new NotFoundException("Not found role"));
     }
 
     @Override
