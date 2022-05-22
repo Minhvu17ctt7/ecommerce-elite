@@ -49,6 +49,9 @@ public class ProductRepositoryTest {
 
     @Test
     public void findById_ShouldReturnOptionalProduct_WhenFindById() {
+        Product product = Product.builder().id(1L).build();
+        productRepository.save(product);
+
         Optional<Product> productOptional = productRepository.findById(1L);
         assertThat(productOptional.isPresent()).isTrue();
         assertThat(productOptional.get().getId()).isEqualTo(1L);
