@@ -1,6 +1,5 @@
 package com.example.ecommercenashtechbackend.service.impl;
 
-import com.example.ecommercenashtechbackend.dto.request.CategoryRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.CategoryUpdateRequestDto;
 import com.example.ecommercenashtechbackend.dto.response.CategoryResponseDto;
 import com.example.ecommercenashtechbackend.entity.Category;
@@ -30,6 +29,7 @@ public class CategoryServiceImplTest {
     private Category categoryInitial;
     private Category categoryExpected;
     private CategoryUpdateRequestDto categoryUpdateRequestDto;
+    private CategoryResponseDto categoryResponseDto;
 
     @BeforeEach
     public void setUp() {
@@ -40,6 +40,7 @@ public class CategoryServiceImplTest {
         categoryInitial = mock(Category.class);
         categoryUpdateRequestDto = mock(CategoryUpdateRequestDto.class);
         categoryExpected = mock(Category.class);
+        categoryResponseDto = mock(CategoryResponseDto.class);
     }
 
     @Test
@@ -65,8 +66,9 @@ public class CategoryServiceImplTest {
         when(categoryRepository.findByName(categoryUpdateRequestDto.getName())).thenReturn(Optional.ofNullable(null));
         when(modelMapper.map(categoryUpdateRequestDto, Category.class)).thenReturn(categoryExpected);
         when(categoryRepository.save(categoryExpected)).thenReturn(categoryResult);
+        when(modelMapper.map(categoryResult, CategoryResponseDto.class)).thenReturn(categoryResponseDto);
         CategoryResponseDto result = categoryService.updateCategory(categoryUpdateRequestDto);
-        assertThat(result).isEqualTo(categoryResult);
+        assertThat(result).isEqualTo(categoryResponseDto);
     }
 
 //    @Test
