@@ -33,6 +33,15 @@ public class ProductRepositoryTest {
     }
 
     @Test
+    public void findByName_ShouldReturnOptionalEmpty_WhenProductDeleted() {
+        Product product = Product.builder().name("Áo Thun Dry Cổ Tròn Ngắn Tay").deleted(true).build();
+        productRepository.save(product);
+
+        Optional<Product> productOptional = productRepository.findByName("Áo Thun Dry Cổ Tròn Ngắn Tay");
+        assertThat(productOptional.isEmpty()).isTrue();
+    }
+
+    @Test
     public void findById_ShouldReturnOptionalProduct_WhenFindById() {
         Optional<Product> productOptional = productRepository.findById(1L);
         assertThat(productOptional.isPresent()).isTrue();
