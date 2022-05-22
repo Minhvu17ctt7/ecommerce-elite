@@ -2,7 +2,6 @@ package com.example.ecommercenashtechbackend.service.impl;
 
 import com.example.ecommercenashtechbackend.dto.request.UserLoginRequestDto;
 import com.example.ecommercenashtechbackend.dto.request.UserRequestDto;
-import com.example.ecommercenashtechbackend.dto.response.UserLoginResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.UserResponseDto;
 import com.example.ecommercenashtechbackend.entity.Role;
 import com.example.ecommercenashtechbackend.entity.User;
@@ -10,13 +9,11 @@ import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
 import com.example.ecommercenashtechbackend.repository.RoleRepository;
 import com.example.ecommercenashtechbackend.repository.UserRepository;
-import com.example.ecommercenashtechbackend.security.UserDetail;
 import com.example.ecommercenashtechbackend.security.jwt.JwtUtil;
 import com.example.ecommercenashtechbackend.util.Util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
-import org.powermock.api.mockito.PowerMockito;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -27,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.*;
 
 
 public class UserServiceImplTest {
