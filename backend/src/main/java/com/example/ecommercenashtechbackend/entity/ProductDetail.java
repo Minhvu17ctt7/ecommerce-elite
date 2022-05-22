@@ -18,7 +18,7 @@ public class ProductDetail extends Auditable<String>{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String value;
+    private String valueDetail;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productId")
