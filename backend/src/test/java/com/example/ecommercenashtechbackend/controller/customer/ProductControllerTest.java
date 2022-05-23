@@ -1,6 +1,7 @@
 package com.example.ecommercenashtechbackend.controller.customer;
 
 import com.example.ecommercenashtechbackend.configuration.SpringSecurityWebAuxTestConfig;
+import com.example.ecommercenashtechbackend.dto.response.ProductPaginationResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
 import com.example.ecommercenashtechbackend.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.webjars.NotFoundException;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNotNull;
@@ -35,15 +40,23 @@ public class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    ProductResponseDto RECORD_1;
+    ProductResponseDto RECORD_2;
+
+    @BeforeEach
+    public void setup() {
+        RECORD_1 = ProductResponseDto.builder().id(1L).build();
+        RECORD_2 = ProductResponseDto.builder().id(2L).build();
+    }
+
     @Test
     public void getProductDetail_ShouldReturnProductResponseDto_WhenGetSuccess() throws Exception {
-        ProductResponseDto productResponseDto = ProductResponseDto.builder().id(1L).build();
-        when(productService.getProductDetail(productResponseDto.getId())).thenReturn(productResponseDto);
+        when(productService.getProductDetail(RECORD_1.getId())).thenReturn(RECORD_1);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/products/{id}", productResponseDto.getId()))
+                        .get("/products/{id}", RECORD_1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.id").value(productResponseDto.getId()));
+                .andExpect(jsonPath("$.data.id").value(RECORD_1.getId()));
     }
 
     @Test
@@ -56,4 +69,28 @@ public class ProductControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Not found product with id: " + id ));
     }
+
+    @Test
+    public void getListProductPaginationBySpecification_shouldReturnListProduct_WhenGetSuccess() throws Exception {
+        int pageNumber = 1;
+        int pageSize = 8;
+        String sortField = "name";
+        String sortName = "asc";
+        String search = "";
+        ProductPaginationResponseDto productPaginationResponseDto = ProductPaginationResponseDto.builder().products(List.of(RECORD_1, RECORD_2)).sizePage(8).totalPage(2).build();
+
+
+        when(productService.getAllProductsPaginationBySpecification(pageNumber, pageSize, sortField, sortName, search, false)).thenReturn(
+                productPaginationResponseDto
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/products/page/{pageNumber}?pageSize={pageSize}&sortField={sortField}&sortName={sortName}&" +
+                                "search={search}", pageNumber, pageSize, sortField, sortName, search))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.sizePage").value(pageSize))
+                .andExpect(jsonPath("$.data.totalPage").value(2))
+                ;
+    }
+
 }
