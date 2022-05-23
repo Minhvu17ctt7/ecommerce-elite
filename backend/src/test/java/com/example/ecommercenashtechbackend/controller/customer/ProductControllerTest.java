@@ -31,15 +31,6 @@ public class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private ProductResponseDto record_1;
-    private ProductResponseDto record_2;
-
-    @BeforeEach
-    public void setup() {
-        record_1 = mock(ProductResponseDto.class);
-        record_2 = mock(ProductResponseDto.class);
-    }
-
     @Test
     public void getProductDetail_ShouldReturnProductResponseDto_WhenGetSuccess() throws Exception {
         ProductResponseDto productResponseDto = ProductResponseDto.builder().id(1L).build();
