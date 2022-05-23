@@ -13,8 +13,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -37,7 +40,8 @@ public class ProductControllerTest {
         when(productService.getProductDetail(1L)).thenReturn(productResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/products/1"))
-                .andExpect(status().isOk());
+                        .get("/products/{id}", productResponseDto.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.id").value(productResponseDto.getId()));
     }
 }
