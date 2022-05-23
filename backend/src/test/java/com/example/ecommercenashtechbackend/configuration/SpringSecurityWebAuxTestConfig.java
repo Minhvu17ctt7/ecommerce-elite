@@ -4,7 +4,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -21,8 +20,12 @@ public class SpringSecurityWebAuxTestConfig {
     public UserDetailsService userDetailsService() {
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ADMIN"));
-        User user = new User("admin", "password", authorities);
+        User admin = new User("admin", "admin", authorities);
 
-        return new InMemoryUserDetailsManager(Arrays.asList(user));
+        Collection<SimpleGrantedAuthority> authoritiesUser = new ArrayList<>();
+        authoritiesUser.add(new SimpleGrantedAuthority("USER"));
+        User user = new User("user", "user", authoritiesUser);
+
+        return new InMemoryUserDetailsManager(Arrays.asList(admin, user));
     }
 }
