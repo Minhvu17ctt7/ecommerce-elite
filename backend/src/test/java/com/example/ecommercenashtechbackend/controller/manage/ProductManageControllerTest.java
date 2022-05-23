@@ -2,6 +2,9 @@ package com.example.ecommercenashtechbackend.controller.manage;
 
 import com.example.ecommercenashtechbackend.configuration.SpringSecurityWebAuxTestConfig;
 import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
+import com.example.ecommercenashtechbackend.entity.User;
+import com.example.ecommercenashtechbackend.security.UserDetail;
+import com.example.ecommercenashtechbackend.security.jwt.JwtUtil;
 import com.example.ecommercenashtechbackend.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = SpringSecurityWebAuxTestConfig.class
 )
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class ProductManageControllerTest {
 
     @MockBean
@@ -50,9 +53,9 @@ public class ProductManageControllerTest {
     @WithUserDetails("admin")
     @Test
     public void getAllProduct_ShouldReturnListProductResponseDto_WhenGetSuccess() throws Exception {
+
         List<ProductResponseDto> resultExpected = new ArrayList<>(Arrays.asList(RECORD_1, RECORD_2));
         when(productService.getAllProducts(true)).thenReturn(resultExpected);
-
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/admin/products/all?deleted={deleted}", true)
                         .contentType(MediaType.APPLICATION_JSON))
