@@ -37,25 +37,28 @@ public class ProductManageControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    private ProductResponseDto record_1;
-    private ProductResponseDto record_2;
+
+    private ProductResponseDto RECORD_1;
+    private ProductResponseDto RECORD_2;
 
     @BeforeEach
     public void setup() {
-        record_1 = mock(ProductResponseDto.class);
-        record_2 = mock(ProductResponseDto.class);
+        RECORD_1 = ProductResponseDto.builder().id(1L).build();
+        RECORD_2 = ProductResponseDto.builder().id(2L).build();
     }
 
-    @WithUserDetails("user@gmail.com")
+    @WithUserDetails("admin")
     @Test
     public void getAllProduct_ShouldReturnListProductResponseDto_WhenGetSuccess() throws Exception {
-        List<ProductResponseDto> resultExpected = new ArrayList<>(Arrays.asList(record_1, record_2));
-        when(productService.getAllProducts(anyBoolean())).thenReturn(resultExpected);
+        List<ProductResponseDto> resultExpected = new ArrayList<>(Arrays.asList(RECORD_1, RECORD_2));
+        when(productService.getAllProducts(true)).thenReturn(resultExpected);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/admin/products?deleted=true")
+                        .get("/admin/products/all?deleted={deleted}", true)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[0].id").value(RECORD_1.getId()))
+                .andExpect(jsonPath("$.data[1].id").value(RECORD_2.getId()));
     }
 }
