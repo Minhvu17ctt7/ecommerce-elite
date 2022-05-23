@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.webjars.NotFoundException;
 
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNotNull;
@@ -37,11 +38,22 @@ public class ProductControllerTest {
     @Test
     public void getProductDetail_ShouldReturnProductResponseDto_WhenGetSuccess() throws Exception {
         ProductResponseDto productResponseDto = ProductResponseDto.builder().id(1L).build();
-        when(productService.getProductDetail(1L)).thenReturn(productResponseDto);
+        when(productService.getProductDetail(productResponseDto.getId())).thenReturn(productResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/products/{id}", productResponseDto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value(productResponseDto.getId()));
+    }
+
+    @Test
+    public void getProductDetail_ShouldReturnProductNotFound_WhenNotFoundProductById() throws Exception {
+        Long id = 2L;
+        when(productService.getProductDetail(id)).thenThrow(new NotFoundException("Not found product with id: " + id));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/products/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Not found product with id: " + id ));
     }
 }
