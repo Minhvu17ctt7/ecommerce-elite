@@ -11,7 +11,7 @@ import javax.persistence.OneToOne;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartAddNewItemRequestDto {
+public class NewCartItemRequestDto {
 
     private int quantity;
     private Long productId;
