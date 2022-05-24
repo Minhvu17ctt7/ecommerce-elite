@@ -7,9 +7,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartResponseDto {
+public class CartItemResponseDto {
 
+    private Long id;
     private int quantity;
     private Long productId;
+    private String nameProduct;
+    private float priceProduct;
+    private String mainImage;
 
 }
