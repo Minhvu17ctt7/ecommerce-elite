@@ -1,7 +1,7 @@
 package com.example.ecommercenashtechbackend.service.impl;
 
-import com.example.ecommercenashtechbackend.dto.request.NewCartItemRequestDto;
-import com.example.ecommercenashtechbackend.dto.response.CartResponseDto;
+import com.example.ecommercenashtechbackend.dto.request.CartItemRequestDto;
+import com.example.ecommercenashtechbackend.dto.response.CartItemResponseDto;
 import com.example.ecommercenashtechbackend.entity.Cart;
 import com.example.ecommercenashtechbackend.entity.CartItem;
 import com.example.ecommercenashtechbackend.entity.Product;
@@ -38,59 +38,68 @@ public class CartServiceImpl implements CartService {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<CartResponseDto> changeCartItemsInCart(List<NewCartItemRequestDto> newCartItemRequestDtoList, Long userId) {
+    public List<CartItemResponseDto> deleteItemToCart(List<CartItemRequestDto> cartItemRequestDtoList, Long userId) {
+        List<CartItemRequestDto> cartItemRequestRemoveDtoList =  cartItemRequestDtoList.stream().map(cartItemRequestDto -> {
+            cartItemRequestDto.setQuantity(cartItemRequestDto.getQuantity() * -1);
+            return cartItemRequestDto;
+        }).collect(Collectors.toList());
+        return changeCartItemsInCart(cartItemRequestRemoveDtoList, userId);
+    }
+
+    @Override
+    public List<CartItemResponseDto> changeCartItemsInCart(List<CartItemRequestDto> cartItemRequestDtoList, Long userId) {
         User user = User.builder().id(userId).build();
 
         Cart cartUser = checkCartExistByUser(user);
 
         Set<CartItem> cartItemCurrentList = cartUser.getCartItems();
 
-        List<Long> productIdList = newCartItemRequestDtoList.stream().map(newCartItemRequestDto -> newCartItemRequestDto.getProductId()).collect(Collectors.toList());
+        List<Long> productIdList = cartItemRequestDtoList.stream().map(cartItemRequestDto -> cartItemRequestDto.getProductId()).collect(Collectors.toList());
         List<Product> productOfNewCartItems = productRepository.findAllByIdIn(productIdList);
         List<CartItem> cartItemSaveList = new ArrayList<>();
 
-        newCartItemRequestDtoList.forEach(newCartItemRequestDto -> {
-                Optional<Product> productOptional = productOfNewCartItems.stream().filter(p -> p.getId() == newCartItemRequestDto.getProductId()).findFirst();
-                Optional<CartItem> cartItemExistedOptional = cartItemCurrentList.stream().filter(p -> p.getProduct().getId() == newCartItemRequestDto.getProductId()).findFirst();
-                Product productOfCartItem = productOptional.orElseThrow(() -> new NotFoundException("Not found product with id: " + newCartItemRequestDto.getProductId()));
+        cartItemRequestDtoList.forEach(cartItemRequestDto -> {
+            Optional<Product> productOptional = productOfNewCartItems.stream().filter(p -> p.getId() == cartItemRequestDto.getProductId()).findFirst();
+            Optional<CartItem> cartItemExistedOptional = cartItemCurrentList.stream().filter(p -> p.getProduct().getId() == cartItemRequestDto.getProductId()).findFirst();
+            Product productOfCartItem = productOptional.orElseThrow(() -> new NotFoundException("Not found product with id: " + cartItemRequestDto.getProductId()));
 
-                CartItem cartItemSave = new CartItem();
-                if(cartItemExistedOptional.isPresent()) {
-                    CartItem cartItemExisted = cartItemExistedOptional.get();
-                    cartItemSave = modelMapper.map(cartItemExisted, CartItem.class);
-                    int quantity = cartItemSave.getQuantity() + newCartItemRequestDto.getQuantity();
-                    if(quantity == 0) {
-                        cartItemRepository.deleteCartItem(cartItemExisted.getId());
-                    }else {
-                        cartItemSave.setQuantity(quantity);
-                    }
-                }else {
-                    cartItemSave = CartItem.builder().cart(cartUser).product(productOfCartItem).quantity(newCartItemRequestDto.getQuantity()).build();
+            CartItem cartItemSave = new CartItem();
+            if (cartItemExistedOptional.isPresent()) {
+                CartItem cartItemExisted = cartItemExistedOptional.get();
+                cartItemSave = modelMapper.map(cartItemExisted, CartItem.class);
+                int quantity = cartItemSave.getQuantity() + cartItemRequestDto.getQuantity();
+                if (quantity == 0) {
+                    cartItemRepository.deleteCartItem(cartItemExisted.getId());
+                } else {
+                    cartItemSave.setQuantity(quantity);
                 }
+            } else {
+                cartItemSave = CartItem.builder().cart(cartUser).product(productOfCartItem).quantity(cartItemRequestDto.getQuantity()).build();
+            }
 
-                if (cartItemSave.getQuantity() > productOfCartItem.getQuantity()) {
-                    throw new NotAcceptableException("Product out of stock");
-                }
-                if(cartItemSave.getQuantity() < 0) {
-                    throw new NotAcceptableException("Product quantity invalid");
-                }
+            if (cartItemSave.getQuantity() > productOfCartItem.getQuantity()) {
+                throw new NotAcceptableException("Product out of stock");
+            }
+            if (cartItemSave.getQuantity() < 0) {
+                throw new NotAcceptableException("Product quantity invalid");
+            }
 
-                cartUser.setTotalPrice(cartUser.getTotalPrice() + newCartItemRequestDto.getQuantity() * productOfCartItem.getPrice());
-                cartUser.setTotalItem(cartUser.getTotalItem() + newCartItemRequestDto.getQuantity());
-                cartItemSaveList.add(cartItemSave);
+            cartUser.setTotalPrice(cartUser.getTotalPrice() + cartItemRequestDto.getQuantity() * productOfCartItem.getPrice());
+            cartUser.setTotalItem(cartUser.getTotalItem() + cartItemRequestDto.getQuantity());
+            cartItemSaveList.add(cartItemSave);
         });
 
         List<CartItem> cartItemSavedList = cartItemRepository.saveAll(cartItemSaveList);
         cartRepository.save(cartUser);
-        return util.mapList(cartItemSavedList, CartResponseDto.class);
+        return util.mapList(cartItemSavedList, CartItemResponseDto.class);
     }
 
     private Cart checkCartExistByUser(User user) {
         Optional<Cart> cartOptional = cartRepository.findCartByUser(user);
-        if(cartOptional.isEmpty()) {
+        if (cartOptional.isEmpty()) {
             Cart cartSave = Cart.builder().user(user).build();
             return cartRepository.save(cartSave);
-        }else {
+        } else {
             return cartOptional.get();
         }
     }
