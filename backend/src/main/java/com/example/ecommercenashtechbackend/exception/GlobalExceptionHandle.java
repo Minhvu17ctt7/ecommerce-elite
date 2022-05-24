@@ -2,6 +2,7 @@ package com.example.ecommercenashtechbackend.exception;
 
 import com.example.ecommercenashtechbackend.exception.custom.ConflictException;
 import com.example.ecommercenashtechbackend.exception.custom.ForbiddenException;
+import com.example.ecommercenashtechbackend.exception.custom.NotAcceptableException;
 import com.example.ecommercenashtechbackend.exception.custom.UnauthorizedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -65,6 +66,14 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
                 request.getDescription(false),
                 HttpStatus.UNAUTHORIZED.value());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(NotAcceptableException.class)
+    public final ResponseEntity<ExceptionResponse> handleNotAcceptableException(NotAcceptableException ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                request.getDescription(false),
+                HttpStatus.NOT_ACCEPTABLE.value());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_ACCEPTABLE);
     }
 
     //Handle validation errors
