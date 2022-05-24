@@ -18,12 +18,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class CartServiceImpl implements CartService {
@@ -49,13 +51,19 @@ public class CartServiceImpl implements CartService {
 
         newCartItemRequestDtoList.forEach(newCartItemRequestDto -> {
                 Optional<Product> productOptional = productOfNewCartItems.stream().filter(p -> p.getId() == newCartItemRequestDto.getProductId()).findFirst();
-                Optional<CartItem> cartItemExistOptional = cartItemCurrentList.stream().filter(p -> p.getProduct().getId() == newCartItemRequestDto.getProductId()).findFirst();
+                Optional<CartItem> cartItemExistedOptional = cartItemCurrentList.stream().filter(p -> p.getProduct().getId() == newCartItemRequestDto.getProductId()).findFirst();
                 Product productOfCartItem = productOptional.orElseThrow(() -> new NotFoundException("Not found product with id: " + newCartItemRequestDto.getProductId()));
 
                 CartItem cartItemSave = new CartItem();
-                if(cartItemExistOptional.isPresent()) {
-                    cartItemSave = modelMapper.map(cartItemExistOptional.get(), CartItem.class);
-                    cartItemSave.setQuantity(cartItemSave.getQuantity() + newCartItemRequestDto.getQuantity());
+                if(cartItemExistedOptional.isPresent()) {
+                    CartItem cartItemExisted = cartItemExistedOptional.get();
+                    cartItemSave = modelMapper.map(cartItemExisted, CartItem.class);
+                    int quantity = cartItemSave.getQuantity() + newCartItemRequestDto.getQuantity();
+                    if(quantity == 0) {
+                        cartItemRepository.deleteCartItem(cartItemExisted.getId());
+                    }else {
+                        cartItemSave.setQuantity(quantity);
+                    }
                 }else {
                     cartItemSave = CartItem.builder().cart(cartUser).product(productOfCartItem).quantity(newCartItemRequestDto.getQuantity()).build();
                 }
@@ -63,11 +71,17 @@ public class CartServiceImpl implements CartService {
                 if (cartItemSave.getQuantity() > productOfCartItem.getQuantity()) {
                     throw new NotAcceptableException("Product out of stock");
                 }
+                if(cartItemSave.getQuantity() < 0) {
+                    throw new NotAcceptableException("Product quantity invalid");
+                }
 
-            cartItemSaveList.add(cartItemSave);
+                cartUser.setTotalPrice(cartUser.getTotalPrice() + newCartItemRequestDto.getQuantity() * productOfCartItem.getPrice());
+                cartUser.setTotalItem(cartUser.getTotalItem() + newCartItemRequestDto.getQuantity());
+                cartItemSaveList.add(cartItemSave);
         });
 
         List<CartItem> cartItemSavedList = cartItemRepository.saveAll(cartItemSaveList);
+        cartRepository.save(cartUser);
         return util.mapList(cartItemSavedList, CartResponseDto.class);
     }
 
