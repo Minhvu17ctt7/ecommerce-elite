@@ -41,4 +41,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>,  JpaSpe
     public Page<Product> findAll( boolean deleted,Long categoryId, Pageable pageable);
 
     Page<Product> findAllByDeleted(Specification<Product> spec, Pageable pageable, boolean deleted);
+
+    List<Product> findAllByIdIn(List<Long> productIds);
 }
