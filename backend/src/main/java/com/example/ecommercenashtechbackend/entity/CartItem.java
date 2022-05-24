@@ -18,11 +18,9 @@ public class CartItem extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int quantity;
-    private String productName;
-    private float productPrice;
 
     @ManyToOne
-    @JoinColumn(name = "productId")
+    @JoinColumn(name = "productId", nullable=false)
     private Product product;
 
     @ManyToOne
