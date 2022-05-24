@@ -27,7 +27,7 @@ public class CartController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetail userDetail = (UserDetail)principal;
 
-        List<CartResponseDto> cartResponseDto = cartService.addNewItemsToCart(newCartItemRequestDtoList, userDetail.getUser().getId());
+        List<CartResponseDto> cartResponseDto = cartService.changeCartItemsInCart(newCartItemRequestDtoList, userDetail.getUser().getId());
         ResponseDto<List<CartResponseDto>> responseDto = new ResponseDto<>(200, cartResponseDto, "Add Item to cart successfully");
         return ResponseEntity.ok(responseDto);
     }

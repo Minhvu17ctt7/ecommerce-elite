@@ -38,7 +38,7 @@ public class CartServiceImpl implements CartService {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<CartResponseDto> addNewItemsToCart(List<NewCartItemRequestDto> newCartItemRequestDtoList, Long userId) {
+    public List<CartResponseDto> changeCartItemsInCart(List<NewCartItemRequestDto> newCartItemRequestDtoList, Long userId) {
         User user = User.builder().id(userId).build();
 
         Cart cartUser = checkCartExistByUser(user);

@@ -6,5 +6,5 @@ import com.example.ecommercenashtechbackend.dto.response.CartResponseDto;
 import java.util.List;
 
 public interface CartService {
-    List<CartResponseDto> addNewItemsToCart(List<NewCartItemRequestDto> newCartItemRequestDtoList, Long UserId);
+    List<CartResponseDto> changeCartItemsInCart(List<NewCartItemRequestDto> newCartItemRequestDtoList, Long UserId);
 }
