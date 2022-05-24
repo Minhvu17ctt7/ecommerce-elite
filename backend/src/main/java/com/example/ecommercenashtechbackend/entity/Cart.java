@@ -20,6 +20,7 @@ public class Cart extends Auditable<String>{
     private Long id;
 
     private Double totalPrice = 0D;
+    private Long totalItem = 0L;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<CartItem> cartItems = new HashSet<>();
