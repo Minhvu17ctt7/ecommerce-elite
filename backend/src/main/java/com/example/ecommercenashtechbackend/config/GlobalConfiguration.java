@@ -1,7 +1,11 @@
 package com.example.ecommercenashtechbackend.config;
 
+import com.example.ecommercenashtechbackend.dto.response.CartItemResponseDto;
 import com.example.ecommercenashtechbackend.dto.response.ProductResponseDto;
+import com.example.ecommercenashtechbackend.entity.Cart;
+import com.example.ecommercenashtechbackend.entity.CartItem;
 import com.example.ecommercenashtechbackend.entity.Product;
+import com.example.ecommercenashtechbackend.repository.CartRepository;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -32,10 +36,27 @@ public class GlobalConfiguration {
         Converter<?, ?> convertNull =
                 context -> context.getSource() == null ? context.getDestination() : context.getSource();
 
-        modelMapper.addConverter(convertNull);
+        Converter<CartItem, CartItemResponseDto> cartItemConverter = new Converter<CartItem, CartItemResponseDto>()
+        {
+            public CartItemResponseDto convert(MappingContext<CartItem, CartItemResponseDto> context)
+            {
+                CartItem cartItem = context.getSource();
+                CartItemResponseDto cartItemResponseDto = new CartItemResponseDto();
 
+                cartItemResponseDto.setId(cartItem.getId());
+                cartItemResponseDto.setQuantity(cartItem.getQuantity());
+                cartItemResponseDto.setProductId(cartItem.getProduct().getId());
+                cartItemResponseDto.setNameProduct(cartItem.getProduct().getName());
+                cartItemResponseDto.setPriceProduct(cartItem.getProduct().getPrice());
+                cartItemResponseDto.setMainImage(cartItem.getProduct().getMainImage());
+
+                return cartItemResponseDto;
+            }
+        };
+
+        modelMapper.addConverter(cartItemConverter);
+        modelMapper.addConverter(convertNull);
         return modelMapper;
     }
-
 
 }
