@@ -59,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login", "/logout", "/register", "/refresh-token").permitAll()
                 .antMatchers("/reviews/create").hasAnyAuthority("ADMIN", "USER")
                 .antMatchers("/user").hasAnyAuthority("USER", "ADMIN")
+                .antMatchers("/orders").hasAnyAuthority("USER")
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().permitAll();
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
