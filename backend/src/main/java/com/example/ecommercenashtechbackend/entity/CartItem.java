@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table
+@Table(name = "cart_items")
 public class CartItem extends Auditable<String> {
 
     @Id
@@ -20,7 +20,7 @@ public class CartItem extends Auditable<String> {
     private int quantity;
 
     @ManyToOne
-    @JoinColumn(name = "productId", nullable=false)
+    @JoinColumn(name = "productId")
     private Product product;
 
     @ManyToOne

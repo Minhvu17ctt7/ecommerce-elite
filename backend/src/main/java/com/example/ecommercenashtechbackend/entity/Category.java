@@ -13,6 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(name = "categories")
 public class Category extends Auditable<String> {
 
     @Id
