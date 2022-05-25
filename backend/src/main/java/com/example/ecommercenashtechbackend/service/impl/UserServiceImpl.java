@@ -83,9 +83,11 @@ public class UserServiceImpl implements UserService {
         User userSave = modelMapper.map(userRequestDto, User.class);
         userSave.setRoles(Set.of(roleUserOptional.get()));
         userSave.setPassword(passwordEncoder.encode(userSave.getPassword()));
+
         if(userRequestDto.getRole().equals("USER")) {
             Cart cart = new Cart();
             userSave.setCart(cart);
+            cart.setUser(userSave);
         }
 
         User userSaved = userRepository.save(userSave);
