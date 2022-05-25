@@ -11,15 +11,13 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Data
 @Entity
+@Table(name = "order_items")
 public class OrderItem extends Auditable<String>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private int quantity;
-    private double price;
-    private double name;
 
     @OneToOne
     @JoinColumn(name = "productId")
@@ -30,5 +28,6 @@ public class OrderItem extends Auditable<String>{
     @JoinColumn(name = "orderId")
     @JsonIgnore
     private Order order;
+
 }
 
