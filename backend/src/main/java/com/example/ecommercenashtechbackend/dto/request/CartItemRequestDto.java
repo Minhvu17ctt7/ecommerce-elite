@@ -14,10 +14,10 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class CartItemRequestDto {
 
-    @NotNull
+    @NotNull(message = "Quantity is required")
     @Min(value = 0, message = "Quantity must greater than zero")
     private int quantity;
-    @NotNull
+    @NotNull(message = "Quantity is required")
     private Long productId;
 
 }
