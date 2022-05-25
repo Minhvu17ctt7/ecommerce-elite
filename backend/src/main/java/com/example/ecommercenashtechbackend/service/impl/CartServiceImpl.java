@@ -2,6 +2,7 @@ package com.example.ecommercenashtechbackend.service.impl;
 
 import com.example.ecommercenashtechbackend.dto.request.CartItemRequestDto;
 import com.example.ecommercenashtechbackend.dto.response.CartItemResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.CartResponseDto;
 import com.example.ecommercenashtechbackend.entity.Cart;
 import com.example.ecommercenashtechbackend.entity.CartItem;
 import com.example.ecommercenashtechbackend.entity.Product;
@@ -38,6 +39,17 @@ public class CartServiceImpl implements CartService {
     private final ModelMapper modelMapper;
 
     @Override
+    public CartResponseDto getCart(Long userId) {
+        User user = User.builder().id(userId).build();
+        Optional<Cart> cartUserOptional = cartRepository.findCartByUser(user);
+        Cart cartUser = cartUserOptional.orElseGet(() -> {
+            Cart cartSave = Cart.builder().user(user).build();
+            return cartRepository.save(cartSave);
+        });
+        return modelMapper.map(cartUser, CartResponseDto.class);
+    }
+
+    @Override
     public List<CartItemResponseDto> deleteItemToCart(List<CartItemRequestDto> cartItemRequestDtoList, Long userId) {
         List<CartItemRequestDto> cartItemRequestRemoveDtoList =  cartItemRequestDtoList.stream().map(cartItemRequestDto -> {
             cartItemRequestDto.setQuantity(cartItemRequestDto.getQuantity() * -1);
@@ -60,10 +72,16 @@ public class CartServiceImpl implements CartService {
 
         cartItemRequestDtoList.forEach(cartItemRequestDto -> {
             Optional<Product> productOptional = productOfNewCartItems.stream().filter(p -> p.getId() == cartItemRequestDto.getProductId()).findFirst();
-            Optional<CartItem> cartItemExistedOptional = cartItemCurrentList.stream().filter(p -> p.getProduct().getId() == cartItemRequestDto.getProductId()).findFirst();
             Product productOfCartItem = productOptional.orElseThrow(() -> new NotFoundException("Not found product with id: " + cartItemRequestDto.getProductId()));
 
+            Optional<CartItem> cartItemExistedOptional = Optional.ofNullable(null);
+            
+            if(cartItemCurrentList != null) {
+                cartItemExistedOptional = cartItemCurrentList.stream().filter(p -> p.getProduct().getId() == cartItemRequestDto.getProductId()).findFirst();
+            }
+
             CartItem cartItemSave = new CartItem();
+
             if (cartItemExistedOptional.isPresent()) {
                 CartItem cartItemExisted = cartItemExistedOptional.get();
                 cartItemSave = modelMapper.map(cartItemExisted, CartItem.class);
@@ -87,6 +105,7 @@ public class CartServiceImpl implements CartService {
             cartUser.setTotalPrice(cartUser.getTotalPrice() + cartItemRequestDto.getQuantity() * productOfCartItem.getPrice());
             cartUser.setTotalItem(cartUser.getTotalItem() + cartItemRequestDto.getQuantity());
             cartItemSaveList.add(cartItemSave);
+
         });
 
         List<CartItem> cartItemSavedList = cartItemRepository.saveAll(cartItemSaveList);
@@ -97,7 +116,8 @@ public class CartServiceImpl implements CartService {
     private Cart checkCartExistByUser(User user) {
         Optional<Cart> cartOptional = cartRepository.findCartByUser(user);
         if (cartOptional.isEmpty()) {
-            Cart cartSave = Cart.builder().user(user).build();
+            Cart cartSave = new Cart();
+            cartSave.setUser(user);
             return cartRepository.save(cartSave);
         } else {
             return cartOptional.get();
