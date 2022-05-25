@@ -16,7 +16,7 @@ import java.util.Set;
 @Entity
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "product")
+@Table(name = "products")
 public class Product extends Auditable<String> {
 
     @Id
