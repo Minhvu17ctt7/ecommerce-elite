@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Data
 @Entity
-@Table
+@Table(name = "product_details")
 public class ProductDetail extends Auditable<String>{
 
     @Id
