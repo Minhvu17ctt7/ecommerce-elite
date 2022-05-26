@@ -12,13 +12,14 @@ const titleHeader = {
     extraTitle: 'SHOP'
 }
 
-
 const Shop = () => {
+
     const [products, setProducts] = useState();
     const [categories, setCategories] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
     const [searchParams] = useSearchParams();
     const categoryId = searchParams.get("categoryId");
+    const sortName = searchParams.get("sortName") || "asc";
+    const sortField = searchParams.get("sortField") || "name";
     const page = searchParams.get("page") || 1;
     const search = searchParams.get("search");
 
@@ -33,35 +34,13 @@ const Shop = () => {
         return searchStr;
     }
 
-    // useEffect(() => {
-    //     let timer = setTimeout(() => {
-    //         (async () => {
-    //             const data = {
-    //                 "page": page,
-    //                 "sortField": "name",
-    //                 "sortName": "asc",
-    //                 "pageSize": 4,
-    //                 "search": getStringSearch()
-    //             }
-
-    //             const categoriesResponse = await categoryApi.getAllCategory();
-    //             const productsResponse = await productApi.getAllProductFilter(data);
-    //             setProducts(productsResponse.data);
-    //             setCategories(categoriesResponse.data);
-
-    //         })()
-    //     }, 500);
-    //     return () => clearTimeout(timer);
-    // }, [search, page, categoryId]);
-
     useEffect(() => {
         (async () => {
-            setIsLoading(true);
             const data = {
                 "page": page,
-                "sortField": "name",
-                "sortName": "asc",
-                "pageSize": 4,
+                "sortField": sortField,
+                "sortName": sortName,
+                "pageSize": 6,
                 "search": getStringSearch()
             }
 
@@ -69,9 +48,8 @@ const Shop = () => {
             const productsResponse = await productApi.getAllProductFilter(data);
             setProducts(productsResponse.data);
             setCategories(categoriesResponse.data);
-            setIsLoading(false)
         })()
-    }, [search, page, categoryId]);
+    }, [search, page, categoryId, sortField, sortName]);
 
 
     return (<>
@@ -79,7 +57,7 @@ const Shop = () => {
         <div className="container-fluid pt-5">
             <div className="row px-xl-5">
                 <Sidebar categories={categories} />
-                <Product productPagination={products} isLoading={isLoading} />
+                <Product productPagination={products} />
             </div>
         </div>
     </>)
