@@ -4,33 +4,30 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import CardProduct from '../../CardProduct';
 import Empty from '../../Empty';
 import Pagination from '../../Pagination';
-import CircularProgress from '@mui/material/CircularProgress';
 import Spinner from '../../Spinner';
 
-const Product = ({ productPagination, isLoading }) => {
+const Product = ({ productPagination }) => {
     const [searchParams] = useSearchParams();
     const page = searchParams.get("page") || 1;
-    const categoryId = searchParams.get("categoryId");
-    const search = searchParams.get("search")
+    const categoryId = searchParams.get("categoryId") || "";
+    const search = searchParams.get("search") || "";
+    const sortName = searchParams.get("sortName") || "";
+    const sortField = searchParams.get("sortField") || "";
     const navigate = useNavigate();
 
     const handleNextPage = (nextPage) => {
-        let url = `/shop?page=${nextPage}`;
-        if (categoryId) {
-            url += `&categoryId=${categoryId}`;
-        }
-        if (search) {
-            url += `&search=${search}`
-        }
+        let url = `/shop?page=${nextPage}&sortField=${sortField}&sortName=${sortName}&categoryId=${categoryId}&search=${search}`;
+        alert(url);
         navigate(url);
     }
 
     const handleSearch = (e) => {
-        let url = `/shop?page=${page}`;
-        if (categoryId) {
-            url += `&categoryId=${categoryId}`;
-        }
-        url += `&search=${e.target.value}`
+        let url = `/shop?page=${page}&sortField=${sortField}&sortName=${sortName}&categoryId=${categoryId}&search=${e.target.value}`;
+        navigate(url);
+    }
+
+    const handleFilterSort = (sortFieldChange, sortNameChange) => {
+        let url = `/shop?page=${page}&sortField=${sortFieldChange}&sortName=${sortNameChange}&categoryId=${categoryId}&search=${search}`;
         navigate(url);
     }
 
@@ -55,14 +52,13 @@ const Product = ({ productPagination, isLoading }) => {
                                 Sort by
                             </button>
                             <div className="dropdown-menu dropdown-menu-right" aria-labelledby="triggerId">
-                                <a className="dropdown-item">A-Z</a>
-                                <a className="dropdown-item">Z-A</a>
+                                <a className="dropdown-item" onClick={() => handleFilterSort("name", "asc")}>A-Z</a>
+                                <a className="dropdown-item" onClick={() => handleFilterSort("name", "desc")}>Z-A</a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {isLoading && <Spinner />}
                 {productPagination?.products.length === 0 && <Empty />}
                 {productPagination && productPagination?.products.map(product => (<CardProduct key={product.id} product={product} />))}
                 <div className="col-12 pb-1">
