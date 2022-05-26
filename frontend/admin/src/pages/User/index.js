@@ -8,6 +8,7 @@ import { RadioButton } from 'primereact/radiobutton';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import uploadImage from '../../firebase/upload';
 import RoleService from '../../service/RoleService';
@@ -26,6 +27,11 @@ const User = () => {
         blocked: false
     };
 
+    const [errorGlobal, setErrorGlobal] = useState({
+        "email": false,
+        "password": false,
+        "repeatPassword": false
+    });
     const history = useHistory();
     const [products, setProducts] = useState([]);
     const [roles, setRoles] = useState([]);
@@ -314,31 +320,32 @@ const User = () => {
                         <img src={product.photo ? product.photo : "/images/user-default.png"} alt={product.photo} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />
                         <div className="field">
                             <label htmlFor="name">Image</label>
-                            <input type="file" id="mainImage" required onChange={handleChangeImage} autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">Image is required.</small>}
+                            <input type="file" id="mainImage" required onChange={handleChangeImage} autoFocus className={classNames({ 'p-invalid': submitted && !product.mainImage })} />
                         </div>
                         <div className="field">
                             <label htmlFor="name">Email</label>
                             <InputText id="name" value={product.email} onChange={(e) => { onInputChange(e, 'email') }} required autoFocus className={classNames({ 'p-invalid': submitted && !product.email })} />
-                            {submitted && !product.email && <small className="p-invalid">Email is required.</small>}
+                            {submitted && !product.email && <small className="p-error block">Email is required.</small>}
                         </div>
                         <div className="field">
                             <label htmlFor="password">Password</label>
-                            <InputText id="password" value={product.password} onChange={(e) => onInputChange(e, 'password')} required rows={3} cols={20} />
+                            <InputText id="password" value={product.password} onChange={(e) => onInputChange(e, 'password')} required rows={3} cols={20} className={classNames({ 'p-invalid': submitted && !product.password })} />
+                            {submitted && !product.password && <small className="p-error block">Password is required.</small>}
                         </div>
                         <div className="field">
                             <label htmlFor="repeatPassword">Repeat Password</label>
-                            <InputText id="repeatPassword" value={product.repeatPassword} onChange={(e) => onInputChange(e, 'repeatPassword')} required rows={3} cols={20} />
+                            <InputText id="repeatPassword" value={product.repeatPassword} onChange={(e) => onInputChange(e, 'repeatPassword')} required rows={3} cols={20} className={classNames({ 'p-invalid': submitted && !product.password })} />
+                            {submitted && !product.password && <small className="p-error block">Repeat password is required.</small>}
                         </div>
                         <div className="field">
                             <label htmlFor="firstName">First Name</label>
                             <InputText id="firstName" value={product.firstName} onChange={(e) => { onInputChange(e, 'firstName') }} required autoFocus className={classNames({ 'p-invalid': submitted && !product.firstName })} />
-                            {submitted && !product.firstName && <small className="p-invalid">firstName is required.</small>}
+                            {submitted && !product.firstName && <small className="p-error block">FirstName is required.</small>}
                         </div>
                         <div className="field">
                             <label htmlFor="lastName">Last Name</label>
                             <InputText id="lastName" value={product.lastName} onChange={(e) => { onInputChange(e, 'lastName') }} required autoFocus className={classNames({ 'p-invalid': submitted && !product.lastName })} />
-                            {submitted && !product.lastName && <small className="p-invalid">LastName is required.</small>}
+                            {submitted && !product.lastName && <small className="p-error block">LastName is required.</small>}
                         </div>
                         <div className="field">
                             <label className="mb-3">Role</label>
@@ -351,7 +358,6 @@ const User = () => {
                                         </div>
                                     ))
                                 }
-
                             </div>
                         </div>
 
@@ -377,4 +383,4 @@ const User = () => {
     );
 }
 
-export default React.memo(User);   
+export default React.memo(User);
