@@ -1,12 +1,8 @@
 package com.example.ecommercenashtechbackend.dto.response;
 
-import com.example.ecommercenashtechbackend.entity.OrderItem;
-import com.example.ecommercenashtechbackend.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.*;
-import java.util.HashSet;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -26,7 +22,8 @@ public class OrderResponseDto {
     private String city;
     private String country;
     private String status = "Start";
+    private LocalDateTime createdDate;
 
-    private Set<OrderItemResponseDto> orderItems;
+//    private Set<OrderItemResponseDto> orderItems;
 
 }
