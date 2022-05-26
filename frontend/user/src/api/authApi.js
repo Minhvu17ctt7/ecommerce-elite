@@ -6,6 +6,7 @@ const authApi = {
         const url = '/login';
         const res = await axiosClient.post(url, data);
         const user = res.data;
+        console.log("user...", user);
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('accessToken', res.data.accessToken);
         localStorage.setItem('refreshToken', res.data.refreshToken);

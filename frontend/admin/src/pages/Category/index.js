@@ -73,7 +73,9 @@ const Category = () => {
 
         if (product.name.trim()) {
             if (mainImage != null) {
+                console.log("product image: ", mainImage);
                 const urlImage = await uploadImage("categories", mainImage);
+                console.log("product image: ", mainImage);
                 product['image'] = urlImage;
             }
             if (product.id) {
