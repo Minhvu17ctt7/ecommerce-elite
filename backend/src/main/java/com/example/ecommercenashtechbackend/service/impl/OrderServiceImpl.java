@@ -48,6 +48,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public OrderResponseDto getDetailOrder(Long userId, Long orderId, boolean deleted) {
+        User user = User.builder().id(userId).build();
+        Optional<Order> orderOptional = orderRepository.findOrderByIdAndUserAndDeleted(orderId, user, deleted);
+        Order order = orderOptional.orElseThrow(() -> new NotFoundException("Not found order id: " + orderId));
+        return modelMapper.map(order, OrderResponseDto.class);
+    }
+
+    @Override
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, Long userId) {
         User user = User.builder().id(userId).build();
         Optional<Cart> cartOptional = cartRepository.findCartByUser(user);
