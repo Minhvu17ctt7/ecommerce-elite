@@ -17,7 +17,6 @@ const Product = ({ productPagination }) => {
 
     const handleNextPage = (nextPage) => {
         let url = `/shop?page=${nextPage}&sortField=${sortField}&sortName=${sortName}&categoryId=${categoryId}&search=${search}`;
-        alert(url);
         navigate(url);
     }
 
@@ -27,7 +26,7 @@ const Product = ({ productPagination }) => {
     }
 
     const handleFilterSort = (sortFieldChange, sortNameChange) => {
-        let url = `/shop?page=${page}&sortField=${sortFieldChange}&sortName=${sortNameChange}&categoryId=${categoryId}&search=${search}`;
+        let url = `/shop?page=1&sortField=${sortFieldChange}&sortName=${sortNameChange}&categoryId=${categoryId}&search=${search}`;
         navigate(url);
     }
 
@@ -52,8 +51,10 @@ const Product = ({ productPagination }) => {
                                 Sort by
                             </button>
                             <div className="dropdown-menu dropdown-menu-right" aria-labelledby="triggerId">
-                                <a className="dropdown-item" onClick={() => handleFilterSort("name", "asc")}>A-Z</a>
-                                <a className="dropdown-item" onClick={() => handleFilterSort("name", "desc")}>Z-A</a>
+                                <a className="dropdown-item" onClick={() => handleFilterSort("name", "asc")}>Name A-Z</a>
+                                <a className="dropdown-item" onClick={() => handleFilterSort("name", "desc")}>Name Z-A</a>
+                                <a className="dropdown-item" onClick={() => handleFilterSort("price", "asc")}>Price A-Z</a>
+                                <a className="dropdown-item" onClick={() => handleFilterSort("price", "desc")}>Price Z-A</a>
                             </div>
                         </div>
                     </div>

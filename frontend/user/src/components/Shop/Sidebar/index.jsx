@@ -12,7 +12,7 @@ const Sidebar = ({ categories }) => {
 
     console.log("categoryid: ", categoryId == "");
     const handleFilterCategory = (id) => {
-        let url = `/shop?page=${page}&sortField=${sortField}&sortName=${sortName}&categoryId=${id}&search=${search}`;
+        let url = `/shop?page=1&sortField=${sortField}&sortName=${sortName}&categoryId=${id}&search=${search}`;
         navigation(url);
     }
 
