@@ -20,6 +20,8 @@ const Shop = () => {
     const categoryId = searchParams.get("categoryId");
     const sortName = searchParams.get("sortName") || "asc";
     const sortField = searchParams.get("sortField") || "name";
+    const priceFrom = searchParams.get("priceFrom");
+    const priceTo = searchParams.get("priceTo");
     const page = searchParams.get("page") || 1;
     const search = searchParams.get("search");
 
@@ -30,6 +32,9 @@ const Shop = () => {
         }
         if (search) {
             searchStr += `name:${search};`
+        }
+        if (priceFrom && priceTo) {
+            searchStr += `price>${priceFrom};price<${priceTo};`
         }
         return searchStr;
     }
@@ -49,7 +54,7 @@ const Shop = () => {
             setProducts(productsResponse.data);
             setCategories(categoriesResponse.data);
         })()
-    }, [search, page, categoryId, sortField, sortName]);
+    }, [search, page, categoryId, sortField, sortName, priceFrom, priceTo]);
 
 
     return (<>
