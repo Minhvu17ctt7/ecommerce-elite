@@ -29,8 +29,9 @@ public class Order extends Auditable<String>{
     private String city;
     private String country;
     private String status = "Start";
+    private boolean deleted = false;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     @JsonIgnore
     private User user;
