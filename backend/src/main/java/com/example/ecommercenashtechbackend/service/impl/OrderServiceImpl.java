@@ -2,6 +2,7 @@ package com.example.ecommercenashtechbackend.service.impl;
 
 import com.example.ecommercenashtechbackend.dto.request.OrderRequestDto;
 import com.example.ecommercenashtechbackend.dto.response.OrderResponseDto;
+import com.example.ecommercenashtechbackend.dto.response.PaginationResponseDto;
 import com.example.ecommercenashtechbackend.entity.*;
 import com.example.ecommercenashtechbackend.exception.custom.NotAcceptableException;
 import com.example.ecommercenashtechbackend.exception.custom.UnauthorizedException;
@@ -10,9 +11,15 @@ import com.example.ecommercenashtechbackend.repository.CartRepository;
 import com.example.ecommercenashtechbackend.repository.OrderRepository;
 import com.example.ecommercenashtechbackend.repository.ProductRepository;
 import com.example.ecommercenashtechbackend.service.OrderService;
+import com.example.ecommercenashtechbackend.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -27,6 +34,18 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
     private final ModelMapper modelMapper;
+    private final Util util;
+
+    @Override
+    public PaginationResponseDto<OrderResponseDto> getListOrderPagination(Long userId, int pageNumber, int pageSize, boolean deleted) {
+        Sort sort = Sort.by("createdDate").descending();
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
+        User user = User.builder().id(userId).build();
+        Page<Order> orderPage = orderRepository.findAllByUserAndDeleted(user, deleted, pageable);
+        List<OrderResponseDto> orderResponseDtoList = util.mapList(orderPage.getContent(), OrderResponseDto.class);
+        PaginationResponseDto<OrderResponseDto> result = new PaginationResponseDto<>(orderResponseDtoList, orderPage.getTotalPages(), pageSize);
+        return result;
+    }
 
     @Override
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, Long userId) {
@@ -36,12 +55,20 @@ public class OrderServiceImpl implements OrderService {
         Cart cartUser = cartOptional.get();
 
         List<CartItem> cartItemRequestList = cartItemRepository.findAllById(orderRequestDto.getCartItemIdList());
+
+        orderRequestDto.getCartItemIdList().forEach(cartItemId -> {
+            boolean checkExist = cartItemRequestList.stream().anyMatch(cartItemRequest -> cartItemRequest.getId() == cartItemId);
+            if (!checkExist) {
+                throw new NotFoundException("Cart item with id " + cartItemId + " not exist");
+            }
+        });
+
         Set<OrderItem> orderItemsSave = new HashSet<>();
         List<Product> productUpdateList = new ArrayList<>();
 
         cartItemRequestList.forEach(cartItemRequest -> {
             boolean checkExists = cartUser.getCartItems().stream().anyMatch(cartItemUser -> cartItemUser.getId() == cartItemRequest.getId());
-            if(!checkExists) {
+            if (!checkExists) {
                 throw new UnauthorizedException("Product '" + cartItemRequest.getProduct().getName() + "' do not exist in your cart");
             }
         });
@@ -50,8 +77,8 @@ public class OrderServiceImpl implements OrderService {
         orderSave.setUser(user);
 
         cartItemRequestList.forEach(cartItem -> {
-            if(cartItem.getQuantity() > cartItem.getProduct().getQuantity()) {
-                throw new NotAcceptableException("Product '" + cartItem.getProduct().getName() +"' out of stock");
+            if (cartItem.getQuantity() > cartItem.getProduct().getQuantity()) {
+                throw new NotAcceptableException("Product '" + cartItem.getProduct().getName() + "' out of stock");
             }
             OrderItem orderItemTemp = modelMapper.map(cartItem, OrderItem.class);
             orderItemsSave.add(orderItemTemp);
