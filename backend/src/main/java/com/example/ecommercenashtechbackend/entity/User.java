@@ -43,6 +43,7 @@ public class User extends Auditable<String> {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Cart cart;
 }
