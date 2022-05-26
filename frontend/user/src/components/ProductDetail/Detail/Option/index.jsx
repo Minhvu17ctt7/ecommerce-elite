@@ -55,7 +55,8 @@ const Option = ({ product }) => {
                         </button>
                     </div>
                 </div>
-                <button className="btn btn-primary px-3"><i className="fa fa-shopping-cart mr-1" /> Add To Cart</button>
+                <button className="btn btn-primary px-3" disabled={product?.size > 0 ? true : false}><i className="fa fa-shopping-cart mr-1" /> Add To Cart</button>
+                {product?.size <= 0 && (<p className="ml-3">Hết hàng</p>)}
             </div>
             <div className="d-flex pt-2">
                 <p className="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
