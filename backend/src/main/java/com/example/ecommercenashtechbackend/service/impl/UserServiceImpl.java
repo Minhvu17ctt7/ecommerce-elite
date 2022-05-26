@@ -86,8 +86,8 @@ public class UserServiceImpl implements UserService {
 
         if(userRequestDto.getRole().equals("USER")) {
             Cart cart = new Cart();
-            userSave.setCart(cart);
             cart.setUser(userSave);
+            userSave.setCart(cart);
         }
 
         User userSaved = userRepository.save(userSave);
