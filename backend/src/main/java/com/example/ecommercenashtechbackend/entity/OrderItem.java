@@ -24,7 +24,7 @@ public class OrderItem extends Auditable<String>{
     @JsonIgnore
     private Product product;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId")
     @JsonIgnore
     private Order order;
