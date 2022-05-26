@@ -39,4 +39,14 @@ public class OrderController {
         ResponseDto<PaginationResponseDto<OrderResponseDto>> responseDto = new ResponseDto<>(200, orderPagination, "Get list order successfully");
         return ResponseEntity.ok(responseDto);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDto<OrderResponseDto>> getDetailOrder(@PathVariable("id") Long orderId) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetail userDetail = (UserDetail)principal;
+
+        OrderResponseDto orderResponseDto = orderService.getDetailOrder(userDetail.getUser().getId(), orderId, false);
+        ResponseDto<OrderResponseDto> responseDto = new ResponseDto<>(200, orderResponseDto, "Get order successfully");
+        return ResponseEntity.ok(responseDto);
+    }
 }
