@@ -11,22 +11,24 @@ const Product = ({ productPagination }) => {
     const page = searchParams.get("page") || 1;
     const categoryId = searchParams.get("categoryId") || "";
     const search = searchParams.get("search") || "";
-    const sortName = searchParams.get("sortName") || "";
-    const sortField = searchParams.get("sortField") || "";
+    const sortName = searchParams.get("sortName") || "asc";
+    const sortField = searchParams.get("sortField") || "name";
+    const priceFrom = searchParams.get("priceFrom") || "";
+    const priceTo = searchParams.get("priceTo") || "";
     const navigate = useNavigate();
 
     const handleNextPage = (nextPage) => {
-        let url = `/shop?page=${nextPage}&sortField=${sortField}&sortName=${sortName}&categoryId=${categoryId}&search=${search}`;
+        let url = `/shop?page=${nextPage}&sortField=${sortField}&sortName=${sortName}&categoryId=${categoryId}&priceFrom=${priceFrom}&priceTo=${priceTo}&search=${search}`;
         navigate(url);
     }
 
     const handleSearch = (e) => {
-        let url = `/shop?page=${page}&sortField=${sortField}&sortName=${sortName}&categoryId=${categoryId}&search=${e.target.value}`;
+        let url = `/shop?page=${page}&sortField=${sortField}&sortName=${sortName}&categoryId=${categoryId}&priceFrom=${priceFrom}&priceTo=${priceTo}&search=${e.target.value}`;
         navigate(url);
     }
 
     const handleFilterSort = (sortFieldChange, sortNameChange) => {
-        let url = `/shop?page=1&sortField=${sortFieldChange}&sortName=${sortNameChange}&categoryId=${categoryId}&search=${search}`;
+        let url = `/shop?page=1&sortField=${sortFieldChange}&sortName=${sortNameChange}&categoryId=${categoryId}&priceFrom=${priceFrom}&priceTo=${priceTo}&search=${search}`;
         navigate(url);
     }
 
