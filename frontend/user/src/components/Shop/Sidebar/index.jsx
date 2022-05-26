@@ -3,16 +3,17 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const Sidebar = ({ categories }) => {
     const [searchParams] = useSearchParams();
-    const navigation = useNavigate();
+    const page = searchParams.get("page") || 1;
     const categoryId = searchParams.get("categoryId");
-    const price = searchParams.get("price");
-    console.log(categoryId !== null, categoryId === null)
+    const search = searchParams.get("search") || "";
+    const sortName = searchParams.get("sortName") || "";
+    const sortField = searchParams.get("sortField") || "";
+    const navigation = useNavigate();
+
+    console.log("categoryid: ", categoryId == "");
     const handleFilterCategory = (id) => {
-        if (id) {
-            navigation(`/shop?categoryId=${id}`);
-        } else {
-            navigation("/shop")
-        }
+        let url = `/shop?page=${page}&sortField=${sortField}&sortName=${sortName}&categoryId=${id}&search=${search}`;
+        navigation(url);
     }
 
     return (
@@ -22,16 +23,16 @@ const Sidebar = ({ categories }) => {
             <div className="border-bottom mb-4 pb-4">
                 <h5 className="font-weight-semi-bold mb-4">Filter by color</h5>
                 <form>
-                    {categoryId === null &&
+                    {!categoryId &&
                         (<div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" className="custom-control-input" id="color-0" onClick={() => handleFilterCategory()} checked name="filter-categories" />
+                            <input type="checkbox" className="custom-control-input" id="color-0" onClick={() => handleFilterCategory("")} checked name="filter-categories" />
                             <label className="custom-control-label" htmlFor="color-0">All category</label>
                         </div>)}
-                    {categoryId !== null &&
-                        <div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" className="custom-control-input" id="color-0" onClick={() => handleFilterCategory()} name="filter-categories" />
+                    {categoryId &&
+                        (<div className="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" className="custom-control-input" id="color-0" onClick={() => handleFilterCategory("")} name="filter-categories" />
                             <label className="custom-control-label" htmlFor="color-0">All category</label>
-                        </div>}
+                        </div>)}
                     {
                         categories.map((category, index) => {
 
@@ -74,7 +75,7 @@ const Sidebar = ({ categories }) => {
             </div> */}
             {/* Price End */}
 
-        </div>
+        </div >
     );
 }
 
