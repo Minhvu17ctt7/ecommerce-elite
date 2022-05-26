@@ -24,6 +24,6 @@ public class OrderResponseDto {
     private String status = "Start";
     private LocalDateTime createdDate;
 
-//    private Set<OrderItemResponseDto> orderItems;
+    private Set<OrderItemResponseDto> orderItems;
 
 }
