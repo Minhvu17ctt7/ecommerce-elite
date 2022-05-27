@@ -1,8 +1,27 @@
+import { useSnackbar } from 'notistack'
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { addToCartAction } from '../../redux/actions/cartActions'
 import { formatCurrency } from '../../util/util'
 
 const CardProduct = ({ product }) => {
+
+    const dispatch = useDispatch();
+    const { enqueueSnackbar } = useSnackbar();
+
+    const addToCart = () => {
+        const productAddToCart = {
+            "id": product.id,
+            "quantity": 1,
+            "productId": product.id,
+            "nameProduct": product.name,
+            "priceProduct": product.price,
+            "mainImage": product.mainImage
+        }
+        dispatch(addToCartAction(productAddToCart));
+        enqueueSnackbar("Add to cart success", { variant: "success", autoHideDuration: 3000 });
+    }
 
     return (
         <div className="col-lg-4 col-md-6 col-sm-12 pb-1">
@@ -18,7 +37,7 @@ const CardProduct = ({ product }) => {
                 </div>
                 <div className="card-footer d-flex justify-content-between bg-light border">
                     <Link to={`/products/${product.id}?pageReview=1`} className="btn btn-sm text-dark p-0"><i className="fas fa-eye text-primary mr-1" />View Detail</Link>
-                    <Link to="#" className="btn btn-sm text-dark p-0"><i className="fas fa-shopping-cart text-primary mr-1" />Add To Cart</Link>
+                    <button className="btn btn-sm text-dark p-0" onClick={() => addToCart()}  ><i className="fas fa-shopping-cart text-primary mr-1" />Add To Cart</button>
                 </div>
             </div>
         </div>
