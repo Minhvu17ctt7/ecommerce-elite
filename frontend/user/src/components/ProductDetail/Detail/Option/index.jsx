@@ -1,8 +1,23 @@
-import React from 'react'
+import { useSnackbar } from 'notistack';
+import React, { useState } from 'react'
 import { Rating } from 'react-simple-star-rating';
-import { formatCurrency } from '../../../../uitl/util';
+import { formatCurrency } from '../../../../util/util';
 
 const Option = ({ product }) => {
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    const [quantity, setQuantity] = useState(1);
+    const changeQuantity = (quantityChange) => {
+        console.log(product)
+        if (quantityChange > 0 && quantityChange <= product.quantity) {
+            setQuantity(quantityChange);
+        }
+    }
+
+    const addToCart = () => {
+        enqueueSnackbar("Add to cart success", { variant: "success", autoHideDuration: 3000 });
+    }
 
     return (
 
@@ -44,19 +59,19 @@ const Option = ({ product }) => {
             <div className="d-flex align-items-center mb-4 pt-2">
                 <div className="input-group quantity mr-3" style={{ width: '130px' }}>
                     <div className="input-group-btn">
-                        <button className="btn btn-primary btn-minus">
+                        <button className={quantity == 1 ? "btn btn-primary btn-minus disabled" : "btn btn-primary btn-minus"} onClick={() => changeQuantity(quantity - 1)} >
                             <i className="fa fa-minus" />
                         </button>
                     </div>
-                    <input type="text" className="form-control bg-secondary text-center" defaultValue={1} />
+                    <input type="text" className="form-control bg-secondary text-center" value={quantity} />
                     <div className="input-group-btn">
-                        <button className="btn btn-primary btn-plus">
+                        <button className={quantity == product?.quantity ? "btn btn-primary btn-plus disabled" : "btn btn-primary btn-plus"} onClick={() => changeQuantity(quantity + 1)} >
                             <i className="fa fa-plus" />
                         </button>
                     </div>
                 </div>
-                <button className="btn btn-primary px-3" disabled={product?.size > 0 ? true : false}><i className="fa fa-shopping-cart mr-1" /> Add To Cart</button>
-                {product?.size <= 0 && (<p className="ml-3">Hết hàng</p>)}
+                <button className="btn btn-primary px-3" disabled={product?.quantity > 0 ? false : true} onClick={() => addToCart()}><i className="fa fa-shopping-cart mr-1" /> Add To Cart</button>
+                {product?.quantity <= 0 && (<p className="ml-3">Hết hàng</p>)}
             </div>
             <div className="d-flex pt-2">
                 <p className="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
