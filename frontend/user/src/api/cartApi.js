@@ -8,6 +8,10 @@ const cartApi = {
     removeItemToCart: (data) => {
         const url = '/cart/delete';
         return axiosClient.post(url, data);
+    },
+    getCart: () => {
+        const url = '/cart';
+        return axiosClient.get(url);
     }
 }
 
