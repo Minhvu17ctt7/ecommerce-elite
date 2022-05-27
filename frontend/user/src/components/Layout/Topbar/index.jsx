@@ -1,6 +1,6 @@
 import { useSnackbar } from 'notistack';
 import React from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { logoutUserAction } from '../../../redux/actions/authenticationActions';
 
@@ -11,6 +11,9 @@ const Header = () => {
     const location = useLocation();
     const { enqueueSnackbar } = useSnackbar();
     const listPathShowTab = ["/login", "/register"];
+
+    const { error, carts } = useSelector(state => state.cart);
+
     const isLogin = localStorage.getItem("isLogin") === 'true';
     const logout = () => {
         dispatch(logoutUserAction());
@@ -18,6 +21,7 @@ const Header = () => {
         navigation(location.pathname + location.search);
         enqueueSnackbar("Logout success", { variant: "success", autoHideDuration: 3000 });
     }
+
     return (
         <div className="container-fluid">
             <div className="row bg-secondary py-2 px-xl-5">
@@ -75,9 +79,9 @@ const Header = () => {
 
                 </div>
                 <div className="col-lg-3 col-6 text-right">
-                    {listPathShowTab.indexOf(location.pathname) < 0 && (<Link to="#" className="btn border">
+                    {listPathShowTab.indexOf(location.pathname) < 0 && (<Link to="/cart" className="btn border">
                         <i className="fas fa-shopping-cart text-primary" />
-                        <span className="badge">0</span>
+                        <span className="badge">{carts?.totalItem}</span>
                     </Link>)}
 
                 </div>
