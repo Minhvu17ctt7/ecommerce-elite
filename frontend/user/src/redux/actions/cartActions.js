@@ -13,3 +13,9 @@ export const removeFromCartAction = (data) => {
         data
     }
 };
+
+export const getCartAction = () => {
+    return {
+        type: types.GET_CART
+    }
+};
