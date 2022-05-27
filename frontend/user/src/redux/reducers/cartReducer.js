@@ -14,7 +14,7 @@ const initialState = {
 export default function (state = initialState, action) {
     switch (action.type) {
 
-        case types.ADD_TO_CART, types.REMOVE_FROM_CART:
+        case types.ADD_TO_CART, types.REMOVE_FROM_CART, types.GET_CART:
             return { ...state, isLoading: true, error: null }
 
         case types.ADD_TO_CART_SUCCESS:
@@ -38,11 +38,15 @@ export default function (state = initialState, action) {
                 }
             }
             return { ...state, isLoading: true, error: null }
-        
+
+
+        case types.ADD_TO_CART_SUCCESS_LOGGED:
+        case types.REMOVE_FROM_CART_SUCCESS_LOGGED:
+        case types.GET_CART_SUCCESS:
+            return { carts: action.payload, isLoading: true, error: null }
 
         case types.REMOVE_FROM_CART_SUCCESS:
             const cartTempRemove = action.payload;
-            console.log("cartTempremove: ", cartTempRemove);
             state.carts.totalItem -= cartTempRemove.quantity;
             state.carts.totalPrice -= cartTempRemove.quantity * cartTempRemove.priceProduct;
 
@@ -56,7 +60,11 @@ export default function (state = initialState, action) {
                 }
             });
             return { ...state, isLoading: true, error: null }
-
+        case types.GET_CART_ERROR:
+        case types.ADD_TO_CART_ERROR:
+        case types.REMOVE_FROM_CART_ERROR:
+        case types.GET_CART_ERROR:
+            return { ...state, isLoading: true, error: action.payload }
         default:
             return state;
     }
