@@ -5,7 +5,7 @@ import cartApi from '../../api/cartApi';
 import * as types from '../actions'
 
 export function* addToCartSaga(payload) {
-    const isLogin = localStorage.getItem("isLogin") === 'true';
+    const isLogin = localStorage.getItem("isLogin") == 'true';
     try {
         if (isLogin) {
             const requestData = {
@@ -14,7 +14,8 @@ export function* addToCartSaga(payload) {
                     "quantity": payload.data.quantity
                 }]
             }
-            const response = yield cartApi.addNewItemToCart(requestData);
+            yield cartApi.addNewItemToCart(requestData);
+            const response = yield cartApi.getCart();
             yield put({ type: types.ADD_TO_CART_SUCCESS_LOGGED, payload: response.data });
         } else {
             yield put({ type: types.ADD_TO_CART_SUCCESS, payload: payload.data });
@@ -25,7 +26,7 @@ export function* addToCartSaga(payload) {
 }
 
 export function* removeFromCartSaga(payload) {
-    const isLogin = localStorage.getItem("isLogin") == true;
+    const isLogin = localStorage.getItem("isLogin") == 'true';
     try {
         if (isLogin) {
             const requestData = {
@@ -34,12 +35,25 @@ export function* removeFromCartSaga(payload) {
                     "quantity": payload.data.quantity
                 }]
             }
-            const response = yield cartApi.removeItemToCart(requestData);
+            yield cartApi.removeItemToCart(requestData);
+            const response = yield cartApi.getCart();
             yield put({ type: types.REMOVE_FROM_CART_SUCCESS_LOGGED, payload: response.data });
         } else {
             yield put({ type: types.REMOVE_FROM_CART_SUCCESS, payload: payload.data });
         }
     } catch (error) {
         yield put({ type: types.REMOVE_FROM_CART_ERROR, error });
+    }
+}
+
+export function* getCartSaga() {
+    const isLogin = localStorage.getItem("isLogin") == 'true';
+    try {
+        if (isLogin) {
+            const response = yield cartApi.getCart();
+            yield put({ type: types.GET_CART_SUCCESS, payload: response.data });
+        }
+    } catch (error) {
+        yield put({ type: types.GET_CART_ERROR, error });
     }
 }
