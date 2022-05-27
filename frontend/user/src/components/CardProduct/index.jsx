@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { formatCurrency } from '../../uitl/util'
+import { formatCurrency } from '../../util/util'
 
 const CardProduct = ({ product }) => {
 

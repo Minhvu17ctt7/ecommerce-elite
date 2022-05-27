@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Rating } from 'react-simple-star-rating';
 import reviewApi from '../../../../api/reviewApi';
-import { convertTime } from '../../../../uitl/util';
+import { convertTime } from '../../../../util/util';
 import Pagination from '../../../Pagination';
 
 const Description = ({ product, reviewPagination, forceFetchData }) => {
