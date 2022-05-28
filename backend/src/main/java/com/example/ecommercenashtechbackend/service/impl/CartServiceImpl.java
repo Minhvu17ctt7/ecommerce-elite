@@ -51,11 +51,46 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartItemResponseDto> deleteItemToCart(List<CartItemRequestDto> cartItemRequestDtoList, Long userId) {
-        List<CartItemRequestDto> cartItemRequestRemoveDtoList =  cartItemRequestDtoList.stream().map(cartItemRequestDto -> {
-            cartItemRequestDto.setQuantity(cartItemRequestDto.getQuantity() * -1);
-            return cartItemRequestDto;
-        }).collect(Collectors.toList());
-        return changeCartItemsInCart(cartItemRequestRemoveDtoList, userId);
+        User user = User.builder().id(userId).build();
+
+        Cart cartUser = checkCartExistByUser(user);
+
+        Set<CartItem> cartItemCurrentList = cartUser.getCartItems();
+
+        if (cartItemCurrentList.size() == 0) {
+            throw new NotAcceptableException("Product not exist in cart");
+        }
+
+        List<Long> productIdList = cartItemRequestDtoList.stream().map(cartItemRequestDto -> cartItemRequestDto.getProductId()).collect(Collectors.toList());
+        List<Product> productOfNewCartItems = productRepository.findAllByIdIn(productIdList);
+        List<CartItem> cartItemSaveList = new ArrayList<>();
+
+        cartItemRequestDtoList.forEach(cartItemRequestDto -> {
+            Optional<Product> productOptional = productOfNewCartItems.stream().filter(p -> p.getId() == cartItemRequestDto.getProductId()).findFirst();
+            Product productOfCartItem = productOptional.orElseThrow(() -> new NotFoundException("Not found product with id: " + cartItemRequestDto.getProductId()));
+
+            Optional<CartItem> cartItemExistedOptional = cartItemCurrentList.stream().filter(p -> p.getProduct().getId() == cartItemRequestDto.getProductId()).findFirst();
+
+            CartItem cartItemExisted = cartItemExistedOptional.orElseThrow(() -> new NotAcceptableException("Product not exist in cart"));
+
+            CartItem cartItemSave = modelMapper.map(cartItemExisted, CartItem.class);
+            int quantity = cartItemSave.getQuantity() - cartItemRequestDto.getQuantity();
+            if (quantity < 0) {
+                throw new NotAcceptableException("Product quantity invalid");
+            } else if (quantity == 0) {
+                cartItemRepository.deleteCartItem(cartItemExisted.getId());
+            } else {
+                cartItemSave.setQuantity(quantity);
+                cartItemSaveList.add(cartItemSave);
+            }
+
+            cartUser.setTotalPrice(cartUser.getTotalPrice() - cartItemRequestDto.getQuantity() * productOfCartItem.getPrice());
+            cartUser.setTotalItem(cartUser.getTotalItem() - cartItemRequestDto.getQuantity());
+        });
+
+        List<CartItem> cartItemSavedList = cartItemRepository.saveAll(cartItemSaveList);
+        cartRepository.save(cartUser);
+        return util.mapList(cartItemSavedList, CartItemResponseDto.class);
     }
 
     @Override
