@@ -15,17 +15,14 @@ const Header = () => {
 
     const { error, carts } = useSelector(state => state.cart);
 
-    const isLogin = localStorage.getItem("isLogin") === 'true';
+    const isLogin = localStorage.getItem("isLogin") == 'true';
     const logout = () => {
         dispatch(logoutUserAction());
         localStorage.setItem("isLogin", false);
+        dispatch(getCartAction());
         navigation(location.pathname + location.search);
         enqueueSnackbar("Logout success", { variant: "success", autoHideDuration: 3000 });
     }
-
-    useEffect(() => {
-        dispatch(getCartAction());;
-    }, []);
 
     return (
         <div className="container-fluid">
