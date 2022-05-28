@@ -1,20 +1,22 @@
 import * as types from '../actions';
 
+const carts = JSON.parse(localStorage.getItem('carts')) || {
+    "id": null,
+    "totalPrice": 0,
+    "totalItem": 0,
+    "cartItems": []
+};
+
 const initialState = {
     loading: false,
-    carts: {
-        "id": null,
-        "totalPrice": 0,
-        "totalItem": 0,
-        "cartItems": []
-    },
+    carts: carts,
     error: null
 };
 
 export default function (state = initialState, action) {
     switch (action.type) {
 
-        case types.ADD_TO_CART, types.REMOVE_FROM_CART, types.GET_CART:
+        case types.ADD_TO_CART, types.REMOVE_FROM_CART, types.GET_CART_LOGGED:
             return { ...state, isLoading: true, error: null }
 
         case types.ADD_TO_CART_SUCCESS:
@@ -37,12 +39,13 @@ export default function (state = initialState, action) {
                     state.carts.cartItems.push(cartTempAdd);
                 }
             }
+            localStorage.setItem("carts", JSON.stringify(state.carts))
             return { ...state, isLoading: true, error: null }
 
 
         case types.ADD_TO_CART_SUCCESS_LOGGED:
         case types.REMOVE_FROM_CART_SUCCESS_LOGGED:
-        case types.GET_CART_SUCCESS:
+        case types.GET_CART_LOGGED_SUCCESS:
             return { carts: action.payload, isLoading: true, error: null }
 
         // action reset cart when logout
@@ -71,11 +74,11 @@ export default function (state = initialState, action) {
                     }
                 }
             });
+            localStorage.setItem("carts", JSON.stringify(state.carts))
             return { ...state, isLoading: true, error: null }
-        case types.GET_CART_ERROR:
+        case types.GET_CART_LOGGED_ERROR:
         case types.ADD_TO_CART_ERROR:
         case types.REMOVE_FROM_CART_ERROR:
-        case types.GET_CART_ERROR:
             return { ...state, isLoading: true, error: action.payload }
         default:
             return state;
