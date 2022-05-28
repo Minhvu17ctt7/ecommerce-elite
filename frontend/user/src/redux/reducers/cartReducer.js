@@ -45,6 +45,18 @@ export default function (state = initialState, action) {
         case types.GET_CART_SUCCESS:
             return { carts: action.payload, isLoading: true, error: null }
 
+        // action reset cart when logout
+        case types.GET_CART:
+            localStorage.removeItem("carts");
+            const cartReset = {
+                "id": null,
+                "totalPrice": 0,
+                "totalItem": 0,
+                "cartItems": []
+            };
+            return { carts: cartReset, isLoading: true, error: null }
+                ;
+
         case types.REMOVE_FROM_CART_SUCCESS:
             const cartTempRemove = action.payload;
             state.carts.totalItem -= cartTempRemove.quantity;
