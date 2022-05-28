@@ -11,5 +11,5 @@ public interface CartService {
 
     List<CartItemResponseDto> deleteItemToCart(List<CartItemRequestDto> cartItemRequestDtoList, Long userId);
 
-    List<CartItemResponseDto> changeCartItemsInCart(List<CartItemRequestDto> cartItemRequestDtoList, Long UserId);
+    List<CartItemResponseDto> addItemToCart(List<CartItemRequestDto> cartItemRequestDtoList, Long UserId);
 }
