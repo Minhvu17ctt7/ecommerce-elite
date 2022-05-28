@@ -14,6 +14,12 @@ export const removeFromCartAction = (data) => {
     }
 };
 
+export const getCartLoggedAction = () => {
+    return {
+        type: types.GET_CART_LOGGED
+    }
+};
+
 export const getCartAction = () => {
     return {
         type: types.GET_CART
