@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUserAction, refreshUserAction } from '../../redux/actions/authenticationActions';
+import { getCartLoggedAction } from '../../redux/actions/cartActions';
 import "./style.css";
 
 const Login = () => {
@@ -28,6 +29,7 @@ const Login = () => {
             if (isLogin) {
                 enqueueSnackbar("Login success", { variant: "success", autoHideDuration: 3000 });
                 navigation("/");
+                dispatch(getCartLoggedAction());
             }
         }
     }, [error, isLogin])
