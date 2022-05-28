@@ -51,9 +51,9 @@ export function* getCartSaga() {
     try {
         if (isLogin) {
             const response = yield cartApi.getCart();
-            yield put({ type: types.GET_CART_SUCCESS, payload: response.data });
+            yield put({ type: types.GET_CART_LOGGED_SUCCESS, payload: response.data });
         }
     } catch (error) {
-        yield put({ type: types.GET_CART_ERROR, error });
+        yield put({ type: types.GET_CART_LOGGED_ERROR, error });
     }
 }
