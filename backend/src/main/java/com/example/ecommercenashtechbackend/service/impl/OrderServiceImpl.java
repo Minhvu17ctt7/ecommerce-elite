@@ -23,6 +23,7 @@ import org.webjars.NotFoundException;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -62,9 +63,11 @@ public class OrderServiceImpl implements OrderService {
 
         Cart cartUser = cartOptional.get();
 
-        List<CartItem> cartItemRequestList = cartItemRepository.findAllById(orderRequestDto.getCartItemIdList());
+        List<Long> cartItemIdList = orderRequestDto.getCartItemList().stream().map(cartItemRequestDto -> cartItemRequestDto.getId()).collect(Collectors.toList());;
 
-        orderRequestDto.getCartItemIdList().forEach(cartItemId -> {
+        List<CartItem> cartItemRequestList = cartItemRepository.findAllById(cartItemIdList);
+
+        cartItemIdList.forEach(cartItemId -> {
             boolean checkExist = cartItemRequestList.stream().anyMatch(cartItemRequest -> cartItemRequest.getId() == cartItemId);
             if (!checkExist) {
                 throw new NotFoundException("Cart item with id " + cartItemId + " not exist");
