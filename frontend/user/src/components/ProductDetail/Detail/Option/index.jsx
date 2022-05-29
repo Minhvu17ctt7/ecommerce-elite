@@ -1,6 +1,8 @@
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux';
 import { Rating } from 'react-simple-star-rating';
+import { addToCartAction } from '../../../../redux/actions/cartActions';
 import { formatCurrency } from '../../../../util/util';
 
 const Option = ({ product }) => {
@@ -9,13 +11,23 @@ const Option = ({ product }) => {
 
     const [quantity, setQuantity] = useState(1);
     const changeQuantity = (quantityChange) => {
-        console.log(product)
         if (quantityChange > 0 && quantityChange <= product.quantity) {
             setQuantity(quantityChange);
         }
     }
 
+    const dispatch = useDispatch();
+
     const addToCart = () => {
+        const productAddToCart = {
+            "id": product.id,
+            "quantity": quantity,
+            "productId": product.id,
+            "nameProduct": product.name,
+            "priceProduct": product.price,
+            "mainImage": product.mainImage
+        }
+        dispatch(addToCartAction(productAddToCart));
         enqueueSnackbar("Add to cart success", { variant: "success", autoHideDuration: 3000 });
     }
 
@@ -65,13 +77,13 @@ const Option = ({ product }) => {
                     </div>
                     <input type="text" className="form-control bg-secondary text-center" value={quantity} />
                     <div className="input-group-btn">
-                        <button className={quantity == product?.quantity ? "btn btn-primary btn-plus disabled" : "btn btn-primary btn-plus"} onClick={() => changeQuantity(quantity + 1)} >
+                        <button className={quantity == product?.quantity || product?.quantity == 0 ? "btn btn-primary btn-plus disabled" : "btn btn-primary btn-plus"} onClick={() => changeQuantity(quantity + 1)} >
                             <i className="fa fa-plus" />
                         </button>
                     </div>
                 </div>
                 <button className="btn btn-primary px-3" disabled={product?.quantity > 0 ? false : true} onClick={() => addToCart()}><i className="fa fa-shopping-cart mr-1" /> Add To Cart</button>
-                {product?.quantity <= 0 && (<p className="ml-3">Hết hàng</p>)}
+                {product?.quantity <= 0 && (<small className="ml-3">Hết hàng</small>)}
             </div>
             <div className="d-flex pt-2">
                 <p className="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
