@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { logoutUserAction } from '../../../redux/actions/authenticationActions';
-import { getCartAction } from '../../../redux/actions/cartActions';
+import { getCartAction, getCartLoggedAction } from '../../../redux/actions/cartActions';
 
 
 const Header = () => {
@@ -23,6 +23,10 @@ const Header = () => {
         navigation(location.pathname + location.search);
         enqueueSnackbar("Logout success", { variant: "success", autoHideDuration: 3000 });
     }
+
+    useEffect(() => {
+        dispatch(getCartLoggedAction());
+    }, []);
 
     return (
         <div className="container-fluid">
