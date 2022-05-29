@@ -1,6 +1,7 @@
 import { useSnackbar } from 'notistack';
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { addToCartAction, removeFromCartAction } from '../../redux/actions/cartActions';
 import { formatCurrency } from '../../util/util'
 
@@ -93,7 +94,9 @@ const Cart = () => {
                                 <h5 className="font-weight-bold">Total</h5>
                                 <h5 className="font-weight-bold">{formatCurrency(carts.totalPrice)}</h5>
                             </div>
-                            <button className={carts?.cartItems.length == 0 ? "btn btn-block btn-primary my-3 py-3 disabled" : "btn btn-block btn-primary my-3 py-3"} >Proceed To Checkout</button>
+                            <Link to="/checkout">
+                                <button className="btn btn-block btn-primary my-3 py-3" disabled={carts?.cartItems.length == 0} >Proceed To Checkout</button>
+                            </Link>
                         </div>
                     </div>
                 </div>
