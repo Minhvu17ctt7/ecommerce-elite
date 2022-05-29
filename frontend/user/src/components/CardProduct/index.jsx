@@ -37,7 +37,8 @@ const CardProduct = ({ product }) => {
                 </div>
                 <div className="card-footer d-flex justify-content-between bg-light border">
                     <Link to={`/products/${product.id}?pageReview=1`} className="btn btn-sm text-dark p-0"><i className="fas fa-eye text-primary mr-1" />View Detail</Link>
-                    <button className="btn btn-sm text-dark p-0" onClick={() => addToCart()}  ><i className="fas fa-shopping-cart text-primary mr-1" />Add To Cart</button>
+                    {product?.quantity <= 0 && (<small className="ml-3">Out of stock</small>)}
+                    {product?.quantity > 0 && (<button className="btn btn-sm text-dark p-0" onClick={() => addToCart()}  ><i className="fas fa-shopping-cart text-primary mr-1" />Add To Cart</button>)}
                 </div>
             </div>
         </div>
