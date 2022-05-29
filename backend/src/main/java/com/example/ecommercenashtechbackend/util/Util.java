@@ -43,7 +43,7 @@ public class Util {
 
     public List<SearchCriteria> buildListProductSpecifications(String search) {
         List<SearchCriteria> listSpec = new ArrayList<>();
-        Pattern pattern = Pattern.compile("([a-zA-Z0-9\\.\\_]+?)(:|<|>)([a-zA-Z0-9 ]+?)(,|;)");
+        Pattern pattern = Pattern.compile("([a-zA-Z0-9\\.\\_]+?)(:|<|>)([a-zA-Z0-9 ]+?)(,|;)", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcher = pattern.matcher(search);
         while (matcher.find()) {
             boolean orPredicate = matcher.group(4).equals(",");
