@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Locale;
 
 @AllArgsConstructor
 @Getter
@@ -32,8 +33,8 @@ public class ProductSpecification implements Specification<Product> {
                     root.<String>get(criteria.getKey()), criteria.getValue().toString());
         } else if (criteria.getOperation().equalsIgnoreCase(":")) {
             if (root.get(criteria.getKey()).getJavaType() == String.class) {
-                return builder.like(
-                        root.<String>get(criteria.getKey()), "%" + criteria.getValue() + "%");
+                return builder.like(builder.lower(
+                        root.<String>get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase() + "%");
             } else {
                 return builder.equal(root.get(criteria.getKey()), criteria.getValue());
             }
