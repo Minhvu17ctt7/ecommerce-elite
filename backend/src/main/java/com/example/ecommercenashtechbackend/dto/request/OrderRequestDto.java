@@ -23,6 +23,6 @@ public class OrderRequestDto {
     private String city;
     @NotBlank(message = "Country is required ")
     private String country;
-    private List<Long> cartItemIdList;
+    private List<CartItemRequestDto> cartItemList;
 
 }
