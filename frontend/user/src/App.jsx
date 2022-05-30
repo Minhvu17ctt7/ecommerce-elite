@@ -7,6 +7,7 @@ import Checkout from './pages/Checkout'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
+import Order from './pages/Order'
 import ProductDetail from './pages/ProductDetail'
 import Register from './pages/Register'
 import Shop from './pages/shop'
@@ -32,6 +33,11 @@ function App() {
           <Route path='/user-detail' element={
             <PrivateRoute>
               <UserDetail />
+            </PrivateRoute>
+          } />
+          <Route path='/orders' element={
+            <PrivateRoute>
+              <Order />
             </PrivateRoute>
           } />
           <Route path='/register' element={<Register />} />
