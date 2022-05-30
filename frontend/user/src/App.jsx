@@ -3,12 +3,15 @@ import './App.css'
 import Footer from './components/Layout/Footer'
 import Topbar from './components/Layout/Topbar'
 import Cart from './pages/Cart'
+import Checkout from './pages/Checkout'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import ProductDetail from './pages/ProductDetail'
 import Register from './pages/Register'
 import Shop from './pages/shop'
+import UserDetail from './pages/UserDetail'
+import PrivateRoute from './PrivateRoute'
 
 function App() {
   return (
@@ -21,6 +24,16 @@ function App() {
           <Route path='/products/:id' element={<ProductDetail />} />
           <Route path='/login' element={<Login />} />
           <Route path='/cart' element={<Cart />} />
+          <Route path='/checkout' element={
+            <PrivateRoute>
+              <Checkout />
+            </PrivateRoute>
+          } />
+          <Route path='/user-detail' element={
+            <PrivateRoute>
+              <UserDetail />
+            </PrivateRoute>
+          } />
           <Route path='/register' element={<Register />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
