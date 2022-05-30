@@ -15,7 +15,7 @@ const Header = () => {
 
     const { error, carts } = useSelector(state => state.cart);
 
-    const isLogin = localStorage.getItem("isLogin") == 'true';
+    const isLogin = localStorage.getItem("isLogin") === 'true';
     const logout = () => {
         dispatch(logoutUserAction());
         localStorage.setItem("isLogin", false);
@@ -47,21 +47,6 @@ const Header = () => {
                             <Link to="/register" className="text-dark">Register</Link></>)}
 
                         {isLogin && (<p onClick={() => logout()} to="/log" style={{ cursor: "pointer" }} className="text-dark">Logout</p>)}
-                        {/* <Link to="#" className="text-dark px-2">
-                            <i className="fab fa-facebook-f" />
-                        </Link>
-                        <Link to="#" className="text-dark px-2">
-                            <i className="fab fa-twitter" />
-                        </Link>
-                        <Link to="#" className="text-dark px-2">
-                            <i className="fab fa-linkedin-in" />
-                        </Link>
-                        <Link to="#" className="text-dark px-2">
-                            <i className="fab fa-instagram" />
-                        </Link>
-                        <Link to="#" className="text-dark pl-2">
-                            <i className="fab fa-youtube" />
-                        </Link> */}
                     </div>
                 </div>
             </div>
@@ -89,6 +74,16 @@ const Header = () => {
                         <i className="fas fa-shopping-cart text-primary" />
                         <span className="badge">{carts?.totalItem}</span>
                     </Link>)}
+
+                    {isLogin && (<>
+                        <button type="button" className="btn btn-secondary dropdown-toggle ml-2" id="dropdownMenuOffset" data-toggle="dropdown" aria-expanded="false" data-offset="10,20">
+                            <i className="fas fa-user text-primary" />
+                        </button>
+                        <div className="dropdown-menu" aria-labelledby="dropdownMenuOffset">
+                            <Link to="/user-detail" className="dropdown-item" href="#">Account</Link>
+                            <Link to="/orders" className="dropdown-item" href="#">Orders</Link>
+                        </div>
+                    </>)}
 
                 </div>
             </div>
