@@ -11,7 +11,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -21,6 +23,31 @@ public class ProductRepositoryTest {
 
     @Autowired
     private ProductRepository productRepository;
+
+//    @Test
+//    public void findById_ShouldReturnOptionalProduct_WhenFindById() {
+//        Product product = Product.builder().id(1L).build();
+//        productRepository.save(product);
+//
+//        Optional<Product> productOptional = productRepository.findById(1L);
+//        assertThat(productOptional.isPresent()).isTrue();
+//        assertThat(productOptional.get().getId()).isEqualTo(1L);
+//    }
+
+    @Test
+    public void findById_ShouldReturnOptionalEmpty_WhenProductDeleted() {
+        Product product = Product.builder().id(2L).deleted(true).build();
+        productRepository.save(product);
+
+        Optional<Product> productOptional = productRepository.findById(2L);
+        assertThat(productOptional.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void findById_ShouldReturnOptionalEmpty_WhenProductNotFound() {
+        Optional<Product> productOptional = productRepository.findById(1L);
+        assertThat(productOptional.isEmpty()).isTrue();
+    }
 
     @Test
     public void findByName_ShouldReturnOptionalProduct_WhenFindByName() {
@@ -46,16 +73,5 @@ public class ProductRepositoryTest {
         Optional<Product> productOptional = productRepository.findByName("Áo Thun Dry Cổ Tròn Ngắn Tay");
         assertThat(productOptional.isEmpty()).isTrue();
     }
-
-    @Test
-    public void findById_ShouldReturnOptionalProduct_WhenFindById() {
-        Product product = Product.builder().id(1L).build();
-        productRepository.save(product);
-
-        Optional<Product> productOptional = productRepository.findById(1L);
-        assertThat(productOptional.isPresent()).isTrue();
-        assertThat(productOptional.get().getId()).isEqualTo(1L);
-    }
-
 
 }
