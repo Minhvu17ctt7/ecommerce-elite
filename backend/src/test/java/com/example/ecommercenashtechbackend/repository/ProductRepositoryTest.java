@@ -1,24 +1,21 @@
 package com.example.ecommercenashtechbackend.repository;
 
 import com.example.ecommercenashtechbackend.entity.Product;
-import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.persistence.EntityManager;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@RunWith(SpringRunner.class)
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class ProductRepositoryTest {
 
     @Autowired
@@ -39,7 +36,7 @@ public class ProductRepositoryTest {
         Product product = Product.builder().id(2L).deleted(true).build();
         productRepository.save(product);
 
-        Optional<Product> productOptional = productRepository.findById(2L);
+        Optional<Product> productOptional = productRepository.findById(product.getId());
         assertThat(productOptional.isEmpty()).isTrue();
     }
 
