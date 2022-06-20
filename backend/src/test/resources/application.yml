@@ -11,6 +11,8 @@ spring:
       password: sa
   main:
     allow-circular-references: true
+  flyway:
+    enabled: false
 springdoc:
   api-docs:
     path: /api-docs
