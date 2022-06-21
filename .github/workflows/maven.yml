@@ -9,7 +9,7 @@ defaults:
   run:
     working-directory: ./backend
 env:
-  IMAGE_NAME: eCommerce-backend-elite
+  IMAGE_NAME: ecommerce-backend-elite
   PROJECT_PATH: /opt/eccomerce-elite/backend
 
 jobs:
