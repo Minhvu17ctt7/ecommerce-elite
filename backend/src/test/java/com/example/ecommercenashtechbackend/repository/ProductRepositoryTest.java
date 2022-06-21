@@ -37,7 +37,7 @@ public class ProductRepositoryTest {
         productRepository.save(product);
 
         Optional<Product> productOptional = productRepository.findById(product.getId());
-        assertThat(productOptional.isEmpty()).isTrue();
+        assertThat(productOptional.isEmpty()).isFalse();
     }
 
     @Test
@@ -51,9 +51,9 @@ public class ProductRepositoryTest {
         Product product = Product.builder().name("Áo Thun Dry Cổ Tròn Ngắn Tay").build();
         productRepository.save(product);
 
-        Optional<Product> productOptional = productRepository.findByName("Áo Thun Dry Cổ Tròn Ngắn Tay");
+        Optional<Product> productOptional = productRepository.findByName(product.getName());
         assertThat(productOptional.isPresent()).isTrue();
-        assertThat(productOptional.get().getName()).isEqualTo("Áo Thun Dry Cổ Tròn Ngắn Tay");
+        assertThat(productOptional.get().getName()).isEqualTo(product.getName());
     }
 
     @Test
@@ -61,7 +61,7 @@ public class ProductRepositoryTest {
         Product product = Product.builder().name("Áo Thun Dry Cổ Tròn Ngắn Tay").deleted(true).build();
         productRepository.save(product);
 
-        Optional<Product> productOptional = productRepository.findByName("Áo Thun Dry Cổ Tròn Ngắn Tay");
+        Optional<Product> productOptional = productRepository.findByName(product.getName());
         assertThat(productOptional.isEmpty()).isTrue();
     }
 
