@@ -98,7 +98,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v3
         with:
-          context: .
+          context: ./backend
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.tag }}
           cache-from: type=local,src=/tmp/.buildx-cache
