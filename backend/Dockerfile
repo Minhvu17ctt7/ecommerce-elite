@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk-alpine as base
+FROM openjdk:11 as base
 WORKDIR /app
 COPY mvnw .
 COPY .mvn .mvn
