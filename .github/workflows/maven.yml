@@ -10,7 +10,7 @@ defaults:
     working-directory: ./backend
 env:
   IMAGE_NAME: ecommerce-backend-elite
-  PROJECT_PATH: /opt/eccomerce-elite/backend
+  PROJECT_PATH: /opt/digitalocean/ecommerce-elite/backend
 
 jobs:
 
@@ -106,4 +106,30 @@ jobs:
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+#   deploy:
+#     name: 'Update server'
+#     needs: [ test, sonar, build ]
+#     runs-on: ubuntu-latest
+
+#     steps:
+
+#       - name: Check Out Repo
+#         uses: actions/checkout@v2
+
+#       - name: Get commit revision
+#         id: vars
+#         shell: bash
+#         run: echo ::set-output name=tag::$(echo $(git describe --long --tags --always)| sed 's/v//')
+
+#       - name: SSH and deploy in server
+#         uses: appleboy/ssh-action@master
+#         with:
+#           HOST: ${{ secrets.SSH_HOST }}
+#           USERNAME: ${{ secrets.SSH_USERNAME }}
+#           KEY: ${{ secrets.SSH_KEY }}
+#           PORT: ${{ secrets.SSH_PORT }}
+#           script: |
+#             cd ${{ env.PROJECT_PATH }}
+#             echo IMAGE=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.tag }} >> .env
+#             docker-compose up -d
     
