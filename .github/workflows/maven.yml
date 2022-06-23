@@ -8,6 +8,9 @@ on:
 defaults:
   run:
     working-directory: ./backend
+env:
+  IMAGE_NAME: ecommerce-backend-elite
+  PROJECT_PATH: /opt/ecommerce-elite/backend
 
 jobs:
 
@@ -32,36 +35,36 @@ jobs:
     - name: Maven Verify
       run: mvn -B clean verify
       
-  sonar:
-    needs: test
-    name: SonarCloud analysis
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: '11'
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Maven packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+#   sonar:
+#     needs: test
+#     name: SonarCloud analysis
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v1
+#       - name: Set up JDK
+#         uses: actions/setup-java@v1
+#         with:
+#           java-version: '11'
+#       - name: Cache SonarCloud packages
+#         uses: actions/cache@v1
+#         with:
+#           path: ~/.sonar/cache
+#           key: ${{ runner.os }}-sonar
+#           restore-keys: ${{ runner.os }}-sonar
+#       - name: Cache Maven packages
+#         uses: actions/cache@v1
+#         with:
+#           path: ~/.m2
+#           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+#           restore-keys: ${{ runner.os }}-m2
     
-      - name: Analyze with SonarCloud
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn -B verify sonar:sonar -Dsonar.projectKey=Minhvu17ctt7_ecommerce-elite -Dsonar.organization=minhvu17ctt7 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+#       - name: Analyze with SonarCloud
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: mvn -B verify sonar:sonar -Dsonar.projectKey=Minhvu17ctt7_ecommerce-elite -Dsonar.organization=minhvu17ctt7 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         
   build:
-    needs: [test, sonar]
+    needs: [test]
     name: 'Build docker image'
     runs-on: ubuntu-latest
 
@@ -93,15 +96,40 @@ jobs:
 
       - name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
-          context: ./
-          file: ./Dockerfile
+          context: ./backend
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.tag }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+  deploy:
+    name: 'Update server'
+    needs: [ test, build ]
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Get commit revision
+        id: vars
+        shell: bash
+        run: echo ::set-output name=tag::$(echo $(git describe --long --tags --always)| sed 's/v//')
+
+      - name: SSH and deploy in server
+        uses: appleboy/ssh-action@master
+        with:
+          HOST: ${{ secrets.SSH_HOST }}
+          USERNAME: ${{ secrets.SSH_USERNAME }}
+          KEY: ${{ secrets.SSH_KEY }}
+          PORT: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ${{ env.PROJECT_PATH }}
+            echo IMAGE=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} >> .env
+            docker-compose up -d
     
