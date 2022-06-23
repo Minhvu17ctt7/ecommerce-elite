@@ -10,7 +10,7 @@ defaults:
     working-directory: ./backend
 env:
   IMAGE_NAME: ecommerce-backend-elite
-  PROJECT_PATH: /opt/digitalocean/ecommerce-elite/backend
+  PROJECT_PATH: /opt/ecommerce-elite/backend
 
 jobs:
 
